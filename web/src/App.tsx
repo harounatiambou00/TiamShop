@@ -27,7 +27,11 @@ import {
 } from "./pages";
 
 function App() {
-  return <div id="tiamshop"></div>;
+  return (
+    <div id="tiamshop" className="underline text-teal-600">
+      Hello world
+    </div>
+  );
 }
 
 export default App;
