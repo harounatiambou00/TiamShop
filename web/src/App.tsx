@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import React from "react";
 import "./App.css";
 
@@ -26,10 +27,16 @@ import {
   UserPaymentReceipts,
 } from "./pages";
 
+//components
+import { Header } from "./components";
+
 function App() {
   return (
-    <div id="tiamshop" className="underline text-teal-600">
-      Hello world
+    <div id="app" className="w-full h-screen bg-background">
+      <Header />
+      <Button color="warning" variant="contained">
+        Hello
+      </Button>
     </div>
   );
 }
