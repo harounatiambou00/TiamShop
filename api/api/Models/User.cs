@@ -4,7 +4,7 @@ namespace api.Models
 {
     public class User
     {
-        public readonly int UserId;
+        public int UserId;
         public string? UserGuid { get; set; } = null;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
@@ -33,6 +33,7 @@ namespace api.Models
         //Neighborhood
         public Neighborhood Neighborhood { get; set; }
 
+        
 
 
         /**
