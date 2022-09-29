@@ -4,7 +4,7 @@ namespace api.Models
 {
     public class User
     {
-        private int UserId;
+        public readonly int UserId;
         public string? UserGuid { get; set; } = null;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
@@ -26,6 +26,14 @@ namespace api.Models
         //Only for admins
         public string? JobTitle { get; set; } = null;
         public string? JobDescription { get; set; } = null;
+
+        //UserType
+        public UserType UserType { get; set; }
+
+        //Neighborhood
+        public Neighborhood Neighborhood { get; set; }
+
+
 
         /**
             This construtor is used to create clients

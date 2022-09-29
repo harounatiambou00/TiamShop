@@ -2,7 +2,9 @@
 {
     public class City
     {
-        public int CityId { get; set; }
+        public readonly int CityId;
         public string? CityName { get; set; }
+
+        public ICollection<Neighborhood> Neighborhood { get; set; } = new List<Neighborhood>();
     }
 }
