@@ -1,3 +1,23 @@
+global using api.Models;
+
+//Services
+global using api.Services.EmailService;
+global using api.Services.UserService;
+global using api.Services.JwtService;
+global using api.Services.UserTypeService;
+global using api.Services.CityService;
+global using api.Services.NeighborhoodService;
+
+//DTOs
+global using api.DTOs.UserDTOs;
+global using api.DTOs.UserDTOs.Admins;
+global using api.DTOs.UserDTOs.Clients;
+
+//Data
+global using api.Data.ServiceResponse;
+
+
+
 using DbUp;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +41,18 @@ if (dbupUpgrader.IsUpgradeRequired())
 {
     dbupUpgrader.PerformUpgrade();
 }
+
+
+/**
+    Adding services scopes.
+ */
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserTypeService, UserTypeService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<INeighborhoodService, NeighborhoodService>();
+
 
 
 
