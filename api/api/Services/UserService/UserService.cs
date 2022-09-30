@@ -7,9 +7,12 @@ namespace api.Services.UserService
     public class UserService : IUserService
     {
         private readonly string _connectionString;
-        public UserService(IConfiguration config)
+        private readonly IJwtService _jwtService;
+
+        public UserService(IConfiguration config, IJwtService jwtService)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
+            _jwtService = jwtService;
         }
 
         public async Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request)
@@ -124,7 +127,7 @@ namespace api.Services.UserService
                     {
                         Data = null,
                         Success = false,
-                        Message = "Admin_NOT_FOUND"
+                        Message = "ADMIN_NOT_FOUND"
                     };
                 }
                 else
@@ -146,7 +149,7 @@ namespace api.Services.UserService
                     {
                         Data = data,
                         Success = true,
-                        Message = "Admin_FOUND"
+                        Message = "ADMIN_FOUND"
                     };
                 }
 
@@ -427,9 +430,76 @@ namespace api.Services.UserService
             }
         }
 
-        public Task<ServiceResponse<string?>> LoginAdmin(LoginAdminDTO request)
+        public async Task<ServiceResponse<string?>> LoginAdmin(LoginAdminDTO request)
         {
-            throw new NotImplementedException();
+            var response = await GetAdminByGuid(request.UserGuid);
+            if(response != null)
+            {
+                var user = response.Data;
+                if (response.Success)
+                {
+                    if(user.Email == request.Email)
+                    {
+                        using (var connection = new SqlConnection(_connectionString))
+                        {
+                            connection.Open();
+                            string getPasswordSQL = "SELECT HashedPassword FROM dbo.tblUsers WHERE UserGuid = @UserGuid";
+                            var dictionary = new Dictionary<string, object>
+                            {
+                                { "@UserGuid", request.UserGuid }
+                            };
+                            var parameters = new DynamicParameters(dictionary);
+                            var hashedPassword = connection.ExecuteScalar(getPasswordSQL, parameters);
+                            if (BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword.ToString()))
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = _jwtService.GenerateToken(user.UserId, user.Email, false),
+                                    Success = true,
+                                    Message = "TOKEN_GENERATED_SUCCESSFULLY"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "INCORRECT_PASSWORD"
+                                };
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "INCORRECT_EMAIL"
+                        };
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "ADMIN_NOT_FOUND"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "ADMIN_NOT_FOUND"
+                };
+            }
+
         }
 
         public Task<ServiceResponse<string?>> LoginClient(LoginClientDTO request)

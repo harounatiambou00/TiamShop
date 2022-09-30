@@ -7,6 +7,12 @@ namespace api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IUserService _userService;
+
+        public AuthController(IUserService userService)
+        {
+            _userService = userService;
+        }
         //Clients
         [HttpPost("sign-up")]
         public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> SignUpClient(SignUpClientDTO request)
@@ -30,8 +36,31 @@ namespace api.Controllers
         [HttpPost("admins/sign-in")]
         public async Task<ActionResult<ServiceResponse<string?>>> LoginAdmin(LoginAdminDTO request)
         {
-            return Ok(new ServiceResponse<string>());
+            //We will try to log the user
+            var login = await _userService.LoginAdmin(request);
+
+            //if the user is logged succesfully, we create a cookie that contains the token of the login
+            if (login.Success)
+            {
+                Response.Cookies.Append("adminLoginJWT", login.Data, new CookieOptions
+                {
+                    HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
+                    Expires = DateTimeOffset.Now.AddHours(2),
+                });
+            }
+
+            /*
+             * Finally we will return a service response to inform if the login was successful or not(if not why)
+             * We return a Service Response with a null data because we don't want the frontend to access the token.
+            */
+            return new ServiceResponse<string?>
+            {
+                Data = null,
+                Success = login.Success,
+                Message = login.Message,
+            };
         }
+
 
         [HttpGet("admins/get-logged-admin")]
         public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> GetLoggedAdmin()
