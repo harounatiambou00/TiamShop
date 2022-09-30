@@ -2,7 +2,7 @@
 {
     public class GetUserDTO
     {
-        public int UserId { get; }
+        public int UserId { get; set; }
         public string? UserGuid { get; set; } = null;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

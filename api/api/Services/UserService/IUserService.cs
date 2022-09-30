@@ -2,9 +2,9 @@
 {
     public interface IUserService
     {
-        Task<ServiceResponse<List<GetUserDTO[]>>> GetAllUsers();
-        Task<ServiceResponse<List<GetUserDTO[]>>> GetAllClients();
-        Task<ServiceResponse<List<GetUserDTO[]>>> GetAllAdmins();
+        Task<ServiceResponse<List<GetUserDTO>>> GetAllUsers();
+        Task<ServiceResponse<List<GetUserDTO>>> GetAllClients();
+        Task<ServiceResponse<List<GetUserDTO>>> GetAllAdmins();
         Task<ServiceResponse<GetUserDTO?>> GetUserById(int id);
         Task<ServiceResponse<GetUserDTO?>> GetAdminByGuid(string guid);
         Task<ServiceResponse<GetUserDTO?>> GetUserByEmail(string email);
