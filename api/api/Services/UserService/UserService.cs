@@ -120,7 +120,7 @@ namespace api.Services.UserService
                     { "@UserGuid", guid }
                 };
                 var parameters = new DynamicParameters(dictionary);
-                var user = connection.QuerySingle<User>(query, parameters);
+                var user = connection.QueryFirstOrDefault<User>(query, parameters);
                 if(user == null)
                 {
                     return new ServiceResponse<GetUserDTO?>

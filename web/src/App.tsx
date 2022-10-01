@@ -82,7 +82,6 @@ function App() {
           {/*On this page a client will can finalize his order process */}
           <Route path="finalize-order" element={<GiveOrderInfoPage />} />
         </Route>
-
         {/*On this page a client can login*/}
         <Route path="sign-in" element={<SignInPage />} />
         {/*On this page a visitor can create an account */}

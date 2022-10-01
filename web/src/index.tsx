@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+import { StyledEngineProvider } from "@mui/material/styles";
+
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./utils/muiCustomTheme";
 
@@ -16,7 +18,9 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <App />
+        <StyledEngineProvider injectFirst>
+          <App />
+        </StyledEngineProvider>
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>

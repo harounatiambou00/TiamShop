@@ -1,0 +1,36 @@
+.animated-button-wrapper button {
+  display: block;
+  width: 125px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-align: center;
+  position: relative;
+  transition: all 0.35s;
+  border-radius: 3px;
+}
+
+.animated-button-wrapper button span {
+  position: relative;
+  z-index: 2;
+}
+
+.animated-button-wrapper button:after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  transition: all 0.35s;
+}
+
+.animated-button-wrapper button:hover:after {
+  width: 100%;
+}
+
+.animated-button-wrapper button:visited:after {
+  width: 100%;
+}

@@ -22,6 +22,9 @@ using DbUp;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Adding cors
+builder.Services.AddCors();
+
 
 //This gets the database connection from the appsettings.json file and creates the database if it doesn't exist.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -70,6 +73,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//Configuring cors so that our client app can have access to the api
+app.UseCors(options => options.WithOrigins(
+                                    new[] { "http://localhost:3000",
+                                        "https://localhost:3000",
+                                        "http://localhost:3001",
+                                        "https://localhost:3001" }
+                                )
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials()
+);
 
 app.UseHttpsRedirection();
 
