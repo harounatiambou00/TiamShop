@@ -8,7 +8,6 @@ import {
   AccountPage,
   CartPage,
   CategoriesPage,
-  CompareProductsPage,
   ContactUsPage,
   DeliveryInformationPage,
   Error404,
@@ -31,7 +30,12 @@ import {
 import { Layout, AdminLayout } from "./_layouts";
 
 //AdminPages
-import { Admin, AdminSignInPage, Dashboard, ClientsPage } from "./admin-pages";
+import {
+  AdminApp,
+  AdminSignInPage,
+  Dashboard,
+  ClientsPage,
+} from "./admin-pages";
 
 import "./App.css";
 
@@ -91,7 +95,7 @@ function App() {
          * admin user part of the platform
          * Any time you come here you have to login
          */}
-        <Route path="admin" element={<Admin />}>
+        <Route path="admin" element={<AdminApp />}>
           {/*On this page an admin can monitor the platform */}
           <Route path="" element={<AdminLayout />}>
             <Route path="" element={<Dashboard />} />

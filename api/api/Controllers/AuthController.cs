@@ -8,10 +8,12 @@ namespace api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IJwtService _jwtService;
 
-        public AuthController(IUserService userService)
+        public AuthController(IUserService userService, IJwtService jwtService)
         {
             _userService = userService;
+            _jwtService = jwtService;
         }
         //Clients
         [HttpPost("sign-up")]
@@ -30,6 +32,7 @@ namespace api.Controllers
         public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> GetLoggedClient()
         {
             return Ok(new ServiceResponse<GetUserDTO>());
+
         }
 
         //Admins
@@ -65,7 +68,33 @@ namespace api.Controllers
         [HttpGet("admins/get-logged-admin")]
         public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> GetLoggedAdmin()
         {
-            return Ok(new ServiceResponse<GetUserDTO>());
+            try
+            {
+                var adminLoginJwtFromCookies = Request.Cookies["adminLoginJWT"];
+
+                var validatedAdminLoginJwt = _jwtService.Verify(adminLoginJwtFromCookies);
+
+                int userId = int.Parse(validatedAdminLoginJwt.Issuer);
+
+                var serviceResponse = await _userService.GetUserById(userId);
+
+                if (serviceResponse.Data == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "INVALID_TOKEN";
+                }
+
+                return serviceResponse;
+            }
+            catch (Exception _)
+            {
+                return new ServiceResponse<GetUserDTO?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "INVALID_TOKEN"
+                };
+            }
         }
 
 

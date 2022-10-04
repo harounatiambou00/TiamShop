@@ -25,11 +25,14 @@ const Clients = () => {
           Email: i.email,
           PhoneNumber: i.phoneNumber,
           CompleteAddress: i.completeAddress,
-          BirthDate: new Date(
-            parseInt(i.birthDate.slice(0, 4)),
-            parseInt(i.birthDate.slice(4, 6)),
-            parseInt(i.birthDate.slice(6, 8))
-          ),
+          BirthDate:
+            i.birthDate != null
+              ? new Date(
+                  parseInt(i.birthDate.slice(0, 4)),
+                  parseInt(i.birthDate.slice(4, 6)),
+                  parseInt(i.birthDate.slice(6, 8))
+                )
+              : null,
         },
       ]);
     }

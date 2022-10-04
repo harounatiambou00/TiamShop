@@ -280,12 +280,44 @@ namespace api.Services.UserService
         }
 
 
-        public Task<ServiceResponse<GetUserDTO?>> GetLoggedAdmin()
+        public async Task<ServiceResponse<GetUserDTO?>> GetLoggedAdmin(string token)
         {
-            throw new NotImplementedException();
+            var validatedAdminLoginJWT = _jwtService.Verify(token);
+            int userId = int.Parse(validatedAdminLoginJWT.Issuer);
+            if(validatedAdminLoginJWT.ValidTo < DateTime.Now)
+            {
+                return new ServiceResponse<GetUserDTO?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "TOKEN_EXPIRED"
+                };
+            }
+            else
+            {
+                var user = GetUserById(userId).Result.Data;
+                if(user == null)
+                {
+                    return new ServiceResponse<GetUserDTO?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "USER_NOT_FOUND"
+                    };
+                }
+                else
+                {
+                    return new ServiceResponse<GetUserDTO?>
+                    {
+                        Data = user,
+                        Success = true,
+                        Message = "USER_FOUND_SUCCESSFULLY"
+                    };
+                }
+            }
         }
 
-        public Task<ServiceResponse<GetUserDTO?>> GetLoogedClient()
+        public Task<ServiceResponse<GetUserDTO?>> GetLoogedClient(string token)
         {
             throw new NotImplementedException();
         }
@@ -454,7 +486,7 @@ namespace api.Services.UserService
                             {
                                 return new ServiceResponse<string?>
                                 {
-                                    Data = _jwtService.GenerateToken(user.UserId, user.Email, false),
+                                    Data = _jwtService.GenerateToken(user.UserId, false),
                                     Success = true,
                                     Message = "TOKEN_GENERATED_SUCCESSFULLY"
                                 };

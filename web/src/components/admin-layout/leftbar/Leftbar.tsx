@@ -1,6 +1,3 @@
-import React from "react";
-
-import { RiDashboardFill } from "react-icons/ri";
 import { HiOutlineUsers } from "react-icons/hi";
 import { BiCategoryAlt } from "react-icons/bi";
 import { TbTruckDelivery, TbBrandApple } from "react-icons/tb";
@@ -14,12 +11,15 @@ const Leftbar = () => {
   return (
     <div className="h-full w-60 bg-white flex flex-col">
       <div className="flex flex-col mt-10 w-60 px-5">
-        <div className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md">
+        <div
+          onClick={() => navigate("/admin")}
+          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
+        >
           <AiOutlineDashboard className="text-primary text-2xl" />
           <span className="text-gray-600 ml-3">Tableau de bord</span>
         </div>
         <div
-          onClick={() => navigate("clients")}
+          onClick={() => navigate("/admin/clients")}
           className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
         >
           <HiOutlineUsers className="text-primary text-2xl" />

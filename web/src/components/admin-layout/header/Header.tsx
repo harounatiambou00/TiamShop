@@ -1,6 +1,4 @@
 import { Avatar, Badge } from "@mui/material";
-import React from "react";
-
 const Header = () => {
   return (
     <div className="w-full h-ten-percent bg-white flex items-center justify-between px-10">

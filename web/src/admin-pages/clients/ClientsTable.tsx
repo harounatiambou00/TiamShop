@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Client } from "../../data/models/Client";
 
 import {
@@ -43,10 +43,11 @@ const ClientsTable = (props: Props) => {
     });
 
     let content = await (await response).json();
-
-    setDeletionIsLoading(false);
-    setOpenDeletionDialog(false);
-    window.location.reload();
+    if (content.success) {
+      setDeletionIsLoading(false);
+      setOpenDeletionDialog(false);
+      window.location.reload();
+    }
   };
 
   React.useEffect(() => {}, [props.clients]);
@@ -93,11 +94,12 @@ const ClientsTable = (props: Props) => {
                     {client.CompleteAddress}
                   </TableCell>
                   <TableCell className="font-kanit font-light">
-                    {Math.abs(
-                      new Date(
-                        Date.now() - client.BirthDate.getTime()
-                      ).getUTCFullYear() - 1970
-                    )}
+                    {client.BirthDate != null &&
+                      Math.abs(
+                        new Date(
+                          Date.now() - client.BirthDate.getTime()
+                        ).getUTCFullYear() - 1970
+                      )}
                   </TableCell>
                   <TableCell>
                     <IconButton

@@ -1,51 +1,47 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
 namespace api.Services.JwtService
-{
-    public class JwtService : IJwtService
     {
+        public class JwtService : IJwtService
+        {
         private readonly string _secureKey;
         public JwtService(IConfiguration config)
         {
             _secureKey = config.GetSection("AppSettings:SecureKey").Value;
         }
 
-        public string GenerateToken(int id, string email, bool remenberMe)
-        {
-            var symetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secureKey));
-            var credentials = new SigningCredentials(symetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
-            var header = new JwtHeader(credentials);
-
-            List<Claim> claims = new List<Claim>
+        public string GenerateToken(int id, bool remenberMe)
             {
-                new Claim(ClaimTypes.Email, email)
-            };
+                var symetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secureKey));
+                var credentials = new SigningCredentials(symetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
+                var header = new JwtHeader(credentials);
 
-            var payLoad = new JwtPayload(id.ToString(), null, claims, null, remenberMe == true ? DateTime.Now.AddDays(365) : DateTime.Now.AddHours(1));
+                var payLoad = new JwtPayload(id.ToString(), null, null, null, remenberMe ? DateTime.Today.AddDays(365) : DateTime.Today.AddHours(2));
 
-            var token = new JwtSecurityToken(header, payLoad);
+                var token = new JwtSecurityToken(header, payLoad);
 
-            //This will parse the token to string and return it.
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+                //This will parse the token to string and return it.
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
 
-        public JwtSecurityToken Verify(string jwtString)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_secureKey);
-
-            tokenHandler.ValidateToken(jwtString, new TokenValidationParameters
+            public JwtSecurityToken Verify(string jwtString)
             {
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuerSigningKey = true,
-                ValidateIssuer = false,
-                ValidateAudience = false
-            }, out SecurityToken validatedToken);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_secureKey);
 
-            return (JwtSecurityToken)validatedToken;
+                SecurityToken validatedToken;
+                IPrincipal principal = tokenHandler.ValidateToken(jwtString, new TokenValidationParameters()
+                {
+                    ValidateLifetime = false,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                }, out validatedToken);
+
+                return (JwtSecurityToken)validatedToken;
+            }
         }
     }
-}

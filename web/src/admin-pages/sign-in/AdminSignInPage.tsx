@@ -72,6 +72,7 @@ const AdminSignInPage = () => {
     let response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(user),
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
