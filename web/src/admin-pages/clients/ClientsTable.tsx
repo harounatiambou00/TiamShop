@@ -25,28 +25,34 @@ const ClientsTable = (props: Props) => {
   const [userToDeleteId, setUserToDeleteId] = React.useState<number>(0);
   const [deletionIsLoading, setDeletionIsLoading] = React.useState(false);
 
+  //Anytime the dialog is closed we set the openDeletionDialog state to false and the selected user's id is set to 0 because there can not be a user with the id 0 i the database
   const handleCloseDeletionDialog = () => {
     setOpenDeletionDialog(false);
     setUserToDeleteId(0);
   };
 
+  //This function is only used to open the dialog and set the user's id but not to completly delete the user
   const handleDelete = (id: number) => {
     setUserToDeleteId(id);
     setOpenDeletionDialog(true);
   };
 
+  //This is the function that effectivly delete the client
   const deletionAction = async (id: number) => {
-    setDeletionIsLoading(true);
-    let url = `https://localhost:7254/user/delete-user/${id}`;
-    let response = fetch(url, {
-      method: "DELETE",
-    });
+    if (id > 0) {
+      setDeletionIsLoading(true);
+      let url = `https://localhost:7254/user/delete-user/${id}`;
+      let response = fetch(url, {
+        method: "DELETE",
+      });
 
-    let content = await (await response).json();
-    if (content.success) {
-      setDeletionIsLoading(false);
-      setOpenDeletionDialog(false);
-      window.location.reload();
+      let content = await (await response).json();
+      if (content.success) {
+        setDeletionIsLoading(false);
+        setOpenDeletionDialog(false);
+        //WWe have to reload the page anytime a client is deleted to keep our state updated
+        window.location.reload();
+      }
     }
   };
 
@@ -95,6 +101,7 @@ const ClientsTable = (props: Props) => {
                   </TableCell>
                   <TableCell className="font-kanit font-light">
                     {client.BirthDate != null &&
+                      //Broh don't ask me how but thsi get the age. Cheba stackoverflow :)
                       Math.abs(
                         new Date(
                           Date.now() - client.BirthDate.getTime()

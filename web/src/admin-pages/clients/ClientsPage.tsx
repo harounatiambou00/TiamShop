@@ -26,6 +26,7 @@ const Clients = () => {
           PhoneNumber: i.phoneNumber,
           CompleteAddress: i.completeAddress,
           BirthDate:
+            //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match
             i.birthDate != null
               ? new Date(
                   parseInt(i.birthDate.slice(0, 4)),
