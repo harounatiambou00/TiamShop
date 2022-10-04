@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import "./animated-button.css";
 
@@ -6,7 +6,7 @@ import { CircularProgress } from "@mui/material";
 
 type Props = {
   handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  text: string;
+  text: ReactNode;
   isLoading: boolean;
 };
 

@@ -34,6 +34,10 @@ module.exports = {
         "7xl": "5rem",
         "8xl": "6rem",
       },
+      height: {
+        "ten-percent": "10%",
+        "ninety-percent": "90%",
+      },
     },
   },
   plugins: [],

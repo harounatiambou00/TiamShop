@@ -31,7 +31,7 @@ import {
 import { Layout, AdminLayout } from "./_layouts";
 
 //AdminPages
-import { AdminSignInPage, Dashboard } from "./admin-pages";
+import { Admin, AdminSignInPage, Dashboard, ClientsPage } from "./admin-pages";
 
 import "./App.css";
 
@@ -91,12 +91,15 @@ function App() {
          * admin user part of the platform
          * Any time you come here you have to login
          */}
-        <Route path="admin" element={<AdminLayout />}>
+        <Route path="admin" element={<Admin />}>
           {/*On this page an admin can monitor the platform */}
-          <Route path="dashboard" element={<Dashboard />} />
-          {/*On this page an admin can login*/}
-          <Route path="" element={<AdminSignInPage />} />
+          <Route path="" element={<AdminLayout />}>
+            <Route path="" element={<Dashboard />} />
+            <Route path="clients" element={<ClientsPage />} />
+          </Route>
         </Route>
+        {/*On this page an admin can login*/}
+        <Route path="admin-sign-in" element={<AdminSignInPage />} />
 
         <Route path="*" element={<Error404 />} />
       </Routes>

@@ -97,7 +97,7 @@ const AdminSignInPage = () => {
       setIncorrectGuid(false);
       setIncorrectEmail(false);
       setIncorrectPassword(false);
-      navigate("/admin/dashboard");
+      navigate("/admin");
     }
     console.log(content);
     setIsLoading(false);

@@ -22,9 +22,9 @@ namespace api.Controllers
         }
 
         [HttpGet("get-all-clients")]
-        public async Task<ActionResult<ServiceResponse<List<GetUserDTO>>>> GetAllClients()
+        public async Task<ServiceResponse<List<GetUserDTO>>> GetAllClients()
         {
-            return Ok(_userService.GetAllClients());
+            return await _userService.GetAllClients();
         }
 
         [HttpGet("get-all-admins")]

@@ -51,7 +51,6 @@ CREATE TABLE dbo.tblUsers(
 
 	CONSTRAINT PK_tblUsers PRIMARY KEY (UserId),
 
-	CONSTRAINT UQ_tblUsers_UserGuid UNIQUE (UserGuid),
 	CONSTRAINT UQ_tblUsers_Email UNIQUE (Email),
 	CONSTRAINT UQ_tblUsers_PhoneNumber UNIQUE (PhoneNumber),
 
