@@ -9,17 +9,32 @@ namespace api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
+        private readonly IEmailService _emailService;
 
-        public AuthController(IUserService userService, IJwtService jwtService)
+        public AuthController(IUserService userService, IJwtService jwtService, IEmailService emailService)
         {
             _userService = userService;
             _jwtService = jwtService;
+            _emailService = emailService;
         }
         //Clients
         [HttpPost("sign-up")]
         public async Task<ActionResult<ServiceResponse<string?>>> SignUpClient(SignUpClientDTO request)
         {
-            return await _userService.SignUpClient(request);
+            var registrationResponse = await _userService.SignUpClient(request);
+            if (registrationResponse.Success)
+            {
+                //                         http or https            localhost or tiamsho.com
+                var emailVerificationUrl = Request.Scheme + "://" + Request.Host +            Url.Action("VerifyEmail", "Auth", new {token = registrationResponse.Data}) ;
+                var emailBody = "Votre compte a été crée avec succès, vous devez maintenant confirmé votre email pour pouvoir y accéder.<br /> Pour ce faire <br /><br /> <a href=\"#URL#\"> Cliquer ici</a>";
+                emailBody = emailBody.Replace("#URL#", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(emailVerificationUrl));
+                var emailResponse = await _emailService.SendEmail(request.Email,  "Tiamshop, confirmation de la création de compte", emailBody);
+                return emailResponse;
+            }
+            else
+            {
+                return registrationResponse;
+            }
         }
 
         [HttpPost("sign-in")]
@@ -103,7 +118,7 @@ namespace api.Controllers
         [HttpPost("verify-email")]
         public async Task<ActionResult<ServiceResponse<string?>>> VerifyEmail(string token)
         {
-            return Ok(new ServiceResponse<string>());
+            return await _userService.VerifyEmail(token);
         }
 
         [HttpPost("forgot-password")]

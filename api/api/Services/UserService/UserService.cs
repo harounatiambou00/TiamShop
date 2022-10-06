@@ -8,11 +8,13 @@ namespace api.Services.UserService
     {
         private readonly string _connectionString;
         private readonly IJwtService _jwtService;
+        private readonly IEmailService _emailService;
 
-        public UserService(IConfiguration config, IJwtService jwtService)
+        public UserService(IConfiguration config, IJwtService jwtService, IEmailService emailService)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
             _jwtService = jwtService;
+            _emailService = emailService;
         }
 
         public async Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request)
@@ -111,7 +113,7 @@ namespace api.Services.UserService
                                 {
                                     return new ServiceResponse<string?>
                                     {
-                                        Data = null,
+                                        Data = user.VerificationToken,
                                         Success = true,
                                         Message = "CLIENT_CREATED_SUCCESSFULLY"
                                     };
@@ -698,7 +700,7 @@ namespace api.Services.UserService
             {
                 return new ServiceResponse<string?>
                 {
-                    Data = "",
+                    Data = response.Data,
                     Success = true,
                     Message = "CLIENT_REGISTERED_SUCCESSFULLY"
                 };
@@ -752,9 +754,49 @@ namespace api.Services.UserService
             }
         }
 
-        public Task<ServiceResponse<string?>> VerifyEmail(string token)
+        public async Task<ServiceResponse<string?>> VerifyEmail(string token)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE dbo.tblUsers SET VerifiedAt = @VerifiedAt, VerificationToken = NULL WHERE VerificationToken = @VerificationToken";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        { "@VerifiedAt", DateTime.Now },
+                        { "@VerificationToken", token }
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = connection.Execute(query, parameters);
+                    if(affectedRows == 0)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "CLIENT_NOT_FOUND"
+                        };
+                    }else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "CLIENT_VERIFIED_SUCCESSFULLY"
+                        };
+                    }
+                }
+                catch
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "CLIENT_NOT_FOUND"
+                    };
+                }
+            }
         }
     }
 }
