@@ -12,7 +12,8 @@
         Task<ServiceResponse<GetUserDTO?>> GetLoogedClient(string token);
         Task<ServiceResponse<GetUserDTO?>> GetLoggedAdmin(string token);
         Task<ServiceResponse<string?>> SignUpClient(SignUpClientDTO request);
-        Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request); 
+        Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request);
+        Task<ServiceResponse<string?>> CreateClient(SignUpClientDTO request);
         Task<ServiceResponse<string?>> UpdateUser(UpdateUserDTO request);
         Task<ServiceResponse<string?>> DeleteUser(int id);  
         Task<ServiceResponse<string?>> LoginClient(LoginClientDTO request);

@@ -44,7 +44,7 @@ namespace api.Services.UserService
                     {"@ResetPasswordTokenExpiresAt", user.ResetPasswordTokenExpiresAt},
                     {"@JobTitle", user.JobTitle},
                     {"@JobDescription", user.JobDescription},
-                    {"@UserTypeId", request.UserTypeId},
+                    {"@UserTypeId", 2},
                     {"@NeighborhoodId", request.NeighborhoodId},
                 };
                 var parameters = new DynamicParameters(dictionary);
@@ -67,6 +67,104 @@ namespace api.Services.UserService
                         Message = "ADMIN_CREATION_FAILED"
                     };
                 }
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> CreateClient(SignUpClientDTO request)
+        {
+            if (request.Email != null && request.Password != null && request.PhoneNumber != null)
+            {
+                var clientEmailExists = await GetUserByEmail(request.Email);
+                if (!clientEmailExists.Success)
+                {
+                    var clientPhoneNumberExists = await GetUserByPhoneNumber(request.PhoneNumber);
+                    if (!clientPhoneNumberExists.Success)
+                    {
+                        if (request.Password.Length >= 8)
+                        {
+                            using(var connection = new SqlConnection(_connectionString))
+                            {
+                                string sql = "INSERT INTO dbo.tblUsers (FirstName, LastName, Email, PhoneNumber, CompleteAddress, BirthDate, CreatedAt, VerificationToken, VerifiedAt, HashedPassword, PasswordSalt, UserTypeId, NeighborhoodId) " +
+                                "VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @CompleteAddress, @BirthDate, @CreatedAt, @VerificationToken, @VerifiedAt, @HashedPassword, @PasswordSalt, @UserTypeId, @NeighborhoodId) ";
+
+                                User user = new User(request.Email, request.PhoneNumber, request.Password, request.FirstName, request.LastName, request.CompleteAddress, request.BirthDate);
+
+                                var dictionary = new Dictionary<string, object>
+                                {
+                                    {"@FirstName", user.FirstName},
+                                    {"@LastName", user.LastName},
+                                    {"@Email", user.Email},
+                                    {"@PhoneNumber", user.PhoneNumber},
+                                    {"@CompleteAddress", user.CompleteAddress},
+                                    {"@BirthDate", user.BirthDate},
+                                    {"@CreatedAt", user.CreatedAt},
+                                    {"@VerificationToken", user.VerificationToken},
+                                    {"@VerifiedAt", user.VerifiedAt},
+                                    {"@HashedPassword", user.HashedPassword},
+                                    {"@PasswordSalt", user.PasswordSalt},
+                                    {"@UserTypeId", 1},
+                                    {"@NeighborhoodId", request.NeighborhoodId},
+                                };
+                                var parameters = new DynamicParameters(dictionary);
+                                var affectedRows = connection.Execute(sql, parameters);
+                                if (affectedRows == 1)
+                                {
+                                    return new ServiceResponse<string?>
+                                    {
+                                        Data = null,
+                                        Success = true,
+                                        Message = "CLIENT_CREATED_SUCCESSFULLY"
+                                    };
+                                }
+                                else
+                                {
+                                    return new ServiceResponse<string?>
+                                    {
+                                        Data = null,
+                                        Success = false,
+                                        Message = "CLIENT_CREATION_FAILED"
+                                    };
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return new ServiceResponse<string?>
+                            {
+                                Data = null,
+                                Success = false,
+                                Message = "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN"
+                        };
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
+                };
             }
         }
 
@@ -113,15 +211,49 @@ namespace api.Services.UserService
         {
             using(var connection = new SqlConnection(_connectionString))
             {
-                connection.Open();
-                string query = "SELECT * FROM dbo.tblUsers WHERE UserGuid = @UserGuid";
-                var dictionary = new Dictionary<string, object>
+                try
+                {
+                    connection.Open();
+                    string query = "SELECT * FROM dbo.tblUsers WHERE UserGuid = @UserGuid";
+                    var dictionary = new Dictionary<string, object>
                 {
                     { "@UserGuid", guid }
                 };
-                var parameters = new DynamicParameters(dictionary);
-                var user = connection.QueryFirstOrDefault<User>(query, parameters);
-                if(user == null)
+                    var parameters = new DynamicParameters(dictionary);
+                    var user = connection.QueryFirstOrDefault<User>(query, parameters);
+                    if (user == null)
+                    {
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "ADMIN_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        GetUserDTO data = new GetUserDTO
+                        {
+                            UserId = user.UserId,
+                            UserGuid = user.UserGuid,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            CompleteAddress = user.CompleteAddress,
+                            BirthDate = user.BirthDate,
+                            JobTitle = user.JobTitle,
+                            JobDescription = user.JobDescription
+                        };
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = data,
+                            Success = true,
+                            Message = "ADMIN_FOUND"
+                        };
+                    }
+                }
+                catch
                 {
                     return new ServiceResponse<GetUserDTO?>
                     {
@@ -130,29 +262,6 @@ namespace api.Services.UserService
                         Message = "ADMIN_NOT_FOUND"
                     };
                 }
-                else
-                {
-                    GetUserDTO data = new GetUserDTO
-                    {
-                        UserId = user.UserId,
-                        UserGuid = user.UserGuid,  
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,   
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        CompleteAddress = user.CompleteAddress, 
-                        BirthDate = user.BirthDate,
-                        JobTitle = user.JobTitle,   
-                        JobDescription = user.JobDescription
-                    };
-                    return new ServiceResponse<GetUserDTO?>
-                    {
-                        Data = data,
-                        Success = true,
-                        Message = "ADMIN_FOUND"
-                    };
-                }
-
             }
         }
 
@@ -326,15 +435,49 @@ namespace api.Services.UserService
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.Open();
-                string query = "SELECT * FROM dbo.tblUsers WHERE Email = @Email";
-                var dictionary = new Dictionary<string, object>
+                try
                 {
-                    { "@Email", email }
-                };
-                var parameters = new DynamicParameters(dictionary);
-                var user = connection.QuerySingle<User>(query, parameters);
-                if (user == null)
+                    connection.Open();
+                    string query = "SELECT * FROM dbo.tblUsers WHERE Email = @Email";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        { "@Email", email }
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var user = connection.QuerySingle<User>(query, parameters);
+                    if (user == null)
+                    {
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "USER_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        GetUserDTO data = new GetUserDTO
+                        {
+                            UserId = user.UserId,
+                            UserGuid = user.UserGuid,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            CompleteAddress = user.CompleteAddress,
+                            BirthDate = user.BirthDate,
+                            JobTitle = user.JobTitle,
+                            JobDescription = user.JobDescription
+                        };
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = data,
+                            Success = true,
+                            Message = "USER_FOUND"
+                        };
+                    }
+                }
+                catch
                 {
                     return new ServiceResponse<GetUserDTO?>
                     {
@@ -343,29 +486,6 @@ namespace api.Services.UserService
                         Message = "USER_NOT_FOUND"
                     };
                 }
-                else
-                {
-                    GetUserDTO data = new GetUserDTO
-                    {
-                        UserId = user.UserId,
-                        UserGuid = user.UserGuid,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        CompleteAddress = user.CompleteAddress,
-                        BirthDate = user.BirthDate,
-                        JobTitle = user.JobTitle,
-                        JobDescription = user.JobDescription
-                    };
-                    return new ServiceResponse<GetUserDTO?>
-                    {
-                        Data = data,
-                        Success = true,
-                        Message = "USER_FOUND"
-                    };
-                }
-
             }
         }
 
@@ -373,43 +493,54 @@ namespace api.Services.UserService
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.Open();
-                string query = "SELECT * FROM dbo.tblUsers WHERE UserId = @UserId";
-                var dictionary = new Dictionary<string, object>
+                try
+                {
+                    connection.Open();
+                    string query = "SELECT * FROM dbo.tblUsers WHERE UserId = @UserId";
+                    var dictionary = new Dictionary<string, object>
                 {
                     { "@UserId", id }
                 };
-                var parameters = new DynamicParameters(dictionary);
-                var user = connection.QuerySingle<User>(query, parameters);
-                if (user == null)
+                    var parameters = new DynamicParameters(dictionary);
+                    var user = connection.QuerySingle<User>(query, parameters);
+                    if (user == null)
+                    {
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "USER_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        GetUserDTO data = new GetUserDTO
+                        {
+                            UserId = user.UserId,
+                            UserGuid = user.UserGuid,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            CompleteAddress = user.CompleteAddress,
+                            BirthDate = user.BirthDate,
+                            JobTitle = user.JobTitle,
+                            JobDescription = user.JobDescription
+                        };
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = data,
+                            Success = true,
+                            Message = "USER_FOUND"
+                        };
+                    }
+                }catch
                 {
                     return new ServiceResponse<GetUserDTO?>
                     {
                         Data = null,
                         Success = false,
                         Message = "USER_NOT_FOUND"
-                    };
-                }
-                else
-                {
-                    GetUserDTO data = new GetUserDTO
-                    {
-                        UserId = user.UserId,
-                        UserGuid = user.UserGuid,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        CompleteAddress = user.CompleteAddress,
-                        BirthDate = user.BirthDate,
-                        JobTitle = user.JobTitle,
-                        JobDescription = user.JobDescription
-                    };
-                    return new ServiceResponse<GetUserDTO?>
-                    {
-                        Data = data,
-                        Success = true,
-                        Message = "USER_FOUND"
                     };
                 }
             }
@@ -419,15 +550,49 @@ namespace api.Services.UserService
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.Open();
-                string query = "SELECT * FROM dbo.tblUsers WHERE PhoneNumber = @PhoneNumber";
-                var dictionary = new Dictionary<string, object>
+                try
                 {
-                    { "@PhoneNumber", phoneNumber }
-                };
-                var parameters = new DynamicParameters(dictionary);
-                var user = connection.QuerySingle<User>(query, parameters);
-                if (user == null)
+                    connection.Open();
+                    string query = "SELECT * FROM dbo.tblUsers WHERE PhoneNumber = @PhoneNumber";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        { "@PhoneNumber", phoneNumber }
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var user = connection.QuerySingle<User>(query, parameters);
+                    if (user == null)
+                    {
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "USER_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        GetUserDTO data = new GetUserDTO
+                        {
+                            UserId = user.UserId,
+                            UserGuid = user.UserGuid,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            CompleteAddress = user.CompleteAddress,
+                            BirthDate = user.BirthDate,
+                            JobTitle = user.JobTitle,
+                            JobDescription = user.JobDescription
+                        };
+                        return new ServiceResponse<GetUserDTO?>
+                        {
+                            Data = data,
+                            Success = true,
+                            Message = "USER_FOUND"
+                        };
+                    }
+                }
+                catch
                 {
                     return new ServiceResponse<GetUserDTO?>
                     {
@@ -436,29 +601,6 @@ namespace api.Services.UserService
                         Message = "USER_NOT_FOUND"
                     };
                 }
-                else
-                {
-                    GetUserDTO data = new GetUserDTO
-                    {
-                        UserId = user.UserId,
-                        UserGuid = user.UserGuid,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        CompleteAddress = user.CompleteAddress,
-                        BirthDate = user.BirthDate,
-                        JobTitle = user.JobTitle,   
-                        JobDescription = user.JobDescription
-                    };
-                    return new ServiceResponse<GetUserDTO?>
-                    {
-                        Data = data,
-                        Success = true,
-                        Message = "USER_FOUND"
-                    };
-                }
-
             }
         }
 
@@ -549,9 +691,22 @@ namespace api.Services.UserService
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResponse<string?>> SignUpClient(SignUpClientDTO request)
+        public async Task<ServiceResponse<string?>> SignUpClient(SignUpClientDTO request)
         {
-            throw new NotImplementedException();
+            var response = await CreateClient(request);
+            if (response.Success)
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = "",
+                    Success = true,
+                    Message = "CLIENT_REGISTERED_SUCCESSFULLY"
+                };
+            }
+            else
+            {
+                return response;
+            }
         }
 
         public async Task<ServiceResponse<string?>> UpdateUser(UpdateUserDTO request)

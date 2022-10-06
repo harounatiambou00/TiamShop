@@ -28,8 +28,6 @@ namespace api.DTOs.UserDTOs.Admins
         public string JobDescription { get; set; } = String.Empty;
 
         [Required]
-        public int UserTypeId { get; set; }
-        [Required]
         public int NeighborhoodId { get; set; }
     }
 }

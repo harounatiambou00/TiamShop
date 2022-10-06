@@ -13,10 +13,13 @@ namespace api.DTOs.UserDTOs.Clients
         public string? PhoneNumber { get; set; }
         public string CompleteAddress { get; set; } = string.Empty;
 
-        public DateTime? BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; } = null;
 
         [Required]
         [MinLength(8)]
-        public string Password;
+        public string Password { get; set; }
+
+        [Required]
+        public int? NeighborhoodId { get; set; } = null;
     }
 }

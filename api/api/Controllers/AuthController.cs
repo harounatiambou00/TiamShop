@@ -17,9 +17,9 @@ namespace api.Controllers
         }
         //Clients
         [HttpPost("sign-up")]
-        public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> SignUpClient(SignUpClientDTO request)
+        public async Task<ActionResult<ServiceResponse<string?>>> SignUpClient(SignUpClientDTO request)
         {
-            return Ok(new ServiceResponse<GetUserDTO>());
+            return await _userService.SignUpClient(request);
         }
 
         [HttpPost("sign-in")]
