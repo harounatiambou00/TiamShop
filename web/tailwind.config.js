@@ -18,6 +18,7 @@ module.exports = {
         mono: ["ui-monospace", "SFMono-Regular"],
         kanit: ["Kanit", "sans-serif"],
         raleway: ["Raleway", "sans-serif"],
+        amita: ["Amita", "cursive"],
       },
       fontSize: {
         xs: ".75rem",
