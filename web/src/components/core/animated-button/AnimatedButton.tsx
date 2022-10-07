@@ -5,7 +5,7 @@ import "./animated-button.css";
 import { CircularProgress } from "@mui/material";
 
 type Props = {
-  handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   text: ReactNode;
   isLoading: boolean;
 };
@@ -15,7 +15,7 @@ const AnimatedButton = (props: Props) => {
     return (
       <div className="animated-button-wrapper">
         <button
-          onClick={props.handleClick}
+          onClick={props.handleClick && props.handleClick}
           className="border-2 border-primary sm:text-white lg:text-primary after:bg-primary sm:bg-primary lg:bg-inherit hover:text-white sm:h-20 lg:h-12 rounded-md sm:drop-shadow-lg"
         >
           <span className="sm:text-3xl lg:text-base">{props.text}</span>

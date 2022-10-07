@@ -10,14 +10,54 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  FormHelperText,
 } from "@mui/material";
 
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { AnimatedButton } from "../../components/core";
 
-import { State } from "./formGroupState";
+import {
+  EmailErrorMessages,
+  EmailErrorType,
+  Errors,
+  FormGroupInputsTypes,
+  phoneNumberErrorMessages,
+  PhoneNumberErrorType,
+} from "./types";
+import { Neighborhood } from "../../data/models/Neighborhood";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import VerificationEmailSentSuccessfullyDialog from "./VerificationEmailSentSuccessfullyDialog";
 
 const FormGroup: React.FC = () => {
+  const navigate = useNavigate();
+  const [openEmailSentDialog, setOpenEmailSentDialog] = React.useState(false);
+  const handleCloseEmailSentDialog = () => {
+    setOpenEmailSentDialog(false);
+    navigate("/");
+  };
+  const [neighborhoods, setNeighborhoods] = React.useState<Neighborhood[]>([]);
+  React.useEffect(() => {
+    const getNeighborhoods = async () => {
+      let url = "https://localhost:7254/api/Neighborhood";
+      let response = await fetch(url);
+      let content = await response.json();
+      let data = content.data;
+      let neighborhoods = [];
+      if (data != null) {
+        for (var neighborhood of data) {
+          neighborhoods.push({
+            neighborhoodId: neighborhood.neighborhoodId,
+            neighborhoodName: neighborhood.neighborhoodName,
+          } as Neighborhood);
+        }
+      }
+
+      setNeighborhoods(neighborhoods as Neighborhood[]);
+    };
+    getNeighborhoods();
+  }, []);
+
   const [values, setValues] = React.useState({
     firstName: "",
     lastName: "",
@@ -25,17 +65,64 @@ const FormGroup: React.FC = () => {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
-    birthDate: "",
     neighborhood: "",
     completeAddress: "",
     showPassword: false,
     showConfirmPassword: false,
   });
 
+  const [birthDate, setBirthDate] = React.useState(
+    moment().format("YYYY-MM-DD")
+  );
+  const [errors, setErrors] = React.useState({
+    emailError: false,
+    phoneNumberError: false,
+    passwordError: false,
+    neighborhoodError: false,
+  });
+
+  const [phoneNumberErrorType, setPhoneNumberErrorType] =
+    React.useState<PhoneNumberErrorType>("none");
+
+  const [emailErrorType, setEmailErrorType] =
+    React.useState<EmailErrorType>("none");
+
   const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (prop: keyof FormGroupInputsTypes) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
+
+  const handleChangeBirthDate = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setBirthDate(moment(new Date(event.target.value)).format("YYYY-MM-DD"));
+  };
+
+  const handleChangePhoneNumber = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!isNaN(Number(event.target.value))) {
+      if (event.target.value.length !== 8) {
+        setErrors({ ...errors, phoneNumberError: true });
+        setPhoneNumberErrorType("isInvalid");
+        setValues({ ...values, phoneNumber: event.target.value });
+      } else {
+        setErrors({ ...errors, phoneNumberError: false });
+        setPhoneNumberErrorType("none");
+        setValues({ ...values, phoneNumber: event.target.value });
+      }
+    }
+  };
+
+  const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues({ ...values, password: event.target.value });
+    if (event.target.value.length < 8) {
+      setErrors({ ...errors, passwordError: true });
+    } else {
+      setErrors({ ...errors, passwordError: false });
+    }
+  };
 
   const handleClickShowPassword = () => {
     setValues({
@@ -57,8 +144,114 @@ const FormGroup: React.FC = () => {
     });
   };
 
+  const signUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    //Checking the required fields
+    if (values.email === "") {
+      setErrors((currentState) => ({ ...currentState, emailError: true }));
+      setEmailErrorType("isRequired");
+      return;
+    } else {
+      setErrors((currentState) => ({ ...currentState, emailError: false }));
+    }
+    if (values.phoneNumber === "") {
+      setErrors((currentState) => ({
+        ...currentState,
+        phoneNumberError: true,
+      }));
+      setPhoneNumberErrorType("isRequired");
+      return;
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        phoneNumberError: false,
+      }));
+    }
+    if (values.password === "") {
+      setErrors((currentState) => ({ ...currentState, passwordError: true }));
+      return;
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        passwordError: false,
+      }));
+    }
+    if (values.neighborhood === "") {
+      setErrors((currentState) => ({
+        ...currentState,
+        neighborhoodError: true,
+      }));
+      return;
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        neighborhoodError: false,
+      }));
+    }
+
+    setIsLoading(true);
+
+    let url = "https://localhost:7254/auth/sign-up";
+    let request = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      completeAddress: values.completeAddress,
+      birthDate: birthDate,
+      password: values.password,
+      neighborhoodId: Number(values.neighborhood),
+    };
+
+    let response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(request),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    let content = await response.json();
+    if (content != null) {
+      if (content.success) {
+        //The client has been registered and the verification email is sent successfully
+        if (content.message === "EMAIL_SENT_SUCCESSFULLY") {
+          setOpenEmailSentDialog(true);
+        }
+        //The client has been registered but the verification email failed
+        else {
+        }
+      } else {
+        if (content.message === "") {
+        } else if (
+          content.message === "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
+        ) {
+        } else if (content.message === "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN") {
+          setErrors((currentState) => ({
+            ...currentState,
+            phoneNumberError: true,
+          }));
+          setPhoneNumberErrorType("isAlreadyTaken");
+        } else if (content.message === "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN") {
+          setErrors((currentState) => ({ ...currentState, emailError: true }));
+          setEmailErrorType("isAlreadyTaken");
+        } else if (
+          content.message === "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
+        ) {
+        } else if (content.message === "CLIENT_CREATION_FAILED") {
+        }
+      }
+    }
+
+    setIsLoading(false);
+  };
+
   const handleChangeNeighborhood = (event: SelectChangeEvent) => {
     setValues({ ...values, neighborhood: event.target.value });
+    setErrors((currentState) => ({
+      ...currentState,
+      neighborhoodError: false,
+    }));
   };
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -71,6 +264,8 @@ const FormGroup: React.FC = () => {
           autoComplete="off"
           variant="outlined"
           type="text"
+          value={values.firstName}
+          onChange={handleChange("firstName")}
           label="Prénom"
           sx={{
             "& .MuiInputBase-root": {
@@ -97,6 +292,8 @@ const FormGroup: React.FC = () => {
           variant="outlined"
           type="text"
           label="Nom"
+          value={values.lastName}
+          onChange={handleChange("lastName")}
           sx={{
             "& .MuiInputBase-root": {
               height: { md: 100, lg: 55 },
@@ -120,8 +317,16 @@ const FormGroup: React.FC = () => {
         <TextField
           required
           autoComplete="off"
+          error={errors.emailError}
+          helperText={
+            errors.emailError && emailErrorType !== "none"
+              ? EmailErrorMessages[emailErrorType]
+              : ""
+          }
           variant="outlined"
-          type="text"
+          type="email"
+          value={values.email}
+          onChange={handleChange("email")}
           label="Email"
           sx={{
             "& .MuiInputBase-root": {
@@ -145,6 +350,14 @@ const FormGroup: React.FC = () => {
         />
         <TextField
           required
+          error={errors.phoneNumberError}
+          helperText={
+            errors.phoneNumberError && phoneNumberErrorType !== "none"
+              ? phoneNumberErrorMessages[phoneNumberErrorType]
+              : ""
+          }
+          value={values.phoneNumber}
+          onChange={handleChangePhoneNumber}
           autoComplete="off"
           variant="outlined"
           type="text"
@@ -173,6 +386,7 @@ const FormGroup: React.FC = () => {
           className="w-full"
           variant="outlined"
           required
+          error={errors.passwordError}
           sx={{
             "& .MuiInputBase-root": {
               height: { md: 100, lg: 55 },
@@ -195,10 +409,10 @@ const FormGroup: React.FC = () => {
           <OutlinedInput
             autoComplete="off"
             id="app-client-sign-up-password-input"
-            type={values.showPassword ? "text" : "password"}
             value={values.password}
-            onChange={handleChange("password")}
+            onChange={handleChangePassword}
             className="font-kanit sm:font-normal lg:font-light"
+            type={values.showPassword ? "text" : "password"}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -218,9 +432,15 @@ const FormGroup: React.FC = () => {
             }
             label="Mot de passe"
           />
+          {errors.passwordError && (
+            <FormHelperText className="text-red-500">
+              Un mot de passe doit contenir au moins 8 caractères
+            </FormHelperText>
+          )}
         </FormControl>
         <FormControl
           required
+          error={values.confirmPassword !== values.password}
           className="w-full"
           variant="outlined"
           sx={{
@@ -268,12 +488,18 @@ const FormGroup: React.FC = () => {
             }
             label="Confirmer votre mot de passe"
           />
+          {values.confirmPassword !== values.password && (
+            <FormHelperText className="text-red-500">
+              Les deux mots de passe sont différents
+            </FormHelperText>
+          )}
         </FormControl>
         <TextField
-          autoComplete="off"
           type="date"
           placeholder="Date de naissance"
           label="Date de naissance"
+          value={birthDate}
+          onChange={handleChangeBirthDate}
           sx={{
             "& .MuiInputBase-root": {
               height: { md: 100, lg: 55 },
@@ -297,6 +523,7 @@ const FormGroup: React.FC = () => {
         />
         <FormControl
           fullWidth
+          error={errors.neighborhoodError}
           sx={{
             "& .MuiInputBase-root": {
               height: { md: 100, lg: 55 },
@@ -330,10 +557,23 @@ const FormGroup: React.FC = () => {
               },
             }}
           >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {neighborhoods.map((neighborhood) => {
+              return (
+                <MenuItem
+                  key={neighborhood.neighborhoodId}
+                  value={neighborhood.neighborhoodId}
+                  className="font-kanit"
+                >
+                  {neighborhood.neighborhoodName}
+                </MenuItem>
+              );
+            })}
           </Select>
+          {errors.neighborhoodError && (
+            <FormHelperText className="text-red-500">
+              Vous devez renseigner votre quartier.
+            </FormHelperText>
+          )}
         </FormControl>
       </div>
       <TextField
@@ -342,6 +582,8 @@ const FormGroup: React.FC = () => {
         variant="outlined"
         type="text"
         label="Votre adresse complète"
+        value={values.completeAddress}
+        onChange={handleChange("completeAddress")}
         sx={{
           "& .MuiInputBase-root": {
             height: { md: 100, lg: 55 },
@@ -376,11 +618,15 @@ const FormGroup: React.FC = () => {
       </div>
       <div className="sm:mt-10 lg:mt-3 sm:w-2/6 lg:w-1/6">
         <AnimatedButton
-          handleClick={() => {}}
+          handleClick={signUp}
           text="S'inscricre"
           isLoading={isLoading}
         />
       </div>
+      <VerificationEmailSentSuccessfullyDialog
+        open={openEmailSentDialog}
+        handleClose={handleCloseEmailSentDialog}
+      />
     </form>
   );
 };

@@ -8,6 +8,6 @@
         public ICollection<User> Users { get; set; } = new List<User>();
 
         //City
-        public City City { get; set; }
+        public City? City { get; set; }
     }
 }
