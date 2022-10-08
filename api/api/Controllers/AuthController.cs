@@ -24,8 +24,7 @@ namespace api.Controllers
             var registrationResponse = await _userService.SignUpClient(request);
             if (registrationResponse.Success)
             {
-                //                         http or https            localhost or tiamsho.com
-                var emailVerificationUrl = Request.Scheme + "://" + Request.Host +            Url.Action("VerifyEmail", "Auth", new {token = registrationResponse.Data}) ;
+                var emailVerificationUrl = "http://localhost:3000/verify-email/" + registrationResponse.Data;
                 var emailBody = "Votre compte a été crée avec succès, vous devez maintenant confirmé votre email pour pouvoir y accéder.<br /> Pour ce faire <br /><br /> <a href=\"#URL#\"> Cliquer ici</a>";
                 emailBody = emailBody.Replace("#URL#", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(emailVerificationUrl));
                 var emailResponse = await _emailService.SendEmail(request.Email,  "Tiamshop, confirmation de la création de compte", emailBody);

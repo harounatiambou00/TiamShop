@@ -24,6 +24,7 @@ import {
   UserFavoriteProductsPage,
   UserOrdersPage,
   UserPaymentReceipts,
+  VerifyEmail,
 } from "./pages";
 
 //layouts
@@ -90,6 +91,7 @@ function App() {
         <Route path="sign-in" element={<SignInPage />} />
         {/*On this page a visitor can create an account */}
         <Route path="sign-up" element={<SignUpPage />} />
+        <Route path="verify-email/:token" element={<VerifyEmail />} />
 
         {/**
          * admin user part of the platform

@@ -19,3 +19,4 @@ export { default as SignInPage } from "./sign-in/SignInPage";
 export { default as UserFavoriteProductsPage } from "./user-favorite-products/UserFavoriteProductsPage";
 export { default as UserOrdersPage } from "./user-orders/UserOrders";
 export { default as UserPaymentReceipts } from "./user-payment-receipts/UserPaymentReceipts";
+export { default as VerifyEmail } from "./verify-email/VerifyEmail";

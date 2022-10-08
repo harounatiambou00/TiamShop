@@ -173,121 +173,111 @@ const FormGroup: React.FC = () => {
 
   const signUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (
-      !errors.emailError &&
-      !errors.passwordError &&
-      !errors.phoneNumberError &&
-      !errors.neighborhoodError &&
-      values.password === values.confirmPassword
-    ) {
-      //Checking the required fields
-      if (values.email === "") {
-        setErrors((currentState) => ({ ...currentState, emailError: true }));
-        setEmailErrorType("isRequired");
-        //If the email field is not filled, we want to stop the function
-        return;
-      } else {
-        setErrors((currentState) => ({ ...currentState, emailError: false }));
-      }
-      if (values.phoneNumber === "") {
-        setErrors((currentState) => ({
-          ...currentState,
-          phoneNumberError: true,
-        }));
-        setPhoneNumberErrorType("isRequired");
-        //If the phoneNumber field is not filled, we want to stop the function
-        return;
-      } else {
-        setErrors((currentState) => ({
-          ...currentState,
-          phoneNumberError: false,
-        }));
-      }
-      if (values.password === "") {
-        setErrors((currentState) => ({ ...currentState, passwordError: true }));
-        //If the password field is not filled, we want to stop the function
-        return;
-      } else {
-        setErrors((currentState) => ({
-          ...currentState,
-          passwordError: false,
-        }));
-      }
-      if (values.neighborhood === "") {
-        setErrors((currentState) => ({
-          ...currentState,
-          neighborhoodError: true,
-        }));
-        //If the password field is not filled, we want to stop the function
-        return;
-      } else {
-        setErrors((currentState) => ({
-          ...currentState,
-          neighborhoodError: false,
-        }));
-      }
+    //Checking the required fields
+    if (values.email === "") {
+      setErrors((currentState) => ({ ...currentState, emailError: true }));
+      setEmailErrorType("isRequired");
+      //If the email field is not filled, we want to stop the function
+      return;
+    } else {
+      setErrors((currentState) => ({ ...currentState, emailError: false }));
+    }
+    if (values.phoneNumber === "") {
+      setErrors((currentState) => ({
+        ...currentState,
+        phoneNumberError: true,
+      }));
+      setPhoneNumberErrorType("isRequired");
+      //If the phoneNumber field is not filled, we want to stop the function
+      return;
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        phoneNumberError: false,
+      }));
+    }
+    if (values.password === "") {
+      setErrors((currentState) => ({ ...currentState, passwordError: true }));
+      //If the password field is not filled, we want to stop the function
+      return;
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        passwordError: false,
+      }));
+    }
+    if (values.neighborhood === "") {
+      setErrors((currentState) => ({
+        ...currentState,
+        neighborhoodError: true,
+      }));
+      //If the password field is not filled, we want to stop the function
+      return;
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        neighborhoodError: false,
+      }));
+    }
 
-      setIsLoading(true);
+    setIsLoading(true);
 
-      let url = "https://localhost:7254/auth/sign-up";
-      let request = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        phoneNumber: values.phoneNumber,
-        completeAddress: values.completeAddress,
-        birthDate: birthDate,
-        password: values.password,
-        neighborhoodId: Number(values.neighborhood),
-      };
+    let url = "https://localhost:7254/auth/sign-up";
+    let request = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      completeAddress: values.completeAddress,
+      birthDate: birthDate,
+      password: values.password,
+      neighborhoodId: Number(values.neighborhood),
+    };
 
-      let response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(request),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    let response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(request),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      let content = await response.json();
-      if (content != null) {
-        if (content.success) {
-          //The client has been registered and the verification email is sent successfully
-          if (content.message === "EMAIL_SENT_SUCCESSFULLY") {
-            setOpenEmailSentDialog(true);
-          }
-          //The client has been registered but the verification email failed
-          else {
-          }
-        } else {
-          if (content.message === "") {
-          } else if (
-            content.message === "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
-          ) {
-          } else if (content.message === "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN") {
-            setErrors((currentState) => ({
-              ...currentState,
-              phoneNumberError: true,
-            }));
-            setPhoneNumberErrorType("isAlreadyTaken");
-          } else if (
-            content.message === "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN"
-          ) {
-            setErrors((currentState) => ({
-              ...currentState,
-              emailError: true,
-            }));
-            setEmailErrorType("isAlreadyTaken");
-          } else if (
-            content.message === "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
-          ) {
-          } else if (content.message === "CLIENT_CREATION_FAILED") {
-          }
+    let content = await response.json();
+    if (content != null) {
+      if (content.success) {
+        //The client has been registered and the verification email is sent successfully
+        if (content.message === "EMAIL_SENT_SUCCESSFULLY") {
+          setOpenEmailSentDialog(true);
+        }
+        //The client has been registered but the verification email failed
+        else {
+        }
+      } else {
+        if (content.message === "") {
+        } else if (
+          content.message === "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
+        ) {
+        } else if (content.message === "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN") {
+          setErrors((currentState) => ({
+            ...currentState,
+            phoneNumberError: true,
+          }));
+          setPhoneNumberErrorType("isAlreadyTaken");
+        } else if (content.message === "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN") {
+          setErrors((currentState) => ({
+            ...currentState,
+            emailError: true,
+          }));
+          setEmailErrorType("isAlreadyTaken");
+        } else if (
+          content.message === "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
+        ) {
+        } else if (content.message === "CLIENT_CREATION_FAILED") {
         }
       }
-
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   const [isLoading, setIsLoading] = React.useState(false);
