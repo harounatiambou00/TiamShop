@@ -42,7 +42,7 @@ const FormGroup: React.FC = () => {
      * @returns Anytime the component in rendered we want to fetch the neighborhoos from the database so that the user can choose his neighborhood
      */
     const getNeighborhoods = async () => {
-      let url = "https://localhost:7254/api/Neighborhood";
+      let url = process.env.REACT_APP_API_URL + "neighborhoods";
       let response = await fetch(url);
       let content = await response.json();
       let data = content.data;
@@ -222,7 +222,7 @@ const FormGroup: React.FC = () => {
 
     setIsLoading(true);
 
-    let url = "https://localhost:7254/auth/sign-up";
+    let url = process.env.REACT_APP_API_URL + "auth/sign-up";
     let request = {
       firstName: values.firstName,
       lastName: values.lastName,

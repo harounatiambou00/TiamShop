@@ -9,7 +9,7 @@ const Clients = () => {
   const [clients, setClients] = React.useState<Client[]>([]);
 
   const getCients = async () => {
-    let url = "https://localhost:7254/user/get-all-clients";
+    let url = process.env.REACT_APP_API_URL + "users/get-all-clients";
     let response = await fetch(url);
     let content = await response.json();
     let data = content.data;

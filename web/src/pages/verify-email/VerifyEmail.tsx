@@ -28,7 +28,8 @@ const VerifyEmail = () => {
   React.useEffect(() => {
     const verifyEmail = async () => {
       setIsLoading(true);
-      let url = "https://localhost:7254/auth/verify-email?token=" + token;
+      let url =
+        process.env.REACT_APP_API_URL + "auth/verify-email?token=" + token;
       let response = await fetch(url, {
         method: "POST",
         headers: {

@@ -68,7 +68,7 @@ const AdminSignInPage = () => {
       password: values.password,
     };
 
-    let url = "https://localhost:7254/auth/admins/sign-in";
+    let url = process.env.REACT_APP_API_URL + "auth/admins/sign-in";
     let response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(user),
