@@ -678,9 +678,147 @@ namespace api.Services.UserService
 
         }
 
-        public Task<ServiceResponse<string?>> LoginClient(LoginClientDTO request)
+        public async Task<ServiceResponse<string?>> LoginClientWithEmail(LoginClientWithEmailDTO request)
         {
-            throw new NotImplementedException();
+            var response = await GetUserByEmail(request.Email);
+            if (response != null)
+            {
+                if (response.Success)
+                {
+                    var user = response.Data;
+                    if (user.Email == request.Email)
+                    {
+                        using (var connection = new SqlConnection(_connectionString))
+                        {
+                            connection.Open();
+                            string getPasswordSQL = "SELECT HashedPassword FROM dbo.tblUsers WHERE Email = @Email";
+                            var dictionary = new Dictionary<string, object>
+                            {
+                                { "@Email", request.Email }
+                            };
+                            var parameters = new DynamicParameters(dictionary);
+                            var hashedPassword = connection.ExecuteScalar(getPasswordSQL, parameters);
+                            if (BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword.ToString()))
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = _jwtService.GenerateToken(user.UserId, true),
+                                    Success = true,
+                                    Message = "TOKEN_GENERATED_SUCCESSFULLY"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "INCORRECT_PASSWORD"
+                                };
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "INCORRECT_EMAIL"
+                        };
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "CLIENT_NOT_FOUND"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "CLIENT" +
+                    "_NOT_FOUND"
+                };
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> LoginClientWithPhoneNumber(LoginClientWithPhoneNumberDTO request)
+        {
+            var response = await GetUserByPhoneNumber(request.PhoneNumber);
+            if (response != null)
+            {
+                if (response.Success)
+                {
+                    var user = response.Data;
+                    if (user.PhoneNumber == request.PhoneNumber)
+                    {
+                        using (var connection = new SqlConnection(_connectionString))
+                        {
+                            connection.Open();
+                            string getPasswordSQL = "SELECT HashedPassword FROM dbo.tblUsers WHERE PhoneNumber = @PhoneNumber";
+                            var dictionary = new Dictionary<string, object>
+                            {
+                                { "@PhoneNumber", request.PhoneNumber }
+                            };
+                            var parameters = new DynamicParameters(dictionary);
+                            var hashedPassword = connection.ExecuteScalar(getPasswordSQL, parameters);
+                            if (BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword.ToString()))
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = _jwtService.GenerateToken(user.UserId, true),
+                                    Success = true,
+                                    Message = "TOKEN_GENERATED_SUCCESSFULLY"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "INCORRECT_PASSWORD"
+                                };
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "INCORRECT_PHONE_NUMBER"
+                        };
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "CLIENT_NOT_FOUND"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "CLIENT_NOT_FOUND"
+                };
+            }
         }
 
         public Task<ServiceResponse<string?>> ResetPassword(ResetPasswordDTO request)

@@ -36,16 +36,92 @@ namespace api.Controllers
             }
         }
 
-        [HttpPost("sign-in")]
-        public async Task<ActionResult<ServiceResponse<string?>>> LoginClient(LoginClientDTO request)
+        [HttpPost("sign-in-with-email")]
+        public async Task<ActionResult<ServiceResponse<string?>>> LoginClientWithEmail(LoginClientWithEmailDTO request)
         {
-            return Ok(new ServiceResponse<string>());
+            //We will try to log the user
+            var login = await _userService.LoginClientWithEmail(request);
+
+            //if the user is logged succesfully, we create a cookie that contains the token of the login
+            if (login.Success && login.Data != null)
+            {
+                Response.Cookies.Append("clientLoginJwt", login.Data, new CookieOptions
+                {
+                    HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
+                    Expires = DateTimeOffset.Now.AddYears(1)
+                });
+            }
+
+            /*
+             * Finally we will return a service response to inform if the login was successful or not(if not why)
+             * We return a Service Response with a null data because we don't want the frontend to access the token.
+            */
+            return new ServiceResponse<string?>
+            {
+                Data = null,
+                Success = login.Success,
+                Message = login.Message,
+            };
+        }
+
+        [HttpPost("sign-in-with-phone-number")]
+        public async Task<ActionResult<ServiceResponse<string?>>> LoginClientWithPhoneNumber(LoginClientWithPhoneNumberDTO request)
+        {
+            // We will try to log the user
+            var login = await _userService.LoginClientWithPhoneNumber(request);
+
+            //if the user is logged succesfully, we create a cookie that contains the token of the login
+            if (login.Success && login.Data != null)
+            {
+                Response.Cookies.Append("clientLoginJwt", login.Data, new CookieOptions
+                {
+                    HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
+                    Expires = DateTimeOffset.Now.AddYears(1)
+                });
+            }
+
+            /*
+             * Finally we will return a service response to inform if the login was successful or not(if not why)
+             * We return a Service Response with a null data because we don't want the frontend to access the token.
+            */
+            return new ServiceResponse<string?>
+            {
+                Data = null,
+                Success = login.Success,
+                Message = login.Message,
+            };
         }
 
         [HttpGet("get-logged-client")]
         public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> GetLoggedClient()
         {
-            return Ok(new ServiceResponse<GetUserDTO>());
+            try
+            {
+                var clientLoginJwtFromCookies = Request.Cookies["clientLoginJwt"];
+
+                var validatedClientLoginJwt = _jwtService.Verify(clientLoginJwtFromCookies);
+
+                int userId = int.Parse(validatedClientLoginJwt.Issuer);
+
+                var serviceResponse = await _userService.GetUserById(userId);
+
+                if (serviceResponse.Data == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "INVALID_TOKEN";
+                }
+
+                return serviceResponse;
+            }
+            catch (Exception _)
+            {
+                return new ServiceResponse<GetUserDTO?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "INVALID_TOKEN"
+                };
+            }
 
         }
 

@@ -16,7 +16,8 @@
         Task<ServiceResponse<string?>> CreateClient(SignUpClientDTO request);
         Task<ServiceResponse<string?>> UpdateUser(UpdateUserDTO request);
         Task<ServiceResponse<string?>> DeleteUser(int id);  
-        Task<ServiceResponse<string?>> LoginClient(LoginClientDTO request);
+        Task<ServiceResponse<string?>> LoginClientWithEmail(LoginClientWithEmailDTO request);
+        Task<ServiceResponse<string?>> LoginClientWithPhoneNumber(LoginClientWithPhoneNumberDTO request);
         Task<ServiceResponse<string?>> LoginAdmin(LoginAdminDTO request);
         Task<ServiceResponse<string?>> VerifyEmail(string token);
         Task<ServiceResponse<string?>> ForgotPassword(string email);
