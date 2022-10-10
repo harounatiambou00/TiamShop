@@ -24,7 +24,7 @@ const AnimatedButton = (props: Props) => {
     );
   } else {
     return (
-      <div className="flex items-center justify-center h-10 w-28 bg-gray-100 border-2 border-primary rounded-md">
+      <div className="flex items-center justify-center h-14 bg-gray-100 border-2 border-primary rounded-md">
         <CircularProgress size={30} />
       </div>
     );

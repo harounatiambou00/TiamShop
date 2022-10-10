@@ -1,14 +1,17 @@
 import React from "react";
 import FormGroup from "./FormGroup";
-import Panel from "./Panel";
+import SignUpPagePanel from "./SignUpPagePanel";
 
 import { BsEmojiSmileFill } from "react-icons/bs";
 
+import { useNavigate } from "react-router-dom";
+
 const SignUpPage: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="h-screen w-full flex items-center justify-center">
       <div className="bg-white h-full w-full flex">
-        <Panel />
+        <SignUpPagePanel />
         <div className="h-full sm:w-full lg:w-7/12 py-5 px-10 overflow-y-scroll">
           <img
             src={process.env.PUBLIC_URL + "assets/images/logo.png"}
@@ -20,25 +23,16 @@ const SignUpPage: React.FC = () => {
           </h1>
           <h1 className="sm:text-3xl lg:text-lg font-light opacity-70">
             Créer votre compte ou &nbsp;
-            <span className="text-blue-500 underline cursor-pointer">
+            <span
+              className="text-blue-500 underline cursor-pointer"
+              onClick={() => navigate("/sign-in")}
+            >
               connectez-vous
             </span>
             &nbsp; si vous en avez déja un. &nbsp;
             <BsEmojiSmileFill className="inline text-amber-500" />
           </h1>
           <FormGroup />
-          <small className="sm:mt-16 lg:mt-0 sm:text-xl lg:text-sm font-light flex justify-end">
-            ©2021–2022&nbsp; &nbsp;
-            <a
-              href="https://radiant-bunny-7569fa.netlify.app/"
-              className="underline text-blue-500"
-              target="_blank"
-              rel="noreferrer"
-            >
-              TIAMTECH CO
-            </a>{" "}
-            &nbsp; &nbsp;All Rights Reserved.
-          </small>
         </div>
       </div>
     </div>

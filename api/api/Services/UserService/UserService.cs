@@ -702,7 +702,7 @@ namespace api.Services.UserService
                             {
                                 return new ServiceResponse<string?>
                                 {
-                                    Data = _jwtService.GenerateToken(user.UserId, true),
+                                    Data = _jwtService.GenerateToken(user.UserId, request.RemenberMe),
                                     Success = true,
                                     Message = "TOKEN_GENERATED_SUCCESSFULLY"
                                 };

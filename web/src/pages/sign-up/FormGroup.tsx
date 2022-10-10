@@ -19,7 +19,6 @@ import { AnimatedButton } from "../../components/core";
 import {
   EmailErrorMessages,
   EmailErrorType,
-  Errors,
   FormGroupInputsTypes,
   phoneNumberErrorMessages,
   PhoneNumberErrorType,
@@ -80,6 +79,39 @@ const FormGroup: React.FC = () => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
+
+  /**
+   * handle the onChange event of our email input and
+   * check the validity of the current email
+   */
+  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues({ ...values, email: event.target.value });
+    if (event.target.value === "") {
+      setErrors((currentState) => ({
+        ...currentState,
+        emailError: true,
+      }));
+      setEmailErrorType("isRequired");
+    } else if (
+      !event.target.value
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    ) {
+      setErrors((currentState) => ({
+        ...currentState,
+        emailError: true,
+      }));
+      setEmailErrorType("isInvalid");
+    } else {
+      setErrors((currentState) => ({
+        ...currentState,
+        emailError: false,
+      }));
+      setEmailErrorType("none");
+    }
+  };
 
   /**
    * handle the onChange event of our phone number input and
@@ -173,106 +205,115 @@ const FormGroup: React.FC = () => {
 
   const signUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    //Checking the required fields
-    if (values.email === "") {
-      setErrors((currentState) => ({ ...currentState, emailError: true }));
-      setEmailErrorType("isRequired");
-      //If the email field is not filled, we want to stop the function
-      return;
-    } else {
-      setErrors((currentState) => ({ ...currentState, emailError: false }));
-    }
-    if (values.phoneNumber === "") {
-      setErrors((currentState) => ({
-        ...currentState,
-        phoneNumberError: true,
-      }));
-      setPhoneNumberErrorType("isRequired");
-      //If the phoneNumber field is not filled, we want to stop the function
-      return;
-    } else {
-      setErrors((currentState) => ({
-        ...currentState,
-        phoneNumberError: false,
-      }));
-    }
-    if (values.password === "") {
-      setErrors((currentState) => ({ ...currentState, passwordError: true }));
-      //If the password field is not filled, we want to stop the function
-      return;
-    } else {
-      setErrors((currentState) => ({
-        ...currentState,
-        passwordError: false,
-      }));
-    }
-    if (values.neighborhood === "") {
-      setErrors((currentState) => ({
-        ...currentState,
-        neighborhoodError: true,
-      }));
-      //If the password field is not filled, we want to stop the function
-      return;
-    } else {
-      setErrors((currentState) => ({
-        ...currentState,
-        neighborhoodError: false,
-      }));
-    }
-
-    setIsLoading(true);
-
-    let url = process.env.REACT_APP_API_URL + "auth/sign-up";
-    let request = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      phoneNumber: values.phoneNumber,
-      completeAddress: values.completeAddress,
-      birthDate: birthDate,
-      password: values.password,
-      neighborhoodId: Number(values.neighborhood),
-    };
-
-    let response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(request),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    let content = await response.json();
-    if (content != null) {
-      if (content.success) {
-        //The client has been registered and the verification email is sent successfully
-        if (content.message === "EMAIL_SENT_SUCCESSFULLY") {
-          setOpenEmailSentDialog(true);
-        }
-        //The client has been registered but the verification email failed
-        else {
-        }
+    if (
+      !errors.emailError &&
+      !errors.passwordError &&
+      !errors.phoneNumberError &&
+      !errors.neighborhoodError
+    ) {
+      //Checking the required fields
+      if (values.email === "") {
+        setErrors((currentState) => ({ ...currentState, emailError: true }));
+        setEmailErrorType("isRequired");
+        //If the email field is not filled, we want to stop the function
+        return;
       } else {
-        if (content.message === "") {
-        } else if (
-          content.message === "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
-        ) {
-        } else if (content.message === "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN") {
-          setErrors((currentState) => ({
-            ...currentState,
-            phoneNumberError: true,
-          }));
-          setPhoneNumberErrorType("isAlreadyTaken");
-        } else if (content.message === "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN") {
-          setErrors((currentState) => ({
-            ...currentState,
-            emailError: true,
-          }));
-          setEmailErrorType("isAlreadyTaken");
-        } else if (
-          content.message === "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
-        ) {
-        } else if (content.message === "CLIENT_CREATION_FAILED") {
+        setErrors((currentState) => ({ ...currentState, emailError: false }));
+      }
+      if (values.phoneNumber === "") {
+        setErrors((currentState) => ({
+          ...currentState,
+          phoneNumberError: true,
+        }));
+        setPhoneNumberErrorType("isRequired");
+        //If the phoneNumber field is not filled, we want to stop the function
+        return;
+      } else {
+        setErrors((currentState) => ({
+          ...currentState,
+          phoneNumberError: false,
+        }));
+      }
+      if (values.password === "") {
+        setErrors((currentState) => ({ ...currentState, passwordError: true }));
+        //If the password field is not filled, we want to stop the function
+        return;
+      } else {
+        setErrors((currentState) => ({
+          ...currentState,
+          passwordError: false,
+        }));
+      }
+      if (values.neighborhood === "") {
+        setErrors((currentState) => ({
+          ...currentState,
+          neighborhoodError: true,
+        }));
+        //If the password field is not filled, we want to stop the function
+        return;
+      } else {
+        setErrors((currentState) => ({
+          ...currentState,
+          neighborhoodError: false,
+        }));
+      }
+
+      setIsLoading(true);
+
+      let url = process.env.REACT_APP_API_URL + "auth/sign-up";
+      let request = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        completeAddress: values.completeAddress,
+        birthDate: birthDate,
+        password: values.password,
+        neighborhoodId: Number(values.neighborhood),
+      };
+
+      let response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      let content = await response.json();
+      if (content != null) {
+        if (content.success) {
+          //The client has been registered and the verification email is sent successfully
+          if (content.message === "EMAIL_SENT_SUCCESSFULLY") {
+            setOpenEmailSentDialog(true);
+          }
+          //The client has been registered but the verification email failed
+          else {
+          }
+        } else {
+          if (content.message === "") {
+          } else if (
+            content.message === "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
+          ) {
+          } else if (content.message === "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN") {
+            setErrors((currentState) => ({
+              ...currentState,
+              phoneNumberError: true,
+            }));
+            setPhoneNumberErrorType("isAlreadyTaken");
+          } else if (
+            content.message === "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN"
+          ) {
+            setErrors((currentState) => ({
+              ...currentState,
+              emailError: true,
+            }));
+            setEmailErrorType("isAlreadyTaken");
+          } else if (
+            content.message === "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
+          ) {
+          } else if (content.message === "CLIENT_CREATION_FAILED") {
+          }
         }
       }
     }
@@ -357,10 +398,16 @@ const FormGroup: React.FC = () => {
               ? EmailErrorMessages[emailErrorType]
               : ""
           }
+          FormHelperTextProps={{
+            sx: {
+              fontFamily: "Kanit, 'sans-serif'",
+              fontSize: { xs: 30, lg: 12 },
+            },
+          }}
           variant="outlined"
           type="email"
           value={values.email}
-          onChange={handleChange("email")}
+          onChange={handleChangeEmail}
           label="Email"
           sx={{
             "& .MuiInputBase-root": {
@@ -390,6 +437,12 @@ const FormGroup: React.FC = () => {
               ? phoneNumberErrorMessages[phoneNumberErrorType]
               : ""
           }
+          FormHelperTextProps={{
+            sx: {
+              fontFamily: "Kanit, 'sans-serif'",
+              fontSize: { xs: 30, lg: 12 },
+            },
+          }}
           value={values.phoneNumber}
           onChange={handleChangePhoneNumber}
           autoComplete="off"
@@ -467,7 +520,7 @@ const FormGroup: React.FC = () => {
             label="Mot de passe"
           />
           {errors.passwordError && (
-            <FormHelperText className="text-red-500">
+            <FormHelperText className="text-red-500 font-kanit sm:text-3xl lg:text-xs">
               Un mot de passe doit contenir au moins 8 caractères
             </FormHelperText>
           )}
@@ -523,7 +576,7 @@ const FormGroup: React.FC = () => {
             label="Confirmer votre mot de passe"
           />
           {values.confirmPassword !== values.password && (
-            <FormHelperText className="text-red-500">
+            <FormHelperText className="text-red-500 font-kanit sm:text-3xl lg:text-xs">
               Les deux mots de passe sont différents
             </FormHelperText>
           )}
@@ -604,7 +657,7 @@ const FormGroup: React.FC = () => {
             })}
           </Select>
           {errors.neighborhoodError && (
-            <FormHelperText className="text-red-500">
+            <FormHelperText className="text-red-500 font-kanit sm:text-3xl lg:text-xs">
               Vous devez renseigner votre quartier.
             </FormHelperText>
           )}

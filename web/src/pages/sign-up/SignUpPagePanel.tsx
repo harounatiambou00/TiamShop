@@ -12,7 +12,7 @@ import { Pagination, Autoplay } from "swiper";
 
 import "./panel.css";
 
-const Panel: React.FC = () => {
+const SignUpPagePanel: React.FC = () => {
   return (
     <div className="sm:hidden lg:block lg:h-full lg:w-5/12 bg-gray-50">
       <div className="h-full">
@@ -73,4 +73,4 @@ const Panel: React.FC = () => {
   );
 };
 
-export default Panel;
+export default SignUpPagePanel;

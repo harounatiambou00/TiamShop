@@ -48,7 +48,7 @@ namespace api.Controllers
                 Response.Cookies.Append("clientLoginJwt", login.Data, new CookieOptions
                 {
                     HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
-                    Expires = DateTimeOffset.Now.AddYears(1)
+                    Expires = request.RemenberMe ? DateTimeOffset.Now.AddYears(1) : DateTimeOffset.Now.AddMinutes(30)
                 });
             }
 
@@ -76,7 +76,7 @@ namespace api.Controllers
                 Response.Cookies.Append("clientLoginJwt", login.Data, new CookieOptions
                 {
                     HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
-                    Expires = DateTimeOffset.Now.AddYears(1)
+                    Expires = request.RemenberMe ? DateTimeOffset.Now.AddYears(1) : DateTimeOffset.Now.AddMinutes(30)
                 });
             }
 
@@ -138,7 +138,7 @@ namespace api.Controllers
                 Response.Cookies.Append("adminLoginJWT", login.Data, new CookieOptions
                 {
                     HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
-                    Expires = DateTimeOffset.Now.AddHours(2),
+                    Expires = DateTimeOffset.Now.AddMinutes(30),
                 });
             }
 
