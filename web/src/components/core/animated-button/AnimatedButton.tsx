@@ -18,7 +18,9 @@ const AnimatedButton = (props: Props) => {
           onClick={props.handleClick && props.handleClick}
           className="border-2 border-primary sm:text-white lg:text-primary after:bg-primary sm:bg-primary lg:bg-inherit hover:text-white sm:h-20 lg:h-12 rounded-md sm:drop-shadow-lg"
         >
-          <span className="sm:text-3xl lg:text-base">{props.text}</span>
+          <span className="sm:text-3xl lg:text-base uppercase font-raleway">
+            {props.text}
+          </span>
         </button>
       </div>
     );

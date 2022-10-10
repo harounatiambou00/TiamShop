@@ -13,7 +13,8 @@ const SignInPage: React.FC = () => {
           <img
             src={process.env.PUBLIC_URL + "assets/images/logo.png"}
             alt="delivery"
-            className="sm:h-36 sm:w-36 lg:h-16 lg:w-16"
+            className="sm:h-36 sm:w-36 lg:h-16 lg:w-16 cursor-pointer"
+            onClick={() => navigate("/")}
           />
           <h1 className="sm:text-8xl lg:text-3xl font-medium opacity-70 mt-2">
             Connexion

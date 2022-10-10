@@ -20,3 +20,5 @@ export { default as UserFavoriteProductsPage } from "./user-favorite-products/Us
 export { default as UserOrdersPage } from "./user-orders/UserOrders";
 export { default as UserPaymentReceipts } from "./user-payment-receipts/UserPaymentReceipts";
 export { default as VerifyEmail } from "./verify-email/VerifyEmail";
+export { default as ForgotPassword } from "./forgot-password/ForgotPassword";
+export { default as ResetPassword } from "./reset-password/ResetPassword";

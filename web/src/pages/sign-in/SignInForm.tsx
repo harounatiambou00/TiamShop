@@ -464,7 +464,10 @@ const SignInForm = () => {
         )}
       </FormControl>
       <div className="flex justify-end">
-        <span className="text-blue-500 underline sm:text-4xl lg:text-sm font-light flex justify-end cursor-pointer w-fit">
+        <span
+          className="text-blue-500 underline sm:text-4xl lg:text-sm font-light flex justify-end cursor-pointer w-fit"
+          onClick={() => navigate("/forgot-password")}
+        >
           Mot de passe oublié ?
         </span>
       </div>

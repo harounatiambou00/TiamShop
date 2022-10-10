@@ -25,6 +25,8 @@ import {
   UserOrdersPage,
   UserPaymentReceipts,
   VerifyEmail,
+  ForgotPassword,
+  ResetPassword,
 } from "./pages";
 
 //layouts
@@ -91,7 +93,12 @@ function App() {
         <Route path="sign-in" element={<SignInPage />} />
         {/*On this page a visitor can create an account */}
         <Route path="sign-up" element={<SignUpPage />} />
+        {/* */}
         <Route path="verify-email/:token" element={<VerifyEmail />} />
+        {/* */}
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        {/* */}
+        <Route path="reset-password/:token" element={<ResetPassword />} />
 
         {/**
          * admin user part of the platform
