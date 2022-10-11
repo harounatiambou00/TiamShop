@@ -95,7 +95,96 @@ const ForgotPassword: React.FC = () => {
     }
   };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
+  const recoverPassword = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setIsLoading(true);
+    if (values.recoverWithPhoneNumber) {
+      if (!errors.phoneNumberError) {
+        if (values.phoneNumber === "") {
+          setErrors((currentErrors) => ({
+            ...currentErrors,
+            phoneNumberError: true,
+          }));
+          setPhoneNumberErrorType("isRequired");
+          setIsLoading(false);
+          return;
+        } else {
+          setErrors((currentErrors) => ({
+            ...currentErrors,
+            phoneNumberError: false,
+          }));
+          setPhoneNumberErrorType("none");
+        }
+
+        let url = `${process.env.REACT_APP_API_URL}auth/recover-password-with-phone-number?phoneNumber=${values.phoneNumber}`;
+        let response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        let content = await response.json();
+        if (content.success) {
+          setErrors((currentState) => ({
+            ...currentState,
+            phoneNumberError: false,
+          }));
+          setPhoneNumberErrorType("none");
+          navigate("/");
+        } else {
+          setErrors((currentErrors) => ({
+            ...currentErrors,
+            phoneNumberError: true,
+          }));
+          setPhoneNumberErrorType("isIncorrect");
+        }
+      }
+    } else {
+      if (!errors.emailError) {
+        if (values.email === "") {
+          setErrors((currentErrors) => ({
+            ...currentErrors,
+            emailError: true,
+          }));
+          setEmailErrorType("isRequired");
+          setIsLoading(false);
+          return;
+        } else {
+          setErrors((currentErrors) => ({
+            ...currentErrors,
+            emailError: false,
+          }));
+          setEmailErrorType("none");
+        }
+
+        let url = `${process.env.REACT_APP_API_URL}auth/recover-password-with-email?email=${values.email}`;
+        let response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        let content = await response.json();
+        if (content.success) {
+          setErrors((currentState) => ({
+            ...currentState,
+            emailError: false,
+          }));
+          setEmailErrorType("none");
+          navigate("/");
+        } else {
+          setErrors((currentErrors) => ({
+            ...currentErrors,
+            emailError: true,
+          }));
+          setEmailErrorType("isIncorrect");
+        }
+      }
+    }
+    setIsLoading(false);
+  };
 
   return (
     <div className="h-screen w-full flex items-center justify-center">
@@ -208,7 +297,7 @@ const ForgotPassword: React.FC = () => {
             )}
             <div className="mt-5 sm:w-full lg:w-6/12 uppercase">
               <AnimatedButton
-                handleClick={() => {}}
+                handleClick={recoverPassword}
                 text="Changer mon mot de passe"
                 isLoading={isLoading}
               />

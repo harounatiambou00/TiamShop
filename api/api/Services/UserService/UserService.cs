@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Security.Cryptography;
 
 namespace api.Services.UserService
 {
@@ -202,11 +203,6 @@ namespace api.Services.UserService
                 }
 
             }
-        }
-
-        public Task<ServiceResponse<string?>> ForgotPassword(string email)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<ServiceResponse<GetUserDTO?>> GetAdminByGuid(string guid)
@@ -811,6 +807,152 @@ namespace api.Services.UserService
                 }
             }
             else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "CLIENT_NOT_FOUND"
+                };
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> RecoverPasswordWithEmail(string email)
+        {
+            try
+            {
+                var response = await GetUserByEmail(email);
+                var user = response.Data;
+                if(user != null)
+                {
+                    if (user.UserGuid != null)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "CLIENT_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        using(var connection = new SqlConnection(_connectionString))
+                        {
+                            string sql = "UPDATE dbo.tblUsers SET ResetPasswordToken = @ResetPasswordToken, ResetPasswordTokenExpiresAt = @ResetPasswordTokenExpiresAt WHERE Email = @Email";
+                            string token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+                            var dictionary = new Dictionary<string, object>
+                            {
+                                { "@Email", email },
+                                { "ResetPasswordToken",  token},
+                                { "@ResetPasswordTokenExpiresAT", DateTime.Now.AddDays(1) }
+                            };
+                            var parameters = new DynamicParameters(dictionary);
+                            var affectedRows = connection.Execute(sql, parameters);
+                            if (affectedRows < 1)
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "CLIENT_NOT_FOUND"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = token,
+                                    Success = true,
+                                    Message = "TOKEN_GENERATED_SUCCESFULLY"
+                                };
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "CLIENT_NOT_FOUND"
+                    };
+                }
+            }
+            catch
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "CLIENT_NOT_FOUND"
+                };
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> RecoverPasswordWithPhoneNumber(string phoneNumber)
+        {
+            try
+            {
+                var response = await GetUserByPhoneNumber(phoneNumber);
+                var user = response.Data;
+                if (user != null)
+                {
+                    if (user.UserGuid != null)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "CLIENT_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        using (var connection = new SqlConnection(_connectionString))
+                        {
+                            string sql = "UPDATE dbo.tblUsers SET ResetPasswordToken = @ResetPasswordToken, ResetPasswordTokenExpiresAt = @ResetPasswordTokenExpiresAt WHERE PhoneNumber = @PhoneNumber";
+                            string token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+                            var dictionary = new Dictionary<string, object>
+                            {
+                                { "@PhoneNumber", phoneNumber },
+                                { "ResetPasswordToken",  token},
+                                { "@ResetPasswordTokenExpiresAT", DateTime.Now.AddDays(1) }
+                            };
+                            var parameters = new DynamicParameters(dictionary);
+                            var affectedRows = connection.Execute(sql, parameters);
+                            if (affectedRows < 1)
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "CLIENT_NOT_FOUND"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = token,
+                                    Success = true,
+                                    Message = "TOKEN_GENERATED_SUCCESFULLY"
+                                };
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "CLIENT_NOT_FOUND"
+                    };
+                }
+            }
+            catch
             {
                 return new ServiceResponse<string?>
                 {

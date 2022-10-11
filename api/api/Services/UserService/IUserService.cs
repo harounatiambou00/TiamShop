@@ -20,7 +20,8 @@
         Task<ServiceResponse<string?>> LoginClientWithPhoneNumber(LoginClientWithPhoneNumberDTO request);
         Task<ServiceResponse<string?>> LoginAdmin(LoginAdminDTO request);
         Task<ServiceResponse<string?>> VerifyEmail(string token);
-        Task<ServiceResponse<string?>> ForgotPassword(string email);
+        Task<ServiceResponse<string?>> RecoverPasswordWithEmail(string email);
+        Task<ServiceResponse<string?>> RecoverPasswordWithPhoneNumber(string phoneNumber);
         Task<ServiceResponse<string?>> ResetPassword(ResetPasswordDTO request);
         Task<ServiceResponse<string?>> SendVerificationEmail(SendVerificationEmailDTO request);
     }

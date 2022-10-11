@@ -196,10 +196,43 @@ namespace api.Controllers
             return await _userService.VerifyEmail(token);
         }
 
-        [HttpPost("forgot-password")]
-        public async Task<ActionResult<ServiceResponse<string?>>> ForgotPassword(string email)
+        [HttpPost("recover-password-with-email")]
+        public async Task<ActionResult<ServiceResponse<string?>>> RecoverPasswordWithEmail(string email)
         {
-            return Ok(new ServiceResponse<string>());
+            var response = await _userService.RecoverPasswordWithEmail(email);
+            if (response.Success)
+            {
+                var emailVerificationUrl = "http://localhost:3000/reset-password/" + response.Data;
+                var emailBody = "Pour créer un nouveau mot de passe<br /> <a href=\"#URL#\"> Cliquer ici</a> <br/><br/> ***NOTEZ-BIEN: VOUS N'AVEZ QUE 24 HEURES POUR CREER UN NOUVEAU MOT DE PASSE, SINON VOUS ALLEZ DEVOIR REPRENDRE LE PROCESSUS DE CHANGEMET DE MOT DE PASSE***";
+                emailBody = emailBody.Replace("#URL#", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(emailVerificationUrl));
+                var emailResponse = await _emailService.SendEmail(email, "Tiamshop, création d'un nouveau mot de passe.", emailBody);
+                return emailResponse;
+            }
+            else
+            {
+                return response;
+            }
+        }
+
+        [HttpPost("recover-password-with-phone-number")]
+        public async Task<ActionResult<ServiceResponse<string?>>> RecoverPasswordWithPhoneNumber(string phoneNumber)
+        {
+            var response = await _userService.RecoverPasswordWithPhoneNumber(phoneNumber);
+            if (response.Success)
+            {
+                var getUser = await _userService.GetUserByPhoneNumber(phoneNumber);
+                var user = getUser.Data;
+
+                var emailVerificationUrl = "http://localhost:3000/reset-password/" + response.Data;
+                var emailBody = "Pour créer un nouveau mot de passe<br /> <a href=\"#URL#\"> Cliquer ici</a> <br/><br/> ***NOTEZ-BIEN: VOUS N'AVEZ QUE 24 HEURES POUR CREER UN NOUVEAU MOT DE PASSE, SINON VOUS ALLEZ DEVOIR REPRENDRE LE PROCESSUS DE CHANGEMET DE MOT DE PASSE***";
+                emailBody = emailBody.Replace("#URL#", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(emailVerificationUrl));
+                var emailResponse = await _emailService.SendEmail(user.Email, "Tiamshop, création d'un nouveau mot de passe.", emailBody);
+                return emailResponse;
+            }
+            else
+            {
+                return response;
+            }
         }
 
         [HttpPost("reset-password")]
