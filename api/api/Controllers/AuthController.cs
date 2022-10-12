@@ -238,7 +238,7 @@ namespace api.Controllers
         [HttpPost("reset-password")]
         public async Task<ActionResult<ServiceResponse<string?>>> ResetPassword(ResetPasswordDTO request)
         {
-            return Ok(new ServiceResponse<string>());
+            return await _userService.ResetPassword(request);
         }
 
         [HttpPost("send-verification-email")]

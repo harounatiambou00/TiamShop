@@ -1,4 +1,4 @@
-import { Button, IconButton, TextField } from "@mui/material";
+import { Alert, Button, IconButton, Snackbar, TextField } from "@mui/material";
 import React from "react";
 import {
   EmailErrorMessages,
@@ -9,6 +9,7 @@ import {
   ValuesState,
 } from "./types";
 
+import { RiCloseLine } from "react-icons/ri";
 import { IoIosArrowBack } from "react-icons/io";
 import { AnimatedButton } from "../../components/core";
 import { useNavigate } from "react-router-dom";
@@ -95,6 +96,19 @@ const ForgotPassword: React.FC = () => {
     }
   };
 
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = React.useState(false);
+  const handleCloseSuccessSnackbar = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSuccessSnackbar(false);
+    navigate("/sign-in");
+  };
+
   const recoverPassword = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -173,7 +187,7 @@ const ForgotPassword: React.FC = () => {
             emailError: false,
           }));
           setEmailErrorType("none");
-          navigate("/");
+          setOpenSuccessSnackbar(true);
         } else {
           setErrors((currentErrors) => ({
             ...currentErrors,
@@ -200,7 +214,7 @@ const ForgotPassword: React.FC = () => {
             Ne vous inquietez pas, nous allons y remedier en deux temps trois
             mouvements.
           </h1>
-          <form className="flex flex-col sm:px-2 lg:px-16 lg:py-10">
+          <form className="w-full flex flex-col sm:px-2 lg:px-16 lg:py-10">
             {!values.recoverWithPhoneNumber && (
               <TextField
                 required
@@ -310,13 +324,36 @@ const ForgotPassword: React.FC = () => {
                   onClick={toggleRecoverWithPhoneNumber}
                   className="mt-3 font-raleway font-normal sm:text-3xl lg:text-base"
                 >
-                  Utilisez votre numéro de téléphone
+                  Utilisez votre{" "}
+                  {values.recoverWithPhoneNumber
+                    ? "adresse email"
+                    : "numéro de téléphone"}
                 </Button>
               </div>
             </div>
           </form>
         </div>
       </div>
+      <Snackbar
+        open={openSuccessSnackbar}
+        autoHideDuration={5000}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={handleCloseSuccessSnackbar}
+        message=""
+      >
+        <Alert
+          severity="success"
+          className="font-kanit text-gray-600"
+          action={
+            <IconButton onClick={handleCloseSuccessSnackbar} size="small">
+              <RiCloseLine />
+            </IconButton>
+          }
+        >
+          Un lien vous a été envoyé par mail, utilisez le pour changer de mot de
+          passe.
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

@@ -963,9 +963,82 @@ namespace api.Services.UserService
             }
         }
 
-        public Task<ServiceResponse<string?>> ResetPassword(ResetPasswordDTO request)
+        public async Task<ServiceResponse<string?>> ResetPassword(ResetPasswordDTO request)
         {
-            throw new NotImplementedException();
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    string getUserSql = "SELECT * FROM dbo.tblUsers WHERE ResetPasswordToken = @ResetPasswordToken";
+                    var getUserDictionary = new Dictionary<string, object>
+                            {
+                                { "@ResetPasswordToken", request.Token },
+                            };
+                    var getUserParameters = new DynamicParameters(getUserDictionary);
+                    var user = connection.QueryFirstOrDefault<User>(getUserSql, getUserParameters);
+                    if(user == null)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "USER_NOT_FOUND"
+                        };
+                    }
+                    else
+                    {
+                        if(user.ResetPasswordTokenExpiresAt < DateTime.Now)
+                        {
+                            return new ServiceResponse<string?>
+                            {
+                                Data = null,
+                                Success = false,
+                                Message = "TOKEN_EXPIRED"
+                            };
+                        }
+                        else
+                        {
+                            string updateUserSql = "UPDATE dbo.tblUsers SET HashedPassword = @HashedPassword, PasswordSalt = @PasswordSalt, ResetPasswordToken = NULL, ResetPasswordTokenExpiresAt = NULL WHERE ResetPasswordToken = @ResetPasswordToken";
+                            var passwordSalt = BCrypt.Net.BCrypt.GenerateSalt();
+                            var updatePasswordDictionary = new Dictionary<string, object>
+                            {
+                                { "@PasswordSalt",  passwordSalt },
+                                { "@HashedPassword", BCrypt.Net.BCrypt.HashPassword(request.NewPassword, passwordSalt) },
+                                { "@ResetPasswordToken", request.Token },
+                            };
+                            var updatePasswordParameters = new DynamicParameters(updatePasswordDictionary);
+                            var affectedRows = connection.Execute(updateUserSql, updatePasswordParameters);
+                            if(affectedRows < 1)
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "USER_NOT_FOUND"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = true,
+                                    Message = "PASSWORD_RESET_SUCCESSFULLY",
+                                };
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "USER_NOT_FOUND"
+                    };
+                }
+            }
         }
 
         public Task<ServiceResponse<string?>> SendVerificationEmail(SendVerificationEmailDTO request)
