@@ -10,12 +10,14 @@ namespace api.Services.UserService
         private readonly string _connectionString;
         private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
+        private readonly INeighborhoodService _neighborhoodService;
 
-        public UserService(IConfiguration config, IJwtService jwtService, IEmailService emailService)
+        public UserService(IConfiguration config, IJwtService jwtService, IEmailService emailService, INeighborhoodService neighborhoodService)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
             _jwtService = jwtService;
             _emailService = emailService;
+            _neighborhoodService = neighborhoodService;
         }
 
         public async Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request)
@@ -173,35 +175,48 @@ namespace api.Services.UserService
 
         public async Task<ServiceResponse<string?>> DeleteUser(int id)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            try
             {
-                connection.Open();
-                string query = "DELETE FROM dbo.tblUsers WHERE UserId = @UserId";
-                var dictionary = new Dictionary<string, object>
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string query = "DELETE FROM dbo.tblUsers WHERE UserId = @UserId";
+                    var dictionary = new Dictionary<string, object>
                 {
                     { "@UserId", id }
                 };
-                var parameters = new DynamicParameters(dictionary);
-                var affectedRows = connection.Execute(query, parameters);
-                if (affectedRows == 0)
-                {
-                    return new ServiceResponse<string?>
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = connection.Execute(query, parameters);
+                    if (affectedRows == 0)
                     {
-                        Data = null,
-                        Success = false,
-                        Message = "USER_NOT_FOUND"
-                    };
-                }
-                else { 
-               
-                    return new ServiceResponse<string?>
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "USER_NOT_FOUND"
+                        };
+                    }
+                    else
                     {
-                        Data = null,
-                        Success = true,
-                        Message = "USER_DELETED_SUCCESSFULLY"
-                    };
-                }
 
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "USER_DELETED_SUCCESSFULLY"
+                        };
+                    }
+
+                }
+            }
+            catch
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "USER_NOT_FOUND"
+                };
             }
         }
 
@@ -230,6 +245,13 @@ namespace api.Services.UserService
                     }
                     else
                     {
+                        string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                        var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                        var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                         GetUserDTO data = new GetUserDTO
                         {
                             UserId = user.UserId,
@@ -241,7 +263,8 @@ namespace api.Services.UserService
                             CompleteAddress = user.CompleteAddress,
                             BirthDate = user.BirthDate,
                             JobTitle = user.JobTitle,
-                            JobDescription = user.JobDescription
+                            JobDescription = user.JobDescription,
+                            NeighborhoodId = neighborhoodId
                         };
                         return new ServiceResponse<GetUserDTO?>
                         {
@@ -277,6 +300,13 @@ namespace api.Services.UserService
                 List<GetUserDTO> data = new List<GetUserDTO>();
                 foreach (var user in users)
                 {
+                    string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                    var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                    var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                     data.Add(
                             new GetUserDTO
                             {
@@ -290,6 +320,7 @@ namespace api.Services.UserService
                                 BirthDate = user.BirthDate,
                                 JobTitle = user.JobTitle,
                                 JobDescription = user.JobDescription,
+                                NeighborhoodId = neighborhoodId
                             }
                         );
                 }
@@ -318,6 +349,13 @@ namespace api.Services.UserService
                 List<GetUserDTO> data = new List<GetUserDTO>();
                 foreach (var user in users)
                 {
+                    string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                    var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                    var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                     data.Add(
                             new GetUserDTO
                             {
@@ -331,6 +369,7 @@ namespace api.Services.UserService
                                 BirthDate = user.BirthDate,
                                 JobTitle = user.JobTitle,
                                 JobDescription = user.JobDescription,
+                                NeighborhoodId = neighborhoodId
                             }
                         );
                 }
@@ -359,6 +398,13 @@ namespace api.Services.UserService
                 List<GetUserDTO> data = new List<GetUserDTO>();
                 foreach(var user in users)
                 {
+                    string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                    var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                    var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                     data.Add(
                             new GetUserDTO
                             {
@@ -372,6 +418,7 @@ namespace api.Services.UserService
                                 BirthDate = user.BirthDate,
                                 JobTitle = user.JobTitle,   
                                 JobDescription = user.JobDescription,
+                                NeighborhoodId = neighborhoodId,
                             }
                         );
                 }
@@ -384,49 +431,6 @@ namespace api.Services.UserService
 
                 return response;
             }
-        }
-
-
-        public async Task<ServiceResponse<GetUserDTO?>> GetLoggedAdmin(string token)
-        {
-            var validatedAdminLoginJWT = _jwtService.Verify(token);
-            int userId = int.Parse(validatedAdminLoginJWT.Issuer);
-            if(validatedAdminLoginJWT.ValidTo < DateTime.Now)
-            {
-                return new ServiceResponse<GetUserDTO?>
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "TOKEN_EXPIRED"
-                };
-            }
-            else
-            {
-                var user = GetUserById(userId).Result.Data;
-                if(user == null)
-                {
-                    return new ServiceResponse<GetUserDTO?>
-                    {
-                        Data = null,
-                        Success = false,
-                        Message = "USER_NOT_FOUND"
-                    };
-                }
-                else
-                {
-                    return new ServiceResponse<GetUserDTO?>
-                    {
-                        Data = user,
-                        Success = true,
-                        Message = "USER_FOUND_SUCCESSFULLY"
-                    };
-                }
-            }
-        }
-
-        public Task<ServiceResponse<GetUserDTO?>> GetLoogedClient(string token)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<ServiceResponse<GetUserDTO?>> GetUserByEmail(string email)
@@ -454,6 +458,13 @@ namespace api.Services.UserService
                     }
                     else
                     {
+                        string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                        var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                        var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                         GetUserDTO data = new GetUserDTO
                         {
                             UserId = user.UserId,
@@ -463,9 +474,10 @@ namespace api.Services.UserService
                             Email = user.Email,
                             PhoneNumber = user.PhoneNumber,
                             CompleteAddress = user.CompleteAddress,
-                            BirthDate = user.BirthDate,
+                            BirthDate = user.BirthDate, 
                             JobTitle = user.JobTitle,
-                            JobDescription = user.JobDescription
+                            JobDescription = user.JobDescription,
+                            NeighborhoodId = neighborhoodId
                         };
                         return new ServiceResponse<GetUserDTO?>
                         {
@@ -500,7 +512,7 @@ namespace api.Services.UserService
                     { "@UserId", id }
                 };
                     var parameters = new DynamicParameters(dictionary);
-                    var user = connection.QuerySingle<User>(query, parameters);
+                    var user = await connection.QuerySingleAsync<User>(query, parameters);
                     if (user == null)
                     {
                         return new ServiceResponse<GetUserDTO?>
@@ -512,6 +524,13 @@ namespace api.Services.UserService
                     }
                     else
                     {
+                        string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                        var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                        var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                         GetUserDTO data = new GetUserDTO
                         {
                             UserId = user.UserId,
@@ -523,7 +542,8 @@ namespace api.Services.UserService
                             CompleteAddress = user.CompleteAddress,
                             BirthDate = user.BirthDate,
                             JobTitle = user.JobTitle,
-                            JobDescription = user.JobDescription
+                            JobDescription = user.JobDescription,
+                            NeighborhoodId = neighborhoodId
                         };
                         return new ServiceResponse<GetUserDTO?>
                         {
@@ -569,6 +589,13 @@ namespace api.Services.UserService
                     }
                     else
                     {
+                        string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                        var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                        var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                        var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
                         GetUserDTO data = new GetUserDTO
                         {
                             UserId = user.UserId,
@@ -580,7 +607,8 @@ namespace api.Services.UserService
                             CompleteAddress = user.CompleteAddress,
                             BirthDate = user.BirthDate,
                             JobTitle = user.JobTitle,
-                            JobDescription = user.JobDescription
+                            JobDescription = user.JobDescription,
+                            NeighborhoodId = neighborhoodId
                         };
                         return new ServiceResponse<GetUserDTO?>
                         {
@@ -1066,44 +1094,91 @@ namespace api.Services.UserService
 
         public async Task<ServiceResponse<string?>> UpdateUser(UpdateUserDTO request)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            try
             {
-                connection.Open();
-                string query = "UPDATE dbo.tblUsers " +
-                    "SET  FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, CompleteAddress = @CompleteAddress, BirthDate = @BirthDate " +
-                    "WHERE UserId = @UserId ";
-                var dictionary = new Dictionary<string, object>
+                using (var connection = new SqlConnection(_connectionString))
                 {
-                    { "@UserId", request.UserId },
-                    { "@FirstName", request.FirstName },
-                    { "@LastName", request.LastName },
-                    { "@Email", request.Email },
-                    { "@PhoneNumber", request.PhoneNumber },
-                    { "@CompleteAddress", request.CompleteAddress },
-                    { "@BirthDate", request.BirthDate }
+                    connection.Open();
+                    var emailExistsResponse = await GetUserByEmail(request.Email);
+                    var phoneNumberExistsResponse = await GetUserByPhoneNumber(request.PhoneNumber);
+                    if(emailExistsResponse.Data != null && emailExistsResponse.Data.UserId != request.UserId)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "EMAIL_IS_ALREADY_TAKEN"
+                        };
+                    }
+                    if (phoneNumberExistsResponse.Data != null && phoneNumberExistsResponse.Data.UserId != request.UserId)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "PHONE_NUMBER_IS_ALREADY_TAKEN"
+                        };
+                    }
+                        var getNeighborhoodResponse = await _neighborhoodService.GetNeighborhoodById(request.NeighborhoodId);
+
+                        if (getNeighborhoodResponse.Success)
+                        {
+                            string query = "UPDATE dbo.tblUsers " +
+                            "SET  FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, CompleteAddress = @CompleteAddress, BirthDate = @BirthDate, NeighborhoodId = @NeighborhoodId " +
+                            "WHERE UserId = @UserId ";
+                            var dictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", request.UserId },
+                            { "@FirstName", request.FirstName },
+                            { "@LastName", request.LastName },
+                            { "@Email", request.Email },
+                            { "@PhoneNumber", request.PhoneNumber },
+                            { "@CompleteAddress", request.CompleteAddress },
+                            { "@BirthDate", request.BirthDate },
+                            { "@NeighborhoodId", request.NeighborhoodId }
+                        };
+                            var parameters = new DynamicParameters(dictionary);
+                            var affectedRows = connection.Execute(query, parameters);
+                            if (affectedRows == 0)
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "USER_NOT_FOUND"
+                                };
+                            }
+                            else
+                            {
+
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = true,
+                                    Message = "USER_UPDATED_SUCCESSFULLY"
+                                };
+                            }
+
+                        }
+                        else
+                        {
+                            return new ServiceResponse<string?>
+                            {
+                                Data = null,
+                                Success = false,
+                                Message = "NEIGHBORHOOD_NOT_FOUND"
+                            };
+                        }
+                    }
+            }
+            catch
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "USER_NOT_FOUND"
                 };
-                var parameters = new DynamicParameters(dictionary);
-                var affectedRows = connection.Execute(query, parameters);
-                if (affectedRows == 0)
-                {
-                    return new ServiceResponse<string?>
-                    {
-                        Data = null,
-                        Success = false,
-                        Message = "USER_NOT_FOUND"
-                    };
-                }
-                else
-                {
-
-                    return new ServiceResponse<string?>
-                    {
-                        Data = null,
-                        Success = true,
-                        Message = "USER_UPDATED_SUCCESSFULLY"
-                    };
-                }
-
             }
         }
 

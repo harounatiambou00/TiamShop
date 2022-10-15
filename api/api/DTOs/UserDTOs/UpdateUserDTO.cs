@@ -17,6 +17,6 @@ namespace api.DTOs.UserDTOs
         public string CompleteAddress { get; set; } = string.Empty;
 
         public DateTime BirthDate { get; set; }
-
+        public int NeighborhoodId { get; set; }
     }
 }

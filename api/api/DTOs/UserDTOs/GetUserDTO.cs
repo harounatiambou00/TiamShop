@@ -15,5 +15,6 @@
         //Only for admins
         public string? JobTitle { get; set; } = null;
         public string? JobDescription { get; set; } = null;
+        public int NeighborhoodId { get; set; }
     }
 }

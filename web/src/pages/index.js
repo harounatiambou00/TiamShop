@@ -22,3 +22,5 @@ export { default as UserPaymentReceipts } from "./user-payment-receipts/UserPaym
 export { default as VerifyEmail } from "./verify-email/VerifyEmail";
 export { default as ForgotPassword } from "./forgot-password/ForgotPassword";
 export { default as ResetPassword } from "./reset-password/ResetPassword";
+export { default as AccountDetails } from "./account-details/AccountDetailsPage";
+export { default as AccountSettings } from "./account-settings/AccountSettings";

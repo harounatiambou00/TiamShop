@@ -77,7 +77,7 @@ const ClientsTable = (props: Props) => {
           <TableBody>
             {props.clients.map((client) => {
               return (
-                <TableRow className="font-kanit" key={client.Id}>
+                <TableRow className="font-kanit" key={client.userId}>
                   <TableCell className="font-kanit font-light">
                     <Avatar className="bg-gray-200 font-kanit">
                       {client.LastName[0]}
@@ -111,7 +111,7 @@ const ClientsTable = (props: Props) => {
                   <TableCell>
                     <IconButton
                       color="error"
-                      onClick={() => handleDelete(client.Id)}
+                      onClick={() => handleDelete(client.userId)}
                     >
                       <BsTrash className="text-red-500" />
                     </IconButton>

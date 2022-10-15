@@ -9,8 +9,6 @@
         Task<ServiceResponse<GetUserDTO?>> GetAdminByGuid(string guid);
         Task<ServiceResponse<GetUserDTO?>> GetUserByEmail(string email);
         Task<ServiceResponse<GetUserDTO?>> GetUserByPhoneNumber(string phoneNumber);
-        Task<ServiceResponse<GetUserDTO?>> GetLoogedClient(string token);
-        Task<ServiceResponse<GetUserDTO?>> GetLoggedAdmin(string token);
         Task<ServiceResponse<string?>> SignUpClient(SignUpClientDTO request);
         Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request);
         Task<ServiceResponse<string?>> CreateClient(SignUpClientDTO request);

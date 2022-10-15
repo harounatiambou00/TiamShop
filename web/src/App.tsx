@@ -27,6 +27,8 @@ import {
   VerifyEmail,
   ForgotPassword,
   ResetPassword,
+  AccountDetails,
+  AccountSettings,
 } from "./pages";
 
 //layouts
@@ -44,7 +46,10 @@ import "./App.css";
 
 function App() {
   return (
-    <div id="app" className="w-full h-screen bg-background">
+    <div
+      id="app"
+      className="w-full bg-background font-kanit font-light text-gray-800"
+    >
       <Routes>
         {/**
          * Simple user part of the platform
@@ -65,23 +70,24 @@ function App() {
           {/*On this page a visitor can have more information about the terms and conditions of our platform */}
           <Route path="policy" element={<PolicyPage />} />
           {/*On this page the client with the specified id can see, update, or delete his account*/}
-          <Route path="account/:userId" element={<AccountPage />} />
+          <Route path="account/:clientId" element={<AccountPage />}>
+            <Route path="" element={<AccountDetails />} />
+            {/*On this page a client will see the products he added to his favorites */}
+            <Route path="my-favorites" element={<UserFavoriteProductsPage />} />
+            {/*On this page a client will can have access to all his payment receipts */}
+            <Route path="my-receipts" element={<UserPaymentReceipts />} />
+            {/*On this page a client will can have access to all his orders and their status */}
+            <Route path="my-orders" element={<UserOrdersPage />} />
+            <Route path="my-settings" element={<AccountSettings />} />
+          </Route>
           {/*On this page a visitor can see all our product categories */}
           <Route path="categories" element={<CategoriesPage />} />
           {/*On this page a client will see his cart, update it, or make an order */}
           <Route path="cart/:cartId" element={<CartPage />} />
-          {/*On this page a client will see the products he added to his favorites */}
-          <Route
-            path="favorites/:userId"
-            element={<UserFavoriteProductsPage />}
-          />
+
           {/*On this page a visitor can see all the products matching his research and filter them */}
           <Route path="search" element={<SearchResultsPage />} />
           <Route path="order" element={<OrderPage />} />
-          {/*On this page a client will can have access to all his orders and their status */}
-          <Route path="my-orders" element={<UserOrdersPage />} />
-          {/*On this page a client will can have access to all his payment receipts */}
-          <Route path="my-receipts" element={<UserPaymentReceipts />} />
           {/*On this page a client will can ask for repayment */}
           <Route path="repayment" element={<RepaymentPage />} />
           {/*On this page we will confirm an order */}

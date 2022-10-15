@@ -19,7 +19,7 @@ const Clients = () => {
         ...currentClients,
         {
           ...{},
-          Id: i.userId,
+          userId: i.userId,
           FirstName: i.firstName,
           LastName: i.lastName,
           Email: i.email,
@@ -30,8 +30,8 @@ const Clients = () => {
             i.birthDate != null
               ? new Date(
                   parseInt(i.birthDate.slice(0, 4)),
-                  parseInt(i.birthDate.slice(4, 6)),
-                  parseInt(i.birthDate.slice(6, 8))
+                  parseInt(i.birthDate.slice(5, 7)) - 1,
+                  parseInt(i.birthDate.slice(8, 10))
                 )
               : null,
         },
