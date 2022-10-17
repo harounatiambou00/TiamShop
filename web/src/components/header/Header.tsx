@@ -3,7 +3,7 @@ import "./header.css";
 
 const Header: React.FC = () => {
   return (
-    <div id="app-header" className="h-28 w-full text-white">
+    <div id="app-header" className="sm:h-60 lg:h-28 w-full bg-white">
       Header
     </div>
   );

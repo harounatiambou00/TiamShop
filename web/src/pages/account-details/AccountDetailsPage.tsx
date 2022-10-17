@@ -1,9 +1,9 @@
-import { Button, Skeleton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import React from "react";
 
 import { FiEdit } from "react-icons/fi";
 import { MdOutlineCancel } from "react-icons/md";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Client } from "../../data/models/AccountPageClient";
 
 import FormGroup from "./form-group/FormGroup";
@@ -68,23 +68,28 @@ const AccountDetailsPage = () => {
   return (
     <div className="p-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-medium text-gray-600">
+        <h1 className="sm:text-4xl lg:text-2xl font-medium text-gray-600">
           Mes informations personnelles
         </h1>
-        <Button
-          variant="contained"
-          className={
-            readOnly
-              ? "bg-primary font-kanit normal-case font-normal"
-              : "bg-red-600 font-kanit normal-case font-normal"
-          }
-          startIcon={readOnly ? <FiEdit /> : <MdOutlineCancel />}
-          onClick={() => setReadOnly(!readOnly)}
-        >
-          {readOnly ? "Modifier" : "Annuler"}
-        </Button>
+        <div className="sm:block lg:hidden">
+          {readOnly ? <FiEdit className="text-4xl" /> : <MdOutlineCancel />}
+        </div>
+        <div className="sm:hidden lg:block">
+          <Button
+            variant="contained"
+            className={
+              readOnly
+                ? "bg-primary font-kanit normal-case font-normal"
+                : "bg-red-600 font-kanit normal-case font-normal"
+            }
+            startIcon={readOnly ? <FiEdit /> : <MdOutlineCancel />}
+            onClick={() => setReadOnly(!readOnly)}
+          >
+            {readOnly ? "Modifier" : "Annuler"}
+          </Button>
+        </div>
       </div>
-      <span className="text-sm">
+      <span className="sm:text-xl lg:text-sm">
         Ici, vous avez la possibilté de voir et modifier toutes les informations
         vous concernant.
       </span>

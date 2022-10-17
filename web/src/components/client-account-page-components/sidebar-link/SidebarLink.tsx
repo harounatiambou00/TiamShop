@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import React from "react";
+import { linkType } from "../../../pages/account/Sidebar/types";
 
 type Props = {
   name: string;
@@ -20,7 +21,6 @@ const SidebarLink = (props: Props) => {
           variant="contained"
           className="bg-primary normal-case font-kanit justify-start font-light"
           startIcon={props.icon}
-          onClick={props.handleNavigate}
         >
           {props.name}
         </Button>

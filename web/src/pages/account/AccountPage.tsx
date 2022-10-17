@@ -25,7 +25,7 @@ const AccountPage: React.FC = () => {
         Mon compte
       </h1>
       <div className="min-h-full flex mt-5">
-        <div className="lg:w-2/12 lg:h-96 rounded-md drop-shadow-md">
+        <div className="lg:w-2/12 rounded-md drop-shadow-md">
           <Sidebar />
         </div>
         <div className="lg:w-10/12 bg-white rounded-md border-2 ml-10">

@@ -133,9 +133,9 @@ namespace api.Controllers
             var login = await _userService.LoginAdmin(request);
 
             //if the user is logged succesfully, we create a cookie that contains the token of the login
-            if (login.Success)
+            if (login.Success && login.Data != null)
             {
-                Response.Cookies.Append("adminLoginJWT", login.Data, new CookieOptions
+                Response.Cookies.Append("adminLoginJwt", login.Data, new CookieOptions
                 {
                     HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
                     Expires = DateTimeOffset.Now.AddMinutes(30),
@@ -160,7 +160,7 @@ namespace api.Controllers
         {
             try
             {
-                var adminLoginJwtFromCookies = Request.Cookies["adminLoginJWT"];
+                var adminLoginJwtFromCookies = Request.Cookies["adminLoginJwt"];
 
                 var validatedAdminLoginJwt = _jwtService.Verify(adminLoginJwtFromCookies);
 
@@ -247,5 +247,52 @@ namespace api.Controllers
             return Ok(new ServiceResponse<string>());
         }
 
+        [HttpPost("logout")]
+        public ActionResult<ServiceResponse<string?>> Logout()
+        {
+            if (Request.Cookies["clientLoginJwt"] != null)
+            {
+                Response.Cookies.Delete("clientLoginJwt");
+                return (new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = true,
+                    Message = "CLIENT_LOGGED_OUT_SUCCESSFULLY"
+                });
+            }
+            else
+            {
+                return (new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "LOG_OUT_FAILED"
+                });
+            }
+        }
+
+        [HttpPost("admins/logout")]
+        public ActionResult<ServiceResponse<string?>> AdminLogout()
+        {
+            if (Request.Cookies["adminLoginJwt"] != null)
+            {
+                Response.Cookies.Delete("adminLoginJwt");
+                return (new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = true,
+                    Message = "ADMIN_LOGGED_OUT_SUCCESSFULLY"
+                });
+            }
+            else
+            {
+                return (new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "LOG_OUT_FAILED"
+                });
+            }
+        }
     }
 }
