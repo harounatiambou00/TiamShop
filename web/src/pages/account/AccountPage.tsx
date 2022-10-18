@@ -4,8 +4,6 @@ import { Page } from "../../components/core";
 import { Breadcumb } from "../../components/client-account-page-components";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar/Sidebar";
-import { Client } from "../../data/models/Client";
-import moment from "moment";
 
 const AccountPage: React.FC = () => {
   const navigate = useNavigate();

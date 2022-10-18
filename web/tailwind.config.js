@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#163569",
-        secondary: "#A6E2E8",
+        primary: "#003049",
+        secondary: "#d67d3e",
         warning: "#F1C535",
         background: "#F6F6F6",
         gradientFrom: "#F41A28",
@@ -50,8 +50,16 @@ module.exports = {
         "10/12": "83.3333333333%",
         "11/12": "91.666666%",
         "12/12": "100%",
+        "header-sm-height": "18rem",
+        "header-lg-height": "8rem",
       },
-      width: {},
+      width: {
+        "large-screens-searchbar-width": "700px",
+      },
+      margin: {
+        "header-lg-height": "8rem",
+        "header-sm-height": "18rem",
+      },
     },
   },
   plugins: [],

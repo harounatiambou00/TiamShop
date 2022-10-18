@@ -14,7 +14,7 @@ import "./panel.css";
 
 const SignInPagePanel: React.FC = () => {
   return (
-    <div className="sm:hidden lg:block lg:h-full lg:w-8/12 bg-secondary">
+    <div className="sm:hidden lg:block lg:h-full lg:w-8/12 bg-white">
       <div className="h-full">
         <Swiper
           loop={true}

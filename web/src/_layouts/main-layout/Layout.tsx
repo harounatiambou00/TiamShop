@@ -7,8 +7,12 @@ import { Header, Footer } from "../../components";
 const Layout = () => {
   return (
     <div>
-      <Header />
-      <Outlet />
+      <Header>
+        <span></span>
+      </Header>
+      <div className="sm:mt-header-sm-height lg:mt-header-lg-height">
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );

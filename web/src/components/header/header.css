@@ -1,3 +1,8 @@
 #app-header {
-  background-color: white;
+  background: rgb(214, 125, 62);
+  background: linear-gradient(
+    90deg,
+    rgba(214, 125, 62, 1) 70%,
+    rgba(255, 174, 109, 1) 100%
+  );
 }
