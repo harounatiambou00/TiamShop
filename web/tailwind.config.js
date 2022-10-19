@@ -35,6 +35,9 @@ module.exports = {
         "7xl": "5rem",
         "8xl": "6rem",
       },
+      fontWeight: {
+        medium: 450,
+      },
       height: {
         "ten-percent": "10%",
         "ninety-percent": "90%",

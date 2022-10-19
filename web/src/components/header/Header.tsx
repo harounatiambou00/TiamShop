@@ -8,7 +8,7 @@ import MobileSearchbar from "./mobile-searchbar/MobileSearchbar";
 import DesktopSearchbar from "./desktop-searchbar/DesktopSearchbar";
 
 import "./header.css";
-import { categoryLinks } from "./category-links";
+import { categoryLinks } from "../../data/category-links";
 import Navlinks from "./navlinks/Navlinks";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,8 @@ interface Props {
    */
   window?: () => Window;
   children: React.ReactElement;
+  openLeftDrawer: boolean;
+  setOpenLeftDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Header = (props: Props) => {
@@ -35,6 +37,7 @@ const Header = (props: Props) => {
             <div className="flex items-center">
               <IconButton
                 size="large"
+                onClick={() => props.setOpenLeftDrawer(true)}
                 className="sm:block lg:hidden items-center justify-center h-20 w-20"
               >
                 <BiMenuAltLeft className="text-6xl text-primary" />
@@ -54,17 +57,18 @@ const Header = (props: Props) => {
           <div className="sm:hidden lg:flex lg:h-1/3 lg:w-full items-center justify-between lg:px-2">
             <Button
               startIcon={<BiMenuAltLeft />}
-              variant="contained"
-              className="bg-primary"
+              variant="outlined"
+              className="font-medium"
+              onClick={() => props.setOpenLeftDrawer(true)}
             >
               MENU
             </Button>
             {categoryLinks.map((link) => (
               <Button
-                key={link.title}
-                className="text-gray-200 text-sm font-semibold normal-case hover:text-primary"
+                key={link.name}
+                className="text-gray-200 text-sm font-medium font-raleway normal-case hover:text-primary"
               >
-                {link.name}
+                {link.title}
               </Button>
             ))}
           </div>
