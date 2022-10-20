@@ -1,6 +1,5 @@
 import React from "react";
 
-import { IconType } from "react-icons";
 import { AiOutlineUser, AiOutlineGift } from "react-icons/ai";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
 import { IoSettingsOutline, IoReceiptOutline } from "react-icons/io5";

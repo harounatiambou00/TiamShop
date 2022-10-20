@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import React from "react";
-import { linkType } from "../../../pages/account/Sidebar/types";
 
 type Props = {
   name: string;

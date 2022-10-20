@@ -12,8 +12,8 @@ export type CategoryNameType =
   | "phones_components"
   | "storage"
   | "office_automation"
-  | "network_connectics"
-  | "softwares";
+  | "home_appliance"
+  | "tv_audio_photos";
 
 export type CategoryLink = {
   title: string;

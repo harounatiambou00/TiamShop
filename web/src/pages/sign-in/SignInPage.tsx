@@ -7,7 +7,7 @@ const SignInPage: React.FC = () => {
   const navigate = useNavigate();
   return (
     <div className="h-screen w-full flex items-center justify-center">
-      <div className="h-full sm:w-full lg:w-4/12 flex sm:items-center sm:justify-center">
+      <div className="h-full sm:w-full lg:w-4/12 flex sm:items-center sm:justify-center bg-white">
         <div className="h-full sm:w-0 lg:w-2 bg-secondary fixed left-0"></div>
         <div className="w-full sm:px-10 lg:px-6">
           <img

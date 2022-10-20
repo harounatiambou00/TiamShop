@@ -6,7 +6,7 @@ import { Header, Footer, LeftDrawer } from "../../components";
 
 const Layout = () => {
   //left drawer toggle state
-  const [openLeftDrawer, setOpenLeftDrawer] = React.useState<boolean>(true);
+  const [openLeftDrawer, setOpenLeftDrawer] = React.useState<boolean>(false);
 
   return (
     <div className="">

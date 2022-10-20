@@ -28,17 +28,34 @@ const SignInPagePanel: React.FC = () => {
           modules={[Pagination, Autoplay]}
           className="w-full"
         >
-          <SwiperSlide className="flex flex-col p-20">
+          <SwiperSlide className="flex flex-col">
             <img
               src={
-                process.env.PUBLIC_URL + "assets/svg/client-sign-in/door.svg"
+                process.env.PUBLIC_URL + "assets/images/sign-in/every_where.jpg"
               }
               alt="delivery"
               className=""
             />
           </SwiperSlide>
-          <SwiperSlide className="flex flex-col"></SwiperSlide>
-          <SwiperSlide className="flex flex-col"></SwiperSlide>
+          <SwiperSlide className="flex flex-col">
+            <img
+              src={
+                process.env.PUBLIC_URL + "assets/images/sign-in/the_best.jpg"
+              }
+              alt="delivery"
+              className=""
+            />
+          </SwiperSlide>
+          <SwiperSlide className="flex flex-col">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                "assets/images/sign-in/rapid_delivery.png"
+              }
+              alt="delivery"
+              className=""
+            />
+          </SwiperSlide>
         </Swiper>
       </div>
     </div>
