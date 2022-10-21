@@ -6,8 +6,11 @@ import { AiOutlineUserAdd } from "react-icons/ai";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { Badge, IconButton } from "@mui/material";
+import AccountButtonPopover from "./account-button-popover/AccountButtonPopover";
 
 const Navlinks = () => {
+  const [openAccountButtonPopover, setOpenAccountButtonPopover] =
+    React.useState<boolean>(false);
   return (
     <div>
       <div className="items-center sm:flex lg:hidden text-primary">
@@ -32,7 +35,11 @@ const Navlinks = () => {
         </IconButton>
       </div>
       <div className="sm:hidden lg:flex h-full items-center">
-        <div className="sm:hidden lg:flex items-center justify-center h-4/6 w-40 rounded-md cursor-pointer mr-7 hover:text-primary transition delay-100 ease-in-out">
+        <div
+          id="app-header-account-button"
+          onClick={() => setOpenAccountButtonPopover(!openAccountButtonPopover)}
+          className="sm:hidden lg:flex items-center justify-center h-4/6 w-40 rounded-md cursor-pointer mr-7 hover:text-primary transition delay-100 ease-in-out"
+        >
           <HiOutlineUserCircle className="text-4xl mr-1" />
           <div className="flex flex-col items-start justify-center">
             <span className="text-xs">VOTRE</span>
@@ -40,6 +47,10 @@ const Navlinks = () => {
           </div>
           <RiArrowDropDownLine className="text-2xl ml-2" />
         </div>
+        <AccountButtonPopover
+          open={openAccountButtonPopover}
+          setOpen={setOpenAccountButtonPopover}
+        />
         <Badge
           className="sm:hidden lg:flex items-center h-4/6 w-28 rounded-md cursor-pointer  hover:text-primary transition delay-150 ease-in-out"
           badgeContent={5}

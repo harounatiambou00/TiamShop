@@ -351,7 +351,7 @@ const FormGroup: React.FC = () => {
           InputLabelProps={{
             sx: {
               fontFamily: "Kanit, 'sans-serif'",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             },
           }}
@@ -378,7 +378,7 @@ const FormGroup: React.FC = () => {
           InputLabelProps={{
             sx: {
               fontFamily: "Kanit, 'sans-serif'",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             },
           }}
@@ -418,7 +418,7 @@ const FormGroup: React.FC = () => {
           InputLabelProps={{
             sx: {
               fontFamily: "Kanit, 'sans-serif'",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             },
           }}
@@ -458,7 +458,7 @@ const FormGroup: React.FC = () => {
           InputLabelProps={{
             sx: {
               fontFamily: "Kanit, 'sans-serif'",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             },
           }}
@@ -487,7 +487,7 @@ const FormGroup: React.FC = () => {
             sx={{
               fontFamily: "Kanit, 'sans-serif'",
               bgcolor: "white",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             }}
           >
@@ -543,7 +543,7 @@ const FormGroup: React.FC = () => {
             sx={{
               fontFamily: "Kanit, 'sans-serif'",
               bgcolor: "white",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             }}
           >
@@ -596,7 +596,7 @@ const FormGroup: React.FC = () => {
           InputLabelProps={{
             sx: {
               fontFamily: "Kanit, 'sans-serif'",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "400", lg: "300" },
               fontSize: { md: 30, lg: 18 },
             },
             shrink: true,
@@ -624,7 +624,7 @@ const FormGroup: React.FC = () => {
             sx={{
               fontFamily: "Kanit, 'sans-serif'",
               bgcolor: "white",
-              fontWeight: { md: "500", lg: "400" },
+              fontWeight: { md: "300", lg: "200" },
               fontSize: { md: 30, lg: 18 },
             }}
           >
@@ -680,7 +680,7 @@ const FormGroup: React.FC = () => {
         InputLabelProps={{
           sx: {
             fontFamily: "Kanit, 'sans-serif'",
-            fontWeight: { md: "500", lg: "400" },
+            fontWeight: { md: "400", lg: "300" },
             fontSize: { md: 30, lg: 18 },
           },
         }}
@@ -703,7 +703,7 @@ const FormGroup: React.FC = () => {
         </span>{" "}
         .
       </div>
-      <div className="sm:mt-10 lg:mt-3 sm:w-2/6 lg:w-1/6">
+      <div className="sm:mt-10 lg:mt-3 sm:w-2/6 lg:w-2/6">
         <AnimatedButton
           handleClick={signUp}
           text="S'inscricre"
