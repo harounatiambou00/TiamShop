@@ -1,0 +1,19 @@
+.footer__link a {
+  transition: all ease-in 0.5s;
+  position: relative;
+  text-decoration: none;
+}
+
+.footer__link a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -2px;
+  transition: 0.5s;
+}
+
+.footer__link a:hover::after {
+  width: 100%;
+}
