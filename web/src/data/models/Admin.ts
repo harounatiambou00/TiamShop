@@ -1,4 +1,4 @@
-export type Client = {
+export type Admin = {
   Id: number;
   UserGuid: string;
   FirstName: string;

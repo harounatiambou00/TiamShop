@@ -4,13 +4,19 @@ import { Page } from "../../components/core";
 import { Breadcumb } from "../../components/client-account-page-components";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar/Sidebar";
+import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../redux/store";
 
 const AccountPage: React.FC = () => {
   const navigate = useNavigate();
   const { clientId } = useParams();
 
+  let authenticatedClient = useAppSelector(
+    (state: RootState) => state.authenticatedClient.client
+  );
+
   React.useEffect(() => {
-    if (isNaN(Number(clientId))) {
+    if (isNaN(Number(clientId)) || !authenticatedClient) {
       navigate("/");
     }
   });

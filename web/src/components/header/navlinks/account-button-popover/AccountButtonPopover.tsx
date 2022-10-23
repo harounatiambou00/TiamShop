@@ -15,7 +15,13 @@ import { MdCompareArrows } from "react-icons/md";
 
 import { useNavigate } from "react-router-dom";
 
-import { links } from "../../../../pages/account/Sidebar/types";
+import { links, linkType } from "../../../../pages/account/Sidebar/types";
+
+import { RootState } from "../../../../redux/store";
+import { useAppSelector } from "../../../../hooks/redux-custom-hooks/useAppSelector";
+import { useAppDispatch } from "../../../../hooks/redux-custom-hooks/useAppDispatch";
+import { setAuthenticatedClient } from "../../../../redux/slices/authenticatedClientSlice";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   open: boolean;
@@ -24,10 +30,28 @@ type Props = {
 
 const AccountButtonPopover = ({ open, setOpen }: Props) => {
   const navigate = useNavigate();
-  /**
-   * TODO Change the isAuthenticated state to a real one
-   */
-  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
+  let authenticatedClient = useAppSelector(
+    (state: RootState) => state.authenticatedClient.client
+  );
+
+  const dispatch = useAppDispatch();
+
+  const [logoutIsLoading, setLogoutIsLoading] = React.useState<boolean>(false);
+  const logout = async () => {
+    setLogoutIsLoading(true);
+    let url = process.env.REACT_APP_API_URL + "auth/logout";
+    let response = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    let content = await response.json();
+    if (content && content.success) {
+      dispatch(setAuthenticatedClient({ client: null }));
+    }
+    setLogoutIsLoading(false);
+  };
+
   return (
     <Popover
       open={open}
@@ -42,7 +66,7 @@ const AccountButtonPopover = ({ open, setOpen }: Props) => {
       id="account-button-popover"
     >
       <div className="w-60 bg-gray-50">
-        {!isAuthenticated && (
+        {!authenticatedClient && (
           <div>
             <div className="p-2">
               <Button
@@ -69,14 +93,26 @@ const AccountButtonPopover = ({ open, setOpen }: Props) => {
         )}
         <div className="">
           <List>
-            {isAuthenticated && (
+            {authenticatedClient && (
               <>
                 <h1 className="pl-3 text-xl font-medium text-gray-600">
                   Mon Compte
                 </h1>
                 {links.map((link) => {
                   return (
-                    <ListItemButton>
+                    <ListItemButton
+                      key={link.name}
+                      onClick={() =>
+                        authenticatedClient
+                          ? navigate(
+                              "/account/" +
+                                authenticatedClient.userId +
+                                "/" +
+                                link.to
+                            )
+                          : {}
+                      }
+                    >
                       <ListItemIcon>{link.icon}</ListItemIcon>
                       <ListItemText
                         primary={link.name}
@@ -112,19 +148,24 @@ const AccountButtonPopover = ({ open, setOpen }: Props) => {
             </ListItemButton>
           </List>
         </div>
-        {isAuthenticated && (
+        {authenticatedClient && (
           <div>
             <Divider />
             <div className="p-2">
-              <Button
+              <LoadingButton
                 fullWidth
+                loading={logoutIsLoading}
                 variant="contained"
-                className="mb-2 bg-red-500 font-kanit font-light"
+                className={
+                  logoutIsLoading
+                    ? "mb-2  font-kanit font-light"
+                    : "mb-2 bg-red-500 font-kanit font-light"
+                }
                 startIcon={<BiLogOut />}
-                onClick={() => {}}
+                onClick={logout}
               >
                 Se déconnecter
-              </Button>
+              </LoadingButton>
             </div>
           </div>
         )}

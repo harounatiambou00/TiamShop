@@ -43,8 +43,47 @@ import {
 } from "./admin-pages";
 
 import "./App.css";
+import { Client } from "./data/models/Client";
+import { useAppDispatch } from "./hooks/redux-custom-hooks/useAppDispatch";
+import { setAuthenticatedClient } from "./redux/slices/authenticatedClientSlice";
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    const getAuthenticatedClient = async () => {
+      let url = process.env.REACT_APP_API_URL + "auth/get-logged-client";
+      let response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      let content = await response.json();
+      if (content) {
+        if (content.success) {
+          let data = content.data;
+
+          let client: Client = {
+            userId: data.userId,
+            FirstName: data.firstName,
+            LastName: data.lastName,
+            Email: data.email,
+            PhoneNumber: data.phoneNumber,
+            CompleteAddress: data.completeAddress,
+            BirthDate: new Date(data.birthDate),
+            NeighborhoodId: data.neighborhoodId,
+          };
+
+          dispatch(setAuthenticatedClient({ client: client }));
+        } else {
+          dispatch(setAuthenticatedClient({ client: null }));
+        }
+      }
+    };
+
+    getAuthenticatedClient();
+  });
+
   return (
     <div
       id="app"
