@@ -1,14 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Admin } from "../../data/models";
 
-interface StateType {
-  client: null | Admin;
-  isLoading: boolean;
+export interface AuthenticatedAdminType {
+  admin: null | Admin;
 }
 
-const initialState = {
-  client: null,
-  isLoading: false,
+const initialState: AuthenticatedAdminType = {
+  admin: null,
 };
 
 export const authenticatedAdminSlice = createSlice({
@@ -17,9 +15,11 @@ export const authenticatedAdminSlice = createSlice({
   reducers: {
     setAuthenticatedAdmin: (
       state,
-      action: { type: string; payload: StateType }
-    ) => {},
-    logout: (state, action: { type: string }) => {},
-    refresh: (state, action: { type: string }) => {},
+      action: PayloadAction<AuthenticatedAdminType>
+    ) => {
+      state.admin = action.payload.admin;
+    },
   },
 });
+
+export const { setAuthenticatedAdmin } = authenticatedAdminSlice.actions;

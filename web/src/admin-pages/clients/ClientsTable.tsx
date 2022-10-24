@@ -41,7 +41,7 @@ const ClientsTable = (props: Props) => {
   const deletionAction = async (id: number) => {
     if (id > 0) {
       setDeletionIsLoading(true);
-      let url = `${process.env.REACT_APP_API_URL}user/delete-user/${id}`;
+      let url = `${process.env.REACT_APP_API_URL}users/delete-user/${id}`;
       let response = fetch(url, {
         method: "DELETE",
       });

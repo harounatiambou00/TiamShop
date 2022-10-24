@@ -29,7 +29,7 @@ import {
   PhoneNumberErrorType,
   ValuesState,
 } from "./types";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SignInForm = () => {
   const navigate = useNavigate();
@@ -202,7 +202,7 @@ const SignInForm = () => {
 
         let content = await response.json();
         if (content.success) {
-          redirect("/");
+          navigate("/");
           setErrors((currentState) => ({
             ...currentState,
             passwordError: false,

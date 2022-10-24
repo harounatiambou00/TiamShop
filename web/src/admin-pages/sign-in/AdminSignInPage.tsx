@@ -106,17 +106,23 @@ const AdminSignInPage = () => {
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-background">
-      <div className="h-5/6 w-5/6 rounded-md bg-white flex">
-        <div className="rounded-tl-md rounded-bl-md h-full w-1/2 bg-secondary"></div>
-        <div className="w-1/2 h-full flex flex-col p-10 overflow-y-scroll">
-          <h1 className="text-3xl font-medium opacity-70">
+      <div className="h-full w-full flex">
+        <div className="h-full w-4/6 bg-secondary"></div>
+        <div className="w-2/6 h-full flex flex-col p-5 overflow-y-scroll">
+          <img
+            src={process.env.PUBLIC_URL + "/assets/images/logo.png"}
+            alt="logo"
+            className="h-16 w-16 mb-2"
+          />
+          <h1 className="text-2xl font-medium opacity-70">
             Bienvenue cher administrateur
           </h1>
           <h1 className="opacity-60">
-            Veuillez vous connecter pour pouvoir accéder votre tableau de bord.
+            Veuillez vous connecter pour pouvoir accéder à votre tableau de
+            bord.
           </h1>
 
-          <div className="w-full flex flex-col justify-center mt-10 px-5 font-Kanit">
+          <div className="w-full flex flex-col justify-center mt-10 font-Kanit">
             <TextField
               autoFocus
               fullWidth
@@ -208,7 +214,7 @@ const AdminSignInPage = () => {
               Mot de passe oublié ?
             </span>
           </div>
-          <div className="mt-10 px-5">
+          <div className="mt-10">
             <AnimatedButton
               handleClick={signIn}
               text="Sign in"
