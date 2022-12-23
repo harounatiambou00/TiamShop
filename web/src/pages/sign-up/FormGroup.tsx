@@ -27,6 +27,7 @@ import { Neighborhood } from "../../data/models/Neighborhood";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import VerificationEmailSentSuccessfullyDialog from "./VerificationEmailSentSuccessfullyDialog";
+import VerificationEmailNotSent from "./VerificationEmailNotSent";
 
 /**
  *
@@ -289,6 +290,7 @@ const FormGroup: React.FC = () => {
           }
           //The client has been registered but the verification email failed
           else {
+            setOpenEmailNotSentDialog(true);
           }
         } else {
           if (content.message === "") {
@@ -328,6 +330,15 @@ const FormGroup: React.FC = () => {
   const handleCloseEmailSentDialog = () => {
     setOpenEmailSentDialog(false);
     //If the email is sent successfully we want to redirect the client to the home page
+    navigate("/");
+  };
+
+  //This state will help us open and close our email sending fail message dialog.
+  const [openEmailNotSentDialog, setOpenEmailNotSentDialog] =
+    React.useState(false);
+  const handleCloseEmailNotSentDialog = () => {
+    setOpenEmailNotSentDialog(false);
+    //If the email is not sent we want to redirect the client to the home page
     navigate("/");
   };
 
@@ -713,6 +724,10 @@ const FormGroup: React.FC = () => {
       <VerificationEmailSentSuccessfullyDialog
         open={openEmailSentDialog}
         handleClose={handleCloseEmailSentDialog}
+      />
+      <VerificationEmailNotSent
+        open={openEmailNotSentDialog}
+        handleClose={handleCloseEmailNotSentDialog}
       />
     </form>
   );

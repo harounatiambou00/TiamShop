@@ -5,7 +5,7 @@ global using api.Services.EmailService;
 global using api.Services.UserService;
 global using api.Services.JwtService;
 global using api.Services.UserTypeService;
-global using api.Services.CityService;
+global using api.Services.ImageService;
 global using api.Services.NeighborhoodService;
 
 //DTOs
@@ -19,6 +19,7 @@ global using api.Data.ServiceResponse;
 
 
 using DbUp;
+using api.Services.BrandService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,8 +54,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserTypeService, UserTypeService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<INeighborhoodService, NeighborhoodService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
 
 
 

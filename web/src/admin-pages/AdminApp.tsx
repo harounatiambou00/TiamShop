@@ -7,12 +7,12 @@ import { setAuthenticatedAdmin } from "../redux/slices/authenticatedAdminSlice";
 import { RootState } from "../redux/store";
 
 const AdminApp = () => {
-  const dispatch = useAppDispatch();
+  /*const dispatch = useAppDispatch();
   let authenticatedAdmin = useAppSelector(
     (state: RootState) => state.authenticatedAdmin.admin
-  );
+  );*/
   const navigate = useNavigate();
-  React.useEffect(() => {
+  /*React.useEffect(() => {
     const getAuthenticatedAdmin = async () => {
       let url = process.env.REACT_APP_API_URL + "auth/admins/get-logged-admin";
       let response = await fetch(url, {
@@ -46,11 +46,7 @@ const AdminApp = () => {
     };
 
     getAuthenticatedAdmin();
-  });
-
-  React.useEffect(() => {
-    if (!authenticatedAdmin) navigate("/");
-  });
+  });*/
 
   return <Outlet />;
 };

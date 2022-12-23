@@ -3,6 +3,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AiOutlineClose } from "react-icons/ai";
+import { FiTrendingUp } from "react-icons/fi";
+import { MdFiberNew } from "react-icons/md";
+import { BsStars } from "react-icons/bs";
+import { RiCustomerService2Fill } from "react-icons/ri";
+import { TbLogout } from "react-icons/tb";
 import { categoryLinks, CategoryNameType } from "../../data/category-links";
 import LeftDrawerLink from "./left-drawer-link/LeftDrawerLink";
 
@@ -56,18 +61,21 @@ const LeftDrawer = (props: Props) => {
                 title="Les plus vendus"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
+                icon={<FiTrendingUp className="text-2xl text-primary" />}
               />
               <LeftDrawerLink
                 name="none"
                 title="Nouveautés"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
+                icon={<MdFiberNew className="text-3xl text-primary" />}
               />
               <LeftDrawerLink
                 name="none"
                 title="Recommandations"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
+                icon={<BsStars className="text-2xl text-primary" />}
               />
             </List>
             <Divider className="my-2" />
@@ -104,12 +112,16 @@ const LeftDrawer = (props: Props) => {
                 title="Service Client"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
+                icon={
+                  <RiCustomerService2Fill className="text-2xl text-primary" />
+                }
               />
               <LeftDrawerLink
                 name="none"
                 title="Se déconnecter"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
+                icon={<TbLogout className="text-2xl text-red-600" />}
               />
             </List>
           </div>

@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="SQLScripts\Sprint1\Sprint1-01-Tables.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-Entities-02-MAKING_THE_IMAGENAME_FIELD_UNIQUE.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-01-ImagesStoredProcedures.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-02-CREATING_GETIMAGEBYIMAGENAME_StoredProcedure.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-03-BRANDS_TABLE_STORED_PROCEDURES.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="SQLScripts\Sprint1\Sprint1-01-Tables.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-01-ImagesStoredProcedures.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-02-CREATING_GETIMAGEBYIMAGENAME_StoredProcedure.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-Entities-02-MAKING_THE_IMAGENAME_FIELD_UNIQUE.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-03-BRANDS_TABLE_STORED_PROCEDURES.sql" />
   </ItemGroup>
 
   <ItemGroup>

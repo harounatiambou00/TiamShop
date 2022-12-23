@@ -19,7 +19,7 @@ namespace api.Services.JwtService
                 var credentials = new SigningCredentials(symetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
                 var header = new JwtHeader(credentials);
 
-                var payLoad = new JwtPayload(id.ToString(), null, null, null, remenberMe ? DateTime.Today.AddDays(365) : DateTime.Today.AddMinutes(30));
+                var payLoad = new JwtPayload(id.ToString(), null, null, null, remenberMe ? DateTime.Now.AddDays(365) : DateTime.Now.AddDays(1));
 
                 var token = new JwtSecurityToken(header, payLoad);
 

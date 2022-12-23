@@ -19,7 +19,7 @@ const VerificationEmailSentSuccessfullyDialog = (props: Props) => {
       open={props.open}
       keepMounted
       onClose={props.handleClose}
-      aria-describedby="verification-email-success-dialog-description"
+      aria-describedby="verification-email-failed-dialog-description"
     >
       <DialogTitle className="font-kanit">
         Vérification de votre adresse email
@@ -27,7 +27,7 @@ const VerificationEmailSentSuccessfullyDialog = (props: Props) => {
       <DialogContent>
         <DialogContentText
           className="font-kanit font-light"
-          id="verification-email-success-dialog-description"
+          id="verification-email-success-failed-description"
         >
           Votre compte a été crée avec succès. Un email de confirmation vous a
           été envoyé, vous y trouverez un lien qui vous permettra de confirmer

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import {
   SubCategoryLink,
@@ -13,6 +13,7 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
 } from "@mui/material";
 
@@ -23,6 +24,7 @@ type Props = {
   nestedLinks?: Array<SubCategoryLink>;
   opennedCategory: CategoryNameType;
   setOpennedCategory: React.Dispatch<React.SetStateAction<CategoryNameType>>;
+  icon?: ReactNode;
 };
 
 const LeftDrawerLink = ({
@@ -32,6 +34,7 @@ const LeftDrawerLink = ({
   nestedLinks,
   opennedCategory,
   setOpennedCategory,
+  icon,
 }: Props) => {
   const handleClickCategoryLink = (name: CategoryNameType) => {
     if (opennedCategory === name) setOpennedCategory("none");
@@ -44,6 +47,7 @@ const LeftDrawerLink = ({
           onClick={() => handleClickCategoryLink(name)}
           className="w-full flex items-center justify-between"
         >
+          {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText
             primary={title}
             primaryTypographyProps={{
@@ -91,6 +95,7 @@ const LeftDrawerLink = ({
     return (
       <ListItem className="w-full flex flex-col items-start justify-between">
         <ListItemButton className="w-full flex items-center justify-between">
+          {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText
             primary={title}
             primaryTypographyProps={{

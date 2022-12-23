@@ -40,6 +40,7 @@ import {
   AdminSignInPage,
   Dashboard,
   ClientsPage,
+  BrandsPage,
 } from "./admin-pages";
 
 import "./App.css";
@@ -128,7 +129,7 @@ function App() {
           <Route path="order" element={<OrderPage />} />
           {/*On this page a client will can ask for repayment */}
           <Route path="repayment" element={<RepaymentPage />} />
-          {/*On this page we will confirm an order */}
+          {/*On this page we will vc an order */}
           <Route path="order-congrats" element={<OrderCongratulationsPage />} />
           {/*On this page a client will can finalize his order process */}
           <Route path="finalize-order" element={<GiveOrderInfoPage />} />
@@ -153,6 +154,7 @@ function App() {
           <Route path="" element={<AdminLayout />}>
             <Route path="" element={<Dashboard />} />
             <Route path="clients" element={<ClientsPage />} />
+            <Route path="brands" element={<BrandsPage />} />
           </Route>
         </Route>
         {/*On this page an admin can login*/}

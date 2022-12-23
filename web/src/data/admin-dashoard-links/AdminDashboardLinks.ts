@@ -52,4 +52,10 @@ export let adminDashboardLinks = [
     to: "/admin/deliveries",
     icon: TbTruckDelivery,
   },
+  {
+    title: "Les marques",
+    isActive: false,
+    to: "/admin/brands",
+    icon: TbTruckDelivery,
+  },
 ];
