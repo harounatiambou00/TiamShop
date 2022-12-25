@@ -1,6 +1,7 @@
 import React from "react";
 import { footerLinks } from "../../../data/footer/footer-links";
 import FooterLink from "./footer-link/FooterLink";
+import { BiLinkAlt } from "react-icons/bi";
 
 const FooterBody = () => {
   return (
@@ -8,7 +9,7 @@ const FooterBody = () => {
       {footerLinks.map((category) => {
         return (
           <div
-            key={category.name}
+            key={footerLinks.indexOf(category)}
             className={category.name === "contacts" ? "col-span-2" : ""}
           >
             <h1 className="sm:text-3xl lg:text-xl text-gray-50 opacity-90 uppercase font-raleway font-medium mb-2 sm:mt-5 lg:mt-0">
@@ -18,7 +19,7 @@ const FooterBody = () => {
               {category.links.map((link) => {
                 return (
                   <FooterLink
-                    key={link.href}
+                    key={category.links.indexOf(link)}
                     href={link.href}
                     to={link.to}
                     text={link.text}

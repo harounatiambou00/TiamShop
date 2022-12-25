@@ -10,7 +10,9 @@ const BrandsList = (props: Props) => {
   return (
     <div className="mt-5 grid grid-cols-5 gap-4">
       {props.brands.map((brand) => {
-        return <BrandListItem brand={brand} />;
+        return (
+          <BrandListItem key={brand.brandId + brand.BrandName} brand={brand} />
+        );
       })}
     </div>
   );
