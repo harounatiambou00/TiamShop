@@ -71,7 +71,6 @@ const AddBrandDialog = ({ open, setOpen }: Props) => {
       );
       let response = await fetch(url, { method: "POST", body: formData });
       let content = await response.json();
-      console.log(content);
       if (content.success) {
         setSavingIsLoading(false);
         setOpenBrandAddedSnackbar(true);

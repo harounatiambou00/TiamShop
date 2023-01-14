@@ -47,7 +47,7 @@ export const categoryLinks = [
   },
   {
     name: "computers_components",
-    title: "Accéssoires ordinateurs",
+    title: "Accéssoires pour ordinateurs",
     to: "",
     subCategories: [
       {
@@ -126,7 +126,7 @@ export const categoryLinks = [
   },
   {
     name: "phones_components",
-    title: "Accéssoires téléphones",
+    title: "Accéssoires pour téléphones",
     to: "",
     subCategories: [
       {

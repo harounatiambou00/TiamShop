@@ -3,7 +3,7 @@ import { MdAddCircleOutline } from "react-icons/md";
 
 type Props = {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   buttonTitle: string;
   buttonAction?:
     | ((event: React.MouseEvent<HTMLButtonElement>) => void)

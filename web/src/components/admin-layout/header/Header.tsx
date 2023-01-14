@@ -8,7 +8,7 @@ const Header = () => {
     (state: RootState) => state.authenticatedAdmin.admin
   );
   return (
-    <div className="w-full h-ten-percent bg-white flex items-center justify-between px-10">
+    <div className="w-full h-ten-percent bg-white flex items-center justify-between px-10 drop-shadow-md">
       <img
         src={process.env.PUBLIC_URL + "/assets/images/logo.png"}
         alt="logo"

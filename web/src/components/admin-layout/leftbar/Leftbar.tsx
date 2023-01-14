@@ -11,7 +11,7 @@ const Leftbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="h-full w-60 bg-white flex flex-col">
+    <div className="h-full w-60 bg-white flex flex-col drop-shadow-md">
       <div className="flex flex-col mt-10 w-60 px-5">
         <div
           onClick={() => navigate("/admin")}
@@ -27,7 +27,10 @@ const Leftbar = () => {
           <HiOutlineUsers className="text-primary text-2xl" />
           <span className="text-gray-600 ml-3">Les clients</span>
         </div>
-        <div className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md">
+        <div
+          onClick={() => navigate("/admin/categories")}
+          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
+        >
           <BiCategoryAlt className="text-primary text-2xl" />
           <span className="text-gray-600 ml-3">Les catégories</span>
         </div>

@@ -38,7 +38,6 @@ const BrandListItem = (props: Props) => {
       };
 
       setBrandImage(image);
-      console.log(brandImage);
     }
   };
 
