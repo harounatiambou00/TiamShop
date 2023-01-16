@@ -12,7 +12,7 @@ const Header = () => {
       <img
         src={process.env.PUBLIC_URL + "/assets/images/logo.png"}
         alt="logo"
-        className="h-16"
+        className="h-20"
       />
       <div className="w-96 rounded-3xl h-10 bg-gray-100 hover:bg-gray-200 flex items-center px-5">
         <BsSearch />

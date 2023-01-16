@@ -14,6 +14,7 @@ import {
 
 import { BiTrash } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
+import SubCategoriesList from "./sub-categories-list/SubCategoriesList";
 
 type Props = {
   category: Category;
@@ -24,7 +25,7 @@ const CategoryListItem = ({ category }: Props) => {
     null
   );
 
-  const getBrandImage = async () => {
+  const getCategoryImage = async () => {
     let url =
       process.env.REACT_APP_API_URL + "images/" + category.CategoryImageId;
     let response = await fetch(url);
@@ -45,10 +46,10 @@ const CategoryListItem = ({ category }: Props) => {
   };
 
   React.useEffect(() => {
-    getBrandImage();
+    getCategoryImage();
   }, []);
   return categoryImage !== null ? (
-    <div className="w-full flex flex-col items-center justify-center mb-32">
+    <div className="w-full flex flex-col items-center justify-center mb-16">
       <h1 className="text-2xl font-medium opacity-80 mb-4 text-center">
         {category.CategoryTitle}
       </h1>
@@ -60,7 +61,32 @@ const CategoryListItem = ({ category }: Props) => {
           ";base64," +
           categoryImage.imageBytes
         }
-        className="h-40 text-center rounded-lg drop-shadow-lg"
+        className="h-32 text-center rounded-lg drop-shadow-lg"
+      />
+      <div className="mt-4 flex items-center justify-center">
+        <IconButton>
+          <FiEdit />
+        </IconButton>
+        <Button
+          size="large"
+          color="error"
+          startIcon={<BiTrash />}
+          className="normal-case font-raleway ml-2"
+        >
+          Supprimer
+        </Button>
+      </div>
+      <SubCategoriesList categoryId={category.CategoryId} />
+    </div>
+  ) : (
+    <div className="w-full flex flex-col items-center justify-center mb-32">
+      <Skeleton
+        variant="rectangular"
+        className="rounded-lg drop-shadow-lg mb-4 h-5 w-60"
+      />
+      <Skeleton
+        variant="rectangular"
+        className="rounded-lg drop-shadow-lg h-40 w-60"
       />
       <div className="mt-4 flex items-center justify-center">
         <IconButton>
@@ -76,8 +102,6 @@ const CategoryListItem = ({ category }: Props) => {
         </Button>
       </div>
     </div>
-  ) : (
-    <Skeleton variant="circular" />
   );
 };
 

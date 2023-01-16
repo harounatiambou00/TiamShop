@@ -16,7 +16,6 @@ import { TransitionProps } from "@mui/material/transitions";
 import { MdOutlineClose } from "react-icons/md";
 import { BiSave } from "react-icons/bi";
 import { LoadingButton } from "@mui/lab";
-import { CustomImage } from "../../../data/models/Image";
 import { Category } from "../../../data/models/Category";
 import CategoryAddedSnakbar from "./CategoryAddedSnakbar";
 
@@ -38,7 +37,7 @@ type Props = {
 type ValuesState = {
   name: string;
   title: string;
-  categoryId: number | string;
+  targetedCategoryName: string | number;
 };
 
 const AddCategoryOrSubCategoryDialog = ({
@@ -53,7 +52,7 @@ const AddCategoryOrSubCategoryDialog = ({
   const [values, setValues] = React.useState<ValuesState>({
     name: "",
     title: "",
-    categoryId: 0,
+    targetedCategoryName: "", //This will contain the category of the subcategor to be added.
   });
 
   const handleChange =
@@ -67,6 +66,7 @@ const AddCategoryOrSubCategoryDialog = ({
     setWhatIsBeingAdded(event.target.value);
   };
 
+  // Category or SubCategory image
   const [categoryImage, setCategoryImage] = React.useState<File | null>(null);
   const handleChangeCategoryImage = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -100,6 +100,32 @@ const AddCategoryOrSubCategoryDialog = ({
         if (content.success) {
           setSavingIsLoading(false);
           setOpenCategoryAddedSnackbar(true);
+        }
+      }
+    } else {
+      if (categoryImage && values.name && values.title) {
+        let url = process.env.REACT_APP_API_URL + "sub-categories";
+        //This will contain the category of the subcategory
+        let targetedCategory = categories.find(
+          (c) => c.CategoryName === values.targetedCategoryName
+        );
+        console.log(targetedCategory);
+        if (targetedCategory) {
+          const formData = new FormData();
+          formData.append("imageFile", categoryImage);
+          formData.append("SubCategoryName", values.name);
+          formData.append("SubCategoryTitle", values.title);
+          formData.append("CategoryId", targetedCategory.CategoryId.toString());
+          let response = await fetch(url, {
+            method: "POST",
+            body: formData,
+          });
+
+          let content = await response.json();
+          if (content.success) {
+            setSavingIsLoading(false);
+            setOpenCategoryAddedSnackbar(true);
+          }
         }
       }
     }
@@ -248,20 +274,22 @@ const AddCategoryOrSubCategoryDialog = ({
               <Select
                 labelId="category-select-label"
                 id="category-select"
-                value={values.categoryId}
+                value={values.targetedCategoryName}
                 label="Dans quelle catégorie voulez-vous l'ajouter ?"
                 onChange={(event: SelectChangeEvent<string | number>) => {
-                  setValues({ ...values, categoryId: event.target.value });
-                  console.log(values.categoryId);
+                  setValues({
+                    ...values,
+                    targetedCategoryName: event.target.value,
+                  });
                 }}
               >
-                <MenuItem value={0} className="font-kanit font-light">
+                <MenuItem value="choose" className="font-kanit font-light">
                   Choisir
                 </MenuItem>
                 {categories.map((category) => (
                   <MenuItem
-                    key={category.categoryId}
-                    value={category.categoryId}
+                    key={category.CategoryId}
+                    value={category.CategoryName}
                     className="font-kanit"
                   >
                     {category.CategoryTitle}

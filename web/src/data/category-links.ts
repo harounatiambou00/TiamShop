@@ -29,7 +29,7 @@ export const categoryLinks = [
     to: "",
     subCategories: [
       {
-        name: "pcs",
+        name: "laptops",
         title: "Ordinateurs portables",
         to: "",
       } as SubCategoryLink,

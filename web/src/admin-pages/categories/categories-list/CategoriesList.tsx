@@ -10,7 +10,7 @@ const CategoriesList = ({ categories }: Props) => {
     <div className="mt-5">
       {categories.map((category) => {
         return (
-          <CategoryListItem category={category} key={category.categoryId} />
+          <CategoryListItem category={category} key={category.CategoryId} />
         );
       })}
     </div>

@@ -11,7 +11,7 @@ const Leftbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="h-full w-60 bg-white flex flex-col drop-shadow-md">
+    <div className="h-full w-60 bg-white flex flex-col drop-shadow-md justify-center">
       <div className="flex flex-col mt-10 w-60 px-5">
         <div
           onClick={() => navigate("/admin")}

@@ -1,0 +1,18 @@
+.image_list_item:hover .image_list_item_bar {
+  height: 100%;
+}
+
+.image_list_item_bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.image_list_item_bar_actions {
+  display: none;
+}
+
+.image_list_item_bar:hover .image_list_item_bar_actions {
+  display: flex;
+}
