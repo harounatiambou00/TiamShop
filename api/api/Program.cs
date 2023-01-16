@@ -20,6 +20,8 @@ global using api.Data.ServiceResponse;
 
 using DbUp;
 using api.Services.BrandService;
+using api.Services.CategoryService;
+using api.Services.SubCategoryService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,9 +59,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INeighborhoodService, NeighborhoodService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
-
-
-
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

@@ -57,9 +57,9 @@ CREATE TABLE dbo.tblProducts(
 	
 	OperatingSystem nvarchar(200) NULL, -- Computers && Smartphones && Tablets
 	RAM nvarchar(100) NULL, -- Computers && Smartphones && Tablets
-	HardDisks nvarchar(500) NULL, -- Computers && Smartphones && Tablets
-	Processor nvarchar(500) NULL, -- Computers && Smartphones && Tablets
-	GraphicCard nvarchar(500) NULL, -- Computers && Smartphones && Tablets
+	HardDisks nvarchar(500) NULL, -- Computers
+	Processor nvarchar(500) NULL, -- Computers
+	GraphicCard nvarchar(500) NULL, -- Computers
 	InputOutputs nvarchar(500) NULL, -- Computers && Smartphones && Tablets
 	ScreenSize nvarchar(100) NULL, -- Computers && Smartphones && Tablets && Télévision && Monitor
 	ScreenResolution nvarchar(500) NULL, -- Computers && Smartphones && Tablets && Télévision && Monitor

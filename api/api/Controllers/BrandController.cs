@@ -60,7 +60,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<Brand?>>> GettBrandByIs(int id)
+        public async Task<ActionResult<ServiceResponse<Brand?>>> GetBrandById(int id)
         {
             return await _brandService.GetBrandById(id);
         }

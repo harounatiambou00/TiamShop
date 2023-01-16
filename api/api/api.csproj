@@ -11,6 +11,10 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-01-ImagesStoredProcedures.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-02-CREATING_GETIMAGEBYIMAGENAME_StoredProcedure.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-03-BRANDS_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-04-CATEGORIES_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-05-SUBCATEGORIES_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-06-GET_SUBCATEDORIES_FROM_CATEGORYID_SP.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-07-DEBUGGING_GET_SUBCATEDORIES_FROM_CATEGORYID_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +22,10 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-02-CREATING_GETIMAGEBYIMAGENAME_StoredProcedure.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-Entities-02-MAKING_THE_IMAGENAME_FIELD_UNIQUE.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-03-BRANDS_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-04-CATEGORIES_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-05-SUBCATEGORIES_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-06-GET_SUBCATEDORIES_FROM_CATEGORYID_SP.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProcedures-07-DEBUGGING_GET_SUBCATEDORIES_FROM_CATEGORYID_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>
