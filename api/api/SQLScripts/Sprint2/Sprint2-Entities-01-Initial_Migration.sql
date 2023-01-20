@@ -78,7 +78,7 @@ CREATE TABLE dbo.tblProducts(
 );
 
 CREATE TABLE dbo.tblProductImages(
-	ProductImageId  bigint IDENTITY(1, 1),
+	ProductImageId  bigint IDENTITY(1,1),
 	ProductId UNIQUEIDENTIFIER NOT NULL,
 
 	CONSTRAINT PK_ProductImages PRIMARY KEY(ProductImageId, ProductId),

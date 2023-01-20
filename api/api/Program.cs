@@ -22,6 +22,10 @@ using DbUp;
 using api.Services.BrandService;
 using api.Services.CategoryService;
 using api.Services.SubCategoryService;
+using api.Services.ProductCaracteristicService;
+using api.Services.ProductService;
+using api.Services.ProductImageService;
+using api.Services.ProductDiscountService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +65,10 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
+builder.Services.AddScoped<IProductCarateristicService, ProductCaracteristicService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductImageService, ProductImageService>();
+builder.Services.AddScoped<IProductDiscountService, ProductDiscountService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

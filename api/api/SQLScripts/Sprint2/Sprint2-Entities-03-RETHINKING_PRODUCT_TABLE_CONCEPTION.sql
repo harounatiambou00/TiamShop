@@ -4,7 +4,7 @@ ALTER TABLE dbo.tblProducts
 DROP COLUMN OperatingSystem, RAM, HardDisks, Processor, GraphicCard, InputOutputs, ScreenSize, ScreenResolution, TouchScreen, Network, Camera, DoubleCamera, SmartTV;
 
 CREATE TABLE dbo.tblProductCaracteristics (
-	ProductCaracteristicId BIGINT NOT NULL,
+	ProductCaracteristicId BIGINT NOT NULL IDENTITY(1, 1),
 	ProductCaracteristicKey NVARCHAR(500) NOT NULL,
 	ProductCaracteristicValue NVARCHAR(500) NOT NULL,
 	ProductID UNIQUEIDENTIFIER,
