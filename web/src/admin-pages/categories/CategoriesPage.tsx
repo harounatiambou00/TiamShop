@@ -35,6 +35,11 @@ const AdminCategoriesPage = () => {
     getCategories();
   }, []);
 
+  const refreshCategories = () => {
+    setCategories([]);
+    getCategories();
+  };
+
   const [openAddCategoryDialog, setOpenAddCategoryDialog] =
     React.useState<boolean>(false);
   return (
@@ -49,11 +54,15 @@ const AdminCategoriesPage = () => {
         </div>
       ) : (
         <div>
-          <CategoriesList categories={categories} />
+          <CategoriesList
+            categories={categories}
+            refreshCategories={refreshCategories}
+          />
           <AddCategoryOrSubCategoryDialog
             open={openAddCategoryDialog}
             setOpen={setOpenAddCategoryDialog}
             categories={categories}
+            refreshCategories={refreshCategories}
           />
         </div>
       )}

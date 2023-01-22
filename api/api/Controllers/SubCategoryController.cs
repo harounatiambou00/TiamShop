@@ -87,5 +87,56 @@ namespace api.Controllers
         {
             return await _subCategoryService.GetSubCategoryByName(subCategoryName);
         }
+
+        [HttpDelete("{subCategoryId}")]
+        public async Task<ActionResult<ServiceResponse<string?>>> DeleteSubCategory(int subCategoryId)
+        {
+            /*
+             * TODO : Delete the image of the subcategory
+             * * */
+            return await _subCategoryService.DeleteSubCategory(subCategoryId);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<string?>>> UpdateSubCategory(IFormFile? newImageFile, [FromForm] SubCategory newSubCategory)
+        {
+            if (newImageFile != null)
+            {
+                string filePath = Path.GetTempFileName();
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await newImageFile.CopyToAsync(stream);
+                }
+                byte[] imageData = await System.IO.File.ReadAllBytesAsync(filePath);
+                AddImageDTO request = new AddImageDTO()
+                {
+                    ImageName = DateTime.Now.ToString() + "-" + newImageFile.FileName,
+                    ImageDescription = newSubCategory.SubCategoryName + "'s image",
+                    ImageExtension = newImageFile.ContentType,
+                    ImageBytes = imageData,
+                    ImageSize = (float)newImageFile.Length / 8,
+                };
+
+                var addNewImageResponse = await _imageService.AddImage(request);
+                if (addNewImageResponse.Success && addNewImageResponse.Data != null)
+                {
+                    newSubCategory.SubCategoryImageId = addNewImageResponse.Data;
+                    /*
+                     * TODO : 
+                     * DELETE THE OLD IMAGE
+                     * **/
+                }
+                else
+                {
+                    return new ServiceResponse<string?>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "SOMTHING_WENT_WRONG_WHILE_ADDING_THE_NEW_IMAGE"
+                    };
+                }
+            }
+            return await _subCategoryService.UpdateSubCategory(newSubCategory);
+        }
     }
 }

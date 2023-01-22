@@ -63,9 +63,37 @@ namespace api.Services.SubCategoryService
             }
         }
 
-        public Task<ServiceResponse<string?>> DeleteSubCategory(int subCategoryId)
+        public async Task<ServiceResponse<string?>> DeleteSubCategory(int subCategoryId)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "EXEC dbo.DeleteSubCategory @SubCategoryId";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        {"@SubCategoryId", subCategoryId},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = await connection.ExecuteAsync(query, parameters);
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = affectedRows == 1,
+                        Message = affectedRows >= 1 ? "SUBCATEGORY_DELETED_SUCCESSFULLY" : "SUBCATEGORY_NOT_FOUND"
+                    };
+                }
+                catch
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "SUBCATEGORY_NOT_FOUND"
+                    };
+                }
+            }
         }
 
         public async Task<ServiceResponse<List<SubCategory>>> GetAllSubCategories()
@@ -167,9 +195,55 @@ namespace api.Services.SubCategoryService
             }
         }
 
-        public Task<ServiceResponse<string?>> UpdateSubCategory(SubCategory newSubCategory)
+        public async Task<ServiceResponse<string?>> UpdateSubCategory(SubCategory newSubCategory)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string SQL = "EXEC dbo.UpdateSubCategory @SubCategoryId, @SubCategoryName, @SubCategoryTitle, @SubCategoryImageId, @SubCategoryRanking, @CategoryId";
+                    var dictionary = new Dictionary<string, object?>
+                    {
+                        {"@SubCategoryId", newSubCategory.SubCategoryId},
+                        {"@SubCategoryName", newSubCategory.SubCategoryName},
+                        {"@SubCategoryTitle", newSubCategory.SubCategoryTitle},
+                        {"@SubCategoryImageId", newSubCategory.SubCategoryImageId},
+                        {"@SubCategoryRanking", newSubCategory.SubCategoryRanking},
+                        {"@CategoryId", newSubCategory.CategoryId},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = await connection.ExecuteAsync(SQL, parameters);
+
+                    if (affectedRows == 1)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "SUBCATEGORY_UPDATED_SUCCESSFULLY"
+                        };
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "SUBCATEGORY_UPDATE_FAILED"
+                        };
+                    }
+                }
+                catch(Exception ex)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = ex.Message
+                    };
+                }
+            }
         }
     }
 }

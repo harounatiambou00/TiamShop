@@ -18,6 +18,7 @@ import SubCategoriesList from "./sub-categories-list/SubCategoriesList";
 
 type Props = {
   category: Category;
+  refreshCategories: () => void;
 };
 
 const CategoryListItem = ({ category }: Props) => {

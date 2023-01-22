@@ -6,6 +6,7 @@ import { AiOutlineGift, AiOutlineDashboard } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@mui/material";
+import { BsTags } from "react-icons/bs";
 
 const Leftbar = () => {
   const navigate = useNavigate();
@@ -33,6 +34,13 @@ const Leftbar = () => {
         >
           <BiCategoryAlt className="text-primary text-2xl" />
           <span className="text-gray-600 ml-3">Les catégories</span>
+        </div>
+        <div
+          onClick={() => navigate("/admin/products")}
+          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
+        >
+          <BsTags className="text-primary text-2xl" />
+          <span className="text-gray-600 ml-3">Les produits</span>
         </div>
         <div className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md">
           <TbTruckDelivery className="text-primary text-2xl" />

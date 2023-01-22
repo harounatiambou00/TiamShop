@@ -4,13 +4,18 @@ import CategoryListItem from "./category-list-item/CategoryListItem";
 
 type Props = {
   categories: Category[];
+  refreshCategories: () => void;
 };
-const CategoriesList = ({ categories }: Props) => {
+const CategoriesList = ({ categories, refreshCategories }: Props) => {
   return (
     <div className="mt-5">
       {categories.map((category) => {
         return (
-          <CategoryListItem category={category} key={category.CategoryId} />
+          <CategoryListItem
+            category={category}
+            key={category.CategoryId}
+            refreshCategories={refreshCategories}
+          />
         );
       })}
     </div>

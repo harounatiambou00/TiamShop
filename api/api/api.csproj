@@ -32,6 +32,7 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-28-UPDATING_UpdateProduct_PROCEDURE_SO_THAT_IT_WILL_RETURN_THE_UPDATED_PRODUCT.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-29-UPDATING_UpdateProduct.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-30-UPDATING_DeleteProduct.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-31-DeleteSubCategory.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +61,7 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-28-UPDATING_UpdateProduct_PROCEDURE_SO_THAT_IT_WILL_RETURN_THE_UPDATED_PRODUCT.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-29-UPDATING_UpdateProduct.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-30-UPDATING_DeleteProduct.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-31-DeleteSubCategory.sql" />
   </ItemGroup>
 
   <ItemGroup>

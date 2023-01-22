@@ -45,10 +45,10 @@ const DeletionAlert = ({
             id="deletion-alert-dialog-description"
             className="font-kanit font-light text-base"
           >
-            Cette action est irréversible, une fois que vous appuyer sur
+            Cette action est irréversible, une fois que vous appuyez sur
             CONFIRMER le compte sera supprimer definitivement. Et de ce fait
-            tout ce qui est lié à ce client sera aussi supprimer, son panier,
-            ses commandes, etc ...
+            tout ce qui est lié à ce client sera aussi supprimé, son panier, ses
+            commandes, etc ...
           </DialogContentText>
         </DialogContent>
         <DialogActions>

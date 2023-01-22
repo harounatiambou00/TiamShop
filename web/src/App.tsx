@@ -42,6 +42,7 @@ import {
   ClientsPage,
   BrandsPage,
   AdminCategoryPage,
+  ProductsPage,
 } from "./admin-pages";
 
 import "./App.css";
@@ -157,6 +158,7 @@ function App() {
             <Route path="clients" element={<ClientsPage />} />
             <Route path="brands" element={<BrandsPage />} />
             <Route path="categories" element={<AdminCategoryPage />} />
+            <Route path="products" element={<ProductsPage />} />
           </Route>
         </Route>
         {/*On this page an admin can login*/}

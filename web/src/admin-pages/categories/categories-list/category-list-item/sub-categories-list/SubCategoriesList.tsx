@@ -27,7 +27,6 @@ const SubCategoriesList = ({ categoryId }: Props) => {
     let response = await fetch(url);
     let content = await response.json();
     let data = content.data;
-    console.log(data);
 
     for (let i of data) {
       setSubCategories((currentSubCategories) => [
@@ -49,6 +48,11 @@ const SubCategoriesList = ({ categoryId }: Props) => {
   React.useEffect(() => {
     getSubCategories();
   }, []);
+
+  const refreshSubCategories = () => {
+    setSubCategories([]);
+    getSubCategories();
+  };
   return !isLoading ? (
     <Swiper
       slidesPerView={4}
@@ -62,7 +66,10 @@ const SubCategoriesList = ({ categoryId }: Props) => {
       {subCategories.map((subCategory) => {
         return (
           <SwiperSlide key={subCategory.subCategoryId}>
-            <SubCategoriesListItem subCategory={subCategory} />
+            <SubCategoriesListItem
+              subCategory={subCategory}
+              refreshSubCategories={refreshSubCategories}
+            />
           </SwiperSlide>
         );
       })}

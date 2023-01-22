@@ -32,6 +32,7 @@ type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   categories: Category[];
+  refreshCategories: () => void;
 };
 
 type ValuesState = {
@@ -44,6 +45,7 @@ const AddCategoryOrSubCategoryDialog = ({
   open,
   setOpen,
   categories,
+  refreshCategories,
 }: Props) => {
   const handleClose = () => {
     setOpen(false);
@@ -100,6 +102,7 @@ const AddCategoryOrSubCategoryDialog = ({
         if (content.success) {
           setSavingIsLoading(false);
           setOpenCategoryAddedSnackbar(true);
+          setTimeout(() => refreshCategories(), 3000);
         }
       }
     } else {
@@ -125,6 +128,7 @@ const AddCategoryOrSubCategoryDialog = ({
           if (content.success) {
             setSavingIsLoading(false);
             setOpenCategoryAddedSnackbar(true);
+            setTimeout(() => refreshCategories(), 3000);
           }
         }
       }
