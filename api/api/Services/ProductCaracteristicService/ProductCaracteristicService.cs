@@ -30,7 +30,7 @@ namespace api.Services.ProductCaracteristicService
                     };
                     var parameters = new DynamicParameters(dictionary);
                     var affectedRows = await connection.ExecuteAsync(sql, parameters);
-                    if (affectedRows == 1)
+                    if (affectedRows >= 1)
                     {
                         return new ServiceResponse<string?>
                         {
@@ -49,13 +49,13 @@ namespace api.Services.ProductCaracteristicService
                         };
                     }
                 }
-                catch
+                catch(Exception e)
                 {
                     return new ServiceResponse<string?>
                     {
                         Data = null,
                         Success = false,
-                        Message = "PRODUCT_CARACTERISTIC_CREATION_FAILED"
+                        Message = e.Message
                     };
                 }
 

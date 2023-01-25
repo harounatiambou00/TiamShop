@@ -1,6 +1,5 @@
 import React from "react";
 import { Page } from "../../components/admin-layout";
-import { Brand } from "../../data/models/Brand";
 import BrandsList from "./BrandsList";
 import { CircularProgress } from "@mui/material";
 import AddBrandDialog from "./add-brand-dialog/AddBrandDialog";

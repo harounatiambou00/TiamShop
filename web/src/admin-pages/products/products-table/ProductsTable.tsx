@@ -24,7 +24,7 @@ type Props = {
 const ProductsTable = ({ products }: Props) => {
   return (
     <TableContainer className="mt-12 bg-gray-50" component={Paper}>
-      <Table sx={{ minWidth: 900 }}>
+      <Table sx={{ minWidth: 2000 }}>
         <TableHead>
           <TableRow>
             <TableCell
@@ -45,7 +45,7 @@ const ProductsTable = ({ products }: Props) => {
               Prix
             </TableCell>
             <TableCell align="center" className="font-kanit">
-              Quatité
+              Quantité
             </TableCell>
             <TableCell align="center" className="font-kanit">
               Garantie
@@ -73,35 +73,35 @@ const ProductsTable = ({ products }: Props) => {
                     <MdKeyboardArrowDown />
                   </IconButton>
                 </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  Nom
+                <TableCell align="center" className="font-kanit max-w-0">
+                  {product.productName}
+                </TableCell>
+                <TableCell align="center" className="font-kanit max-w-md">
+                  {product.productDescription}
                 </TableCell>
                 <TableCell align="center" className="font-kanit">
-                  Description
+                  {product.productReference}
                 </TableCell>
                 <TableCell align="center" className="font-kanit">
-                  Référence
+                  {product.productPrice}
                 </TableCell>
                 <TableCell align="center" className="font-kanit">
-                  Prix
+                  {product.productQuantity}
                 </TableCell>
                 <TableCell align="center" className="font-kanit">
-                  Quatité
+                  {product.waranty}
                 </TableCell>
                 <TableCell align="center" className="font-kanit">
-                  Garantie
-                </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  Couleur
+                  {product.color}
                 </TableCell>
                 <TableCell
                   align="center"
                   className="font-kanit flex items-center"
                 >
-                  <IconButton>
+                  <IconButton size="small">
                     <FiEdit />
                   </IconButton>
-                  <IconButton color="error">
+                  <IconButton size="small" color="error">
                     <BsTrash />
                   </IconButton>
                 </TableCell>

@@ -119,8 +119,8 @@ namespace api.Controllers
                             }
                             return new ServiceResponse<string?>()
                             {
-                                Data = null,
-                                Success = false,
+                                Data = addedProduct.ProductId.ToString(),
+                                Success = true,
                                 Message = "PRODUCT_ADDED_SUCCESSFULLY"
                             };
                         }

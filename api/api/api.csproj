@@ -33,6 +33,7 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-29-UPDATING_UpdateProduct.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-30-UPDATING_DeleteProduct.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-31-DeleteSubCategory.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-32-ALTERING_THE_PRODUCT_CARACTERISTICS_TABLE_FOR_PK.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +63,7 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-29-UPDATING_UpdateProduct.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-30-UPDATING_DeleteProduct.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-31-DeleteSubCategory.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-32-ALTERING_THE_PRODUCT_CARACTERISTICS_TABLE_FOR_PK.sql" />
   </ItemGroup>
 
   <ItemGroup>

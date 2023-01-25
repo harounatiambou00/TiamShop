@@ -89,9 +89,9 @@
                     reference += productName[i];
                 i++;
             }
-            string lastSevenCharactersOfProducId = productId.ToString().Substring(28).ToUpper();
+            string lastSevenCharactersOfProducId = productId.ToString().Substring(28);
             reference += lastSevenCharactersOfProducId;
-            return reference;
+            return reference.ToUpper();
         }
     }
 }
