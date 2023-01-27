@@ -9,6 +9,7 @@ using api.Services.ProductImageService;
 using api.Services.SubCategoryService;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Reflection.PortableExecutable;
 using static System.Net.Mime.MediaTypeNames;
 using Image = api.Models.Image;
 
@@ -492,6 +493,38 @@ namespace api.Services.ProductService
                         Data = null,
                         Success = false,
                         Message = e.Message,
+                    };
+                }
+            }
+        }
+
+        public async Task<ServiceResponse<List<ProductCaracteristic>>> GetCaracteristicsOfProduct(Guid productId)
+        {
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var sql = @"SELECT * FROM dbo.tblProductCaracteristics WHERE ProductID = @ProductId";
+                    var dictionnary = new Dictionary<string, object?>
+                    {
+                        { "@ProductId", productId }
+                    };
+                    var parameters = new DynamicParameters(dictionnary);
+                    var caracteristics = await connection.QueryAsync<ProductCaracteristic>(sql, parameters);
+                    return new ServiceResponse<List<ProductCaracteristic>>()
+                    {
+                        Data = caracteristics.AsList(),
+                        Success = true,
+                        Message = ""
+                    };
+                }catch(Exception e)
+                {
+                    return new ServiceResponse<List<ProductCaracteristic>>()
+                    {
+                        Data = {},
+                        Success = false,
+                        Message = e.ToString()
                     };
                 }
             }

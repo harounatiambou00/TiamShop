@@ -32,6 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Adding cors
 builder.Services.AddCors();
 
+var AllowOrigins = "_allowOrigins";
 
 //This gets the database connection from the appsettings.json file and creates the database if it doesn't exist.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -76,6 +77,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Configuring cors so that our client app can have access to the api
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+                      policy =>
+                      {
+                          policy.WithOrigins(new string[] {
+                                    "http://localhost:3000",
+                                    "http://localhost:3000/product-details/",
+                                    "http://localhost:3000/product-details/40789A01-75EC-47C7-A5E4-DC6631167D14"
+                                })
+                                .AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+                       });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -85,20 +103,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//Configuring cors so that our client app can have access to the api
-app.UseCors(options => options.WithOrigins(
-                                    new[] { "http://localhost:3000",
-                                        "https://localhost:3000",
-                                        "http://localhost:3001",
-                                        "https://localhost:3001",
-                                        "http://localhost:3000/admin",
-                                        "http://localhost:3000/account/1042"
-                                    }
-                                )
-                              .AllowAnyHeader()
-                              .AllowAnyMethod()
-                              .AllowCredentials()
-);
+app.UseCors();
 
 app.UseHttpsRedirection();
 

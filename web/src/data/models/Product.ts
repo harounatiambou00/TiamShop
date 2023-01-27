@@ -5,7 +5,7 @@ export interface Product {
   productDescription: string;
   productPrice: number;
   productQuantity: number;
-  createdAt: Date;
+  createdAt: Date | null;
   waranty: string;
   color: string;
   productPrincipalImageId: number;

@@ -61,13 +61,13 @@ namespace api.Controllers
             return await _categoryService.GetAllCategories();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get-category-by-id/{id}")]
         public async Task<ActionResult<ServiceResponse<Category?>>> GetCategoryById(int id)
         {
             return await _categoryService.GetCategoryById(id);
         }
 
-        [HttpGet("{categoryName}")]
+        [HttpGet("get-category-by-name/{categoryName}")]
         public async Task<ActionResult<ServiceResponse<Category?>>> GetCategoryByName(string categoryName)
         {
             return await _categoryService.GetCategoryByName(categoryName);

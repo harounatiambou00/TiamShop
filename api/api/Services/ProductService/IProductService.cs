@@ -9,6 +9,7 @@ namespace api.Services.ProductService
         Task<ServiceResponse<Product?>> GetProductById(Guid productId);
         Task<ServiceResponse<Product?>> GetProductByReference(string productReference);
         Task<ServiceResponse<Image?>> GetPrincipalImageOfProduct(Guid productId);
+        Task<ServiceResponse<List<ProductCaracteristic>>> GetCaracteristicsOfProduct(Guid productId);
         Task<ServiceResponse<List<Image>>> GetProductImages(Guid productId);
         Task<ServiceResponse<Product?>> AddProduct(AddProductDTO product);
         Task<ServiceResponse<Product?>> UpdateProduct(UpdateProductDTO newProduct);

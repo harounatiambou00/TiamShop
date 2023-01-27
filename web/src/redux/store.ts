@@ -1,11 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authenticatedAdminSlice } from "./slices/authenticatedAdminSlice";
 import { authenticatedClientSlice } from "./slices/authenticatedClientSlice";
+import { categoriesSlice } from "./slices/categoriesSlice";
+import { subCategoriesSlice } from "./slices/subCategoriesSlice";
+import { allProductSlice } from "./slices/allProductsSlice";
+import { currentProductSlice } from "./slices/currentProductSlice";
 
 export const store = configureStore({
   reducer: {
     authenticatedClient: authenticatedClientSlice.reducer,
     authenticatedAdmin: authenticatedAdminSlice.reducer,
+    categories: categoriesSlice.reducer,
+    subCategories: subCategoriesSlice.reducer,
+    allProducts: allProductSlice.reducer,
+    currentProduct: currentProductSlice.reducer,
   },
 });
 

@@ -49,10 +49,19 @@ import "./App.css";
 import { Client } from "./data/models/Client";
 import { useAppDispatch } from "./hooks/redux-custom-hooks/useAppDispatch";
 import { setAuthenticatedClient } from "./redux/slices/authenticatedClientSlice";
+import { setCategories } from "./redux/slices/categoriesSlice";
+import { Category } from "./data/models/Category";
+import { Product } from "./data/models/Product";
+import { setAllProducts } from "./redux/slices/allProductsSlice";
+import { Brand } from "./data/models/Brand";
+import { SubCategory } from "./data/models/SubCategory";
+import { setSubCategories } from "./redux/slices/subCategoriesSlice";
+import { setAllBrands } from "./redux/slices/allBrandsSlice";
 
 function App() {
   const dispatch = useAppDispatch();
 
+  //Get The authenticated client
   React.useEffect(() => {
     const getAuthenticatedClient = async () => {
       let url = process.env.REACT_APP_API_URL + "auth/get-logged-client";
@@ -85,6 +94,133 @@ function App() {
     };
     getAuthenticatedClient();
   });
+
+  //Get all the products
+  React.useEffect(() => {
+    const getProducts = async () => {
+      let url = process.env.REACT_APP_API_URL + "products/get-all-products";
+      let response = await fetch(url);
+      let content = await response.json();
+      if (content.success) {
+        let products = [] as Product[];
+        let data = content.data;
+        for (let i of data) {
+          products = [
+            ...products,
+            {
+              ...{},
+              productId: i.productId,
+              productReference: i.productReference,
+              productName: i.productName,
+              productDescription: i.productDescription,
+              productPrice: i.productPrice,
+              productQuantity: i.productQuantity,
+              createdAt: i.createdAt,
+              waranty: i.waranty,
+              color: i.color,
+              productPrincipalImageId: i.productPrincipalImageId,
+              brandId: i.brandId,
+              subCategoryId: i.subCategoryId,
+              productDiscountId: i.productDiscountId,
+            },
+          ];
+        }
+
+        dispatch(setAllProducts({ allProducts: products }));
+      } else {
+        dispatch(setAllProducts({ allProducts: [] }));
+      }
+    };
+    getProducts();
+  }, []);
+
+  //Get The categories
+  React.useEffect(() => {
+    const getCategories = async () => {
+      const url = process.env.REACT_APP_API_URL + "categories";
+      let response = await fetch(url);
+      let content = await response.json();
+      if (content.success) {
+        let data = content.data;
+        let categories: Category[] = [];
+        for (let i of data) {
+          categories.push({
+            ...{},
+            CategoryId: i.categoryId,
+            CategoryName: i.categoryName,
+            CategoryTitle: i.categoryTitle,
+            CategoryImageId: i.categoryImageId,
+            CategoryRanking: i.categoryRanking,
+          });
+        }
+        dispatch(setCategories({ categories }));
+      } else {
+        dispatch(setCategories({ categories: [] }));
+      }
+    };
+    getCategories();
+  }, []);
+
+  //Get The sub-categories
+  React.useEffect(() => {
+    const getSubCategories = async () => {
+      const url = process.env.REACT_APP_API_URL + "sub-categories";
+      let response = await fetch(url);
+      let content = await response.json();
+      if (content.success) {
+        let subCategories = [] as SubCategory[];
+        let data = content.data;
+        for (let i of data) {
+          subCategories = [
+            ...subCategories,
+            {
+              ...{},
+              SubCategoryId: i.subCategoryId,
+              SubCategoryName: i.subCategoryName,
+              SubCategoryTitle: i.subCategoryTitle,
+              SubCategoryImageId: i.subCategoryImageId,
+              SubCategoryRanking: i.subCategoryRanking,
+              CategoryId: i.categoryId,
+            },
+          ];
+        }
+        dispatch(setSubCategories({ subCategories }));
+      }
+    };
+    getSubCategories();
+  }, []);
+
+  //Get The brands
+  React.useEffect(() => {
+    const getBrands = async () => {
+      const url = process.env.REACT_APP_API_URL + "brands";
+      let response = await fetch(url);
+      let content = await response.json();
+      if (content.success) {
+        let brands = [] as Brand[];
+        let data = content.data;
+        for (let i of data) {
+          brands.push({
+            ...{},
+            brandId: i.brandId,
+            BrandName: i.brandName,
+            PartnershipDate:
+              i.partnershipDate != null
+                ? new Date(
+                    parseInt(i.partnershipDate.slice(0, 4)),
+                    parseInt(i.partnershipDate.slice(5, 7)) - 1,
+                    parseInt(i.partnershipDate.slice(8, 10))
+                  )
+                : null,
+            BrandWebsiteLink: i.brandWebsiteLink,
+            BrandImageId: i.brandImageId,
+          });
+        }
+        dispatch(setAllBrands({ brands }));
+      }
+    };
+    getBrands();
+  }, []);
 
   return (
     <div

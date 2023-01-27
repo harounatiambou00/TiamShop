@@ -24,6 +24,36 @@ const DesktopSearchbar = () => {
     setOpenDesktopSearchbarPopover(false);
   };
 
+  const [categories, setCategories] = React.useState<any[]>([]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const getCategories = async () => {
+    setIsLoading(true);
+    const url = process.env.REACT_APP_API_URL + "categories";
+    let response = await fetch(url);
+    let content = await response.json();
+    let data = content.data;
+
+    for (let i of data) {
+      setCategories((currentCategories) => [
+        ...currentCategories,
+        {
+          ...{},
+          CategoryId: i.categoryId,
+          CategoryName: i.categoryName,
+          CategoryTitle: i.categoryTitle,
+          CategoryImageId: i.categoryImageId,
+          CategoryRanking: i.categoryRanking,
+        },
+      ]);
+    }
+    setIsLoading(false);
+  };
+
+  React.useEffect(() => {
+    getCategories();
+  }, []);
+
   return (
     <div className="h-7/12 w-large-screens-searchbar-width ml-20">
       <div
@@ -43,7 +73,20 @@ const DesktopSearchbar = () => {
                 : "h-full w-full rounded-l-md"
             }
           >
-            <option className="">Toutes les catégories</option>
+            <option value="" className="">
+              Toutes les catégories
+            </option>
+            {categories.map((category) => {
+              return (
+                <option
+                  key={category.CategoryId}
+                  value={category.CategoryId}
+                  className="font-light"
+                >
+                  {category.CategoryTitle}
+                </option>
+              );
+            })}
           </select>
         </div>
         <input

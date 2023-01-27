@@ -1,7 +1,7 @@
 export type Brand = {
   brandId: number;
   BrandName: string;
-  PartnershipDate: Date;
+  PartnershipDate: Date | null;
   BrandWebsiteLink: string;
   BrandImageId: number;
 };
