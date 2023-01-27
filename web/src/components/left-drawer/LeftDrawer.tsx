@@ -8,8 +8,9 @@ import { MdFiberNew } from "react-icons/md";
 import { BsStars } from "react-icons/bs";
 import { RiCustomerService2Fill } from "react-icons/ri";
 import { TbLogout } from "react-icons/tb";
-import { categoryLinks, CategoryNameType } from "../../data/category-links";
 import LeftDrawerLink from "./left-drawer-link/LeftDrawerLink";
+import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../redux/store";
 
 type Props = {
   open: boolean;
@@ -17,8 +18,14 @@ type Props = {
 };
 
 const LeftDrawer = (props: Props) => {
-  const [opennedCategory, setOpennedCategory] =
-    React.useState<CategoryNameType>("none");
+  let categories = useAppSelector(
+    (state: RootState) => state.categories.categories
+  );
+  let subCategories = useAppSelector(
+    (state: RootState) => state.subCategories.subCategories
+  );
+  const [opennedCategory, setOpennedCategory] = React.useState("none");
+
   const navigate = useNavigate();
   return (
     <div className="">
@@ -83,13 +90,15 @@ const LeftDrawer = (props: Props) => {
               Nos catégories
             </h1>
             <List disablePadding>
-              {categoryLinks.map((link) => {
+              {categories.map((category) => {
                 return (
                   <LeftDrawerLink
-                    key={link.name}
-                    name={link.name}
-                    title={link.title}
-                    nestedLinks={link.subCategories}
+                    key={category.CategoryId}
+                    name={category.CategoryName}
+                    title={category.CategoryTitle}
+                    subCategories={subCategories.filter(
+                      (s) => s.CategoryId === category.CategoryId
+                    )}
                     opennedCategory={opennedCategory}
                     setOpennedCategory={setOpennedCategory}
                   />

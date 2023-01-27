@@ -11,6 +11,8 @@ import "./header.css";
 import { categoryLinks } from "../../data/category-links";
 import Navlinks from "./navlinks/Navlinks";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../redux/store";
 
 interface Props {
   /**
@@ -24,6 +26,9 @@ interface Props {
 }
 
 const Header = (props: Props) => {
+  let categories = useAppSelector(
+    (state: RootState) => state.categories.categories
+  );
   const navigate = useNavigate();
   return (
     <ElevationScroll {...props}>
@@ -58,17 +63,17 @@ const Header = (props: Props) => {
             <Button
               startIcon={<BiMenuAltLeft />}
               variant="outlined"
-              className="font-medium"
+              className="font-medium font-kanit"
               onClick={() => props.setOpenLeftDrawer(true)}
             >
               MENU
             </Button>
-            {categoryLinks.map((link) => (
+            {categories.map((category) => (
               <Button
-                key={link.name}
+                key={category.CategoryId}
                 className="text-gray-200 text-sm font-medium font-raleway normal-case hover:text-primary"
               >
-                {link.title}
+                {category.CategoryTitle}
               </Button>
             ))}
           </div>

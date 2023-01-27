@@ -1,10 +1,6 @@
 import React, { ReactNode } from "react";
 
 import {
-  SubCategoryLink,
-  CategoryNameType,
-} from "../../../data/category-links";
-import {
   MdOutlineKeyboardArrowDown,
   MdOutlineKeyboardArrowUp,
 } from "react-icons/md";
@@ -16,14 +12,15 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { SubCategory } from "../../../data/models/SubCategory";
 
 type Props = {
-  name: CategoryNameType;
+  name: string;
   title: string;
   action?: () => void;
-  nestedLinks?: Array<SubCategoryLink>;
-  opennedCategory: CategoryNameType;
-  setOpennedCategory: React.Dispatch<React.SetStateAction<CategoryNameType>>;
+  subCategories?: SubCategory[];
+  opennedCategory: string;
+  setOpennedCategory: React.Dispatch<React.SetStateAction<string>>;
   icon?: ReactNode;
 };
 
@@ -31,16 +28,16 @@ const LeftDrawerLink = ({
   name,
   title,
   action,
-  nestedLinks,
+  subCategories,
   opennedCategory,
   setOpennedCategory,
   icon,
 }: Props) => {
-  const handleClickCategoryLink = (name: CategoryNameType) => {
+  const handleClickCategoryLink = (name: string) => {
     if (opennedCategory === name) setOpennedCategory("none");
     else setOpennedCategory(name);
   };
-  if (nestedLinks) {
+  if (subCategories) {
     return (
       <ListItem className="w-full flex flex-col items-start justify-between">
         <ListItemButton
@@ -69,11 +66,11 @@ const LeftDrawerLink = ({
         </ListItemButton>
         <Collapse in={opennedCategory === name} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {nestedLinks.map((subCategory) => {
+            {subCategories.map((subCategory) => {
               return (
-                <ListItemButton sx={{ pl: 4 }} key={subCategory.name}>
+                <ListItemButton sx={{ pl: 4 }} key={subCategory.SubCategoryId}>
                   <ListItemText
-                    primary={subCategory.title}
+                    primary={subCategory.SubCategoryTitle}
                     primaryTypographyProps={{
                       sx: {
                         fontFamily: "raleway, 'sans-serif'",
