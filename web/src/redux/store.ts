@@ -5,6 +5,7 @@ import { categoriesSlice } from "./slices/categoriesSlice";
 import { subCategoriesSlice } from "./slices/subCategoriesSlice";
 import { allProductSlice } from "./slices/allProductsSlice";
 import { currentProductSlice } from "./slices/currentProductSlice";
+import { allBrandsSlice } from "./slices/allBrandsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     subCategories: subCategoriesSlice.reducer,
     allProducts: allProductSlice.reducer,
     currentProduct: currentProductSlice.reducer,
+    allBrands: allBrandsSlice.reducer,
   },
 });
 

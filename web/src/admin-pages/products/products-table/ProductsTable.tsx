@@ -1,7 +1,7 @@
 import React from "react";
 import { Product } from "../../../data/models/Product";
 import {
-  Button,
+  Avatar,
   Checkbox,
   IconButton,
   Paper,
@@ -12,105 +12,33 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { BiArrowToBottom, BiEdit } from "react-icons/bi";
-import { MdKeyboardArrowDown } from "react-icons/md";
-import { BsTrash } from "react-icons/bs";
-import { FiEdit } from "react-icons/fi";
+import { MdArrowDropDown, MdKeyboardArrowDown } from "react-icons/md";
+
+import ProductTableRow from "./product-table-row/ProductTableRow";
 
 type Props = {
-  products: Product[];
+  displayedProducts: Product[];
 };
 
-const ProductsTable = ({ products }: Props) => {
+const ProductsTable = ({ displayedProducts }: Props) => {
   return (
-    <TableContainer className="mt-12 bg-gray-50" component={Paper}>
-      <Table sx={{ minWidth: 2000 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell
-              padding="checkbox"
-              align="center"
-              className="font-kanit"
-            ></TableCell>
-            <TableCell align="center" className="font-kanit">
-              Nom
-            </TableCell>
-            <TableCell align="center" className="font-kanit">
-              Description
-            </TableCell>
-            <TableCell align="center" className="font-kanit">
-              Référence
-            </TableCell>
-            <TableCell align="center" className="font-kanit">
-              Prix
-            </TableCell>
-            <TableCell align="center" className="font-kanit">
-              Quantité
-            </TableCell>
-            <TableCell align="center" className="font-kanit">
-              Garantie
-            </TableCell>
-            <TableCell align="center" className="font-kanit">
-              Couleur
-            </TableCell>
-            <TableCell
-              padding="checkbox"
-              align="center"
-              className="font-kanit"
-            ></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {products.map((product) => {
-            return (
-              <TableRow>
-                <TableCell
-                  align="center"
-                  className="font-kanit flex items-center"
-                >
-                  <Checkbox size="small" />
-                  <IconButton size="small">
-                    <MdKeyboardArrowDown />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="center" className="font-kanit max-w-0">
-                  {product.productName}
-                </TableCell>
-                <TableCell align="center" className="font-kanit max-w-md">
-                  {product.productDescription}
-                </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  {product.productReference}
-                </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  {product.productPrice}
-                </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  {product.productQuantity}
-                </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  {product.waranty}
-                </TableCell>
-                <TableCell align="center" className="font-kanit">
-                  {product.color}
-                </TableCell>
-                <TableCell
-                  align="center"
-                  className="font-kanit flex items-center"
-                >
-                  <IconButton size="small">
-                    <FiEdit />
-                  </IconButton>
-                  <IconButton size="small" color="error">
-                    <BsTrash />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Paper elevation={2} className="w-full mt-10 flex flex-col">
+      <div className="w-full grid grid-cols-24 gap-0 items-center bg-primary text-white h-14 rounded-t-md drop-shadow-sm">
+        <div className="flex items-center justify-center col-span-2"></div>
+        <div className="col-span-2 max-h-16"></div>
+
+        <div className="col-span-12 flex flex-col items-start text-lg font-normal font-amita">
+          Produit
+        </div>
+        <div className="col-span-2 text-lg font-amita">Prix</div>
+        <div className="col-span-2 text-center text-lg font-amita">Vendus</div>
+        <div className="col-span-2 text-center text-lg font-amita">Stock</div>
+        <div className="col-span-2 flex items-center justify-center"></div>
+      </div>
+      {displayedProducts.map((product) => (
+        <ProductTableRow key={product.productId} product={product} />
+      ))}
+    </Paper>
   );
 };
 

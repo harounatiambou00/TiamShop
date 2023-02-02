@@ -59,7 +59,7 @@ module.exports = {
         "12/12": "100%",
         "header-sm-height": "18rem",
         "header-lg-height": "8rem",
-        '128': '32rem',
+        128: "32rem",
       },
       width: {
         "large-screens-searchbar-width": "700px",
@@ -67,6 +67,10 @@ module.exports = {
       margin: {
         "header-lg-height": "8rem",
         "header-sm-height": "18rem",
+      },
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        24: "repeat(24, minmax(0, 1fr))",
       },
     },
   },

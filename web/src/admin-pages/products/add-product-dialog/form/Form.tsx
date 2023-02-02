@@ -20,12 +20,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import { ProductCaracteristic, ValuesState } from "./AddProductDialog";
-import { SubCategory } from "../../../data/models/SubCategory";
-import { Brand } from "../../../data/models/Brand";
-import moment from "moment";
+import { ProductCaracteristic, ValuesState } from "../AddProductDialog";
+import { SubCategory } from "../../../../data/models/SubCategory";
+import { Brand } from "../../../../data/models/Brand";
 import { BsTrash } from "react-icons/bs";
-import { ErrorType } from "./form/ErrorType";
+import { ErrorType } from "./ErrorType";
 
 type Props = {
   subCategories: SubCategory[];
@@ -68,9 +67,7 @@ const Form = ({
   handleChangeProductDiscountPercentage,
   handleChangeProductQuantity,
   handleChangeProductPrice,
-  handleSave,
   formError,
-  setFormError,
   caracteristics,
   setCaracteristics,
   currentCaracteristic,

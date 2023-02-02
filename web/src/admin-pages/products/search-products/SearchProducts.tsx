@@ -4,11 +4,11 @@ import { Button, FormControl, OutlinedInput } from "@mui/material";
 import { BsFilter, BsSearch } from "react-icons/bs";
 
 type Props = {
-  products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  displayedProducts: Product[];
+  setDisplayedProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 };
 
-const SearchProducts = ({ products, setProducts }: Props) => {
+const SearchProducts = ({ displayedProducts, setDisplayedProducts }: Props) => {
   return (
     <div className="flex items-center mt-10 justify-center">
       <FormControl className="w-9/12 mr-5">

@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Dialog,
@@ -7,6 +8,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import React from "react";
+import { BsTrash } from "react-icons/bs";
 
 type Props = {
   open: boolean;
@@ -23,6 +25,13 @@ const ConfirmDeletionDialog = ({
   text,
   deletionAction,
 }: Props) => {
+  const [deletionInProgress, setDeletionInProgress] =
+    React.useState<boolean>(false);
+  const handleDelete = async () => {
+    setDeletionInProgress(true);
+    await deletionAction();
+    setDeletionInProgress(false);
+  };
   return (
     <Dialog
       open={open}
@@ -45,10 +54,24 @@ const ConfirmDeletionDialog = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)}>Annuler</Button>
-        <Button onClick={deletionAction} color="error">
-          Confirmer
+        <Button
+          onClick={() => setOpen(false)}
+          className="font-kanit normal-case font-light"
+        >
+          Annuler
         </Button>
+        <LoadingButton
+          onClick={() => {
+            handleDelete();
+          }}
+          loading={deletionInProgress}
+          color="error"
+          variant="outlined"
+          startIcon={<BsTrash />}
+          loadingPosition="start"
+        >
+          Confirmer
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

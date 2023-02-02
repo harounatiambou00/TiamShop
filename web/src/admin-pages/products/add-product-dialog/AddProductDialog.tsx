@@ -5,9 +5,10 @@ import { Dialog, IconButton, Slide } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { BiArrowBack, BiSave } from "react-icons/bi";
 import { LoadingButton } from "@mui/lab";
-import Form from "./Form";
+import Form from "./form/Form";
 import moment from "moment";
 import { ErrorType } from "./form/ErrorType";
+import { SubCategory } from "../../../data/models/SubCategory";
 
 type Props = {
   open: boolean;

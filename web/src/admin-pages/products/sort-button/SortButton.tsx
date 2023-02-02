@@ -4,11 +4,10 @@ import { Button } from "@mui/material";
 import { BsSortAlphaDown } from "react-icons/bs";
 
 type Props = {
-  products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  displayedProducts: Product[];
 };
 
-const SortButton = ({ products, setProducts }: Props) => {
+const SortButton = ({ displayedProducts }: Props) => {
   return (
     <Button
       variant="outlined"
