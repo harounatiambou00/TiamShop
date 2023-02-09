@@ -50,5 +50,32 @@ namespace api.Controllers
         {
             return await _imageService.GetImageById(id);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServiceResponse<string?>>> DeleteImage(Int64 id)
+        {
+            return await _imageService.DeleteImage(id);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<string?>>> UpdateImage([FromForm] Int64 id, IFormFile newFile)
+        {
+            string filePath = Path.GetTempFileName();
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await newFile.CopyToAsync(stream);
+            }
+            byte[] imageData = await System.IO.File.ReadAllBytesAsync(filePath);
+            Image request = new Image()
+            {
+                ImageId = id,
+                ImageName = DateTime.Now.ToString() + "-" + newFile.FileName,
+                ImageDescription = "",
+                ImageExtension = newFile.ContentType,
+                ImageBytes = imageData,
+                ImageSize = (float)newFile.Length / 8,
+            };
+            return await _imageService.UpdateImage(request);
+        }
     }     
 }

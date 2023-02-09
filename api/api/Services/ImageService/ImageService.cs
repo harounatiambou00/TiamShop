@@ -81,7 +81,36 @@ namespace api.Services.ImageService
 
         public async Task<ServiceResponse<string?>> DeleteImage(Int64 id)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string sql = "EXEC dbo.DeleteImage @ImageId";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        {"@ImageId", id},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = await connection.ExecuteAsync(sql, parameters);
+
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = affectedRows >= 1,
+                        Message = !(affectedRows >= 1) ? "IMAGE_NOT_FOUND" : "IMAGE_DELETED_SUCCESSFULLY"
+                    };
+                }
+                catch (Exception e)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message
+                    };
+                }
+            }
         }
 
         public async Task<ServiceResponse<List<Image>>> GetAllImages()
@@ -200,7 +229,7 @@ namespace api.Services.ImageService
                     var parameters = new DynamicParameters(dictionary);
                     var affectedRows = await connection.ExecuteAsync(SQL, parameters);
 
-                    if (affectedRows == 1)
+                    if (affectedRows >= 1)
                     {
                         return new ServiceResponse<string?>
                         {

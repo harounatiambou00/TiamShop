@@ -1,18 +1,6 @@
 import React from "react";
 import { Product } from "../../../data/models/Product";
-import {
-  Avatar,
-  Checkbox,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import { MdArrowDropDown, MdKeyboardArrowDown } from "react-icons/md";
+import { Paper } from "@mui/material";
 
 import ProductTableRow from "./product-table-row/ProductTableRow";
 

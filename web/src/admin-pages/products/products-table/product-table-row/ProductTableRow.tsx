@@ -1,26 +1,14 @@
 import React from "react";
 import { Product } from "../../../../data/models/Product";
-import {
-  Avatar,
-  Box,
-  Checkbox,
-  Collapse,
-  Divider,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@mui/material";
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { Checkbox, IconButton, Skeleton } from "@mui/material";
 import ProductCaracteristic from "../../../../data/models/ProductCaracteristic";
 import { BsTrash } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
-import { AiOutlineEye } from "react-icons/ai";
 import ConfirmDeletionDialog from "../../../../components/core/confirm-deletion-dialog/ConfirmDeletionDialog";
 import SuccessSnackbar from "../../../../components/core/suucess-snackbar/SuccessSnackbar";
 import ErrorSnackbar from "../../../../components/core/error-snackbar/ErrorSnackbar";
 import UpdateProductDialog from "../../update-product-dialog/UpdateProductDialog";
+import { CustomImage } from "../../../../data/models/Image";
 
 type Props = {
   product: Product;
@@ -30,7 +18,23 @@ const ProductTableRow = ({ product }: Props) => {
   const [caracteristics, setCaracteristics] = React.useState<
     ProductCaracteristic[]
   >([]);
+  const [principalImage, setPrincipalImage] =
+    React.useState<CustomImage | null>(null);
   React.useEffect(() => {
+    const getPrincipalImageOfTheProduct = async () => {
+      let url =
+        process.env.REACT_APP_API_URL +
+        "images/" +
+        product.productPrincipalImageId;
+      let response = await fetch(url, {
+        method: "GET",
+      });
+      let content = await response.json();
+      if (content.success) {
+        setPrincipalImage(content.data);
+      } else console.log(content);
+    };
+
     const getProductCaracteristics = async () => {
       let url =
         process.env.REACT_APP_API_URL +
@@ -54,6 +58,7 @@ const ProductTableRow = ({ product }: Props) => {
         }
       }
     };
+    getPrincipalImageOfTheProduct();
     getProductCaracteristics();
   }, []);
 
@@ -77,14 +82,19 @@ const ProductTableRow = ({ product }: Props) => {
   const [openUpdateProductDialog, setOpenUpdateProductDialog] =
     React.useState<boolean>(false);
 
-  return (
+  return principalImage ? (
     <div className="pt-5 w-full grid grid-cols-24 gap-0 items-center border-b-2 pb-2 cursor-pointer hover:bg-gray-100">
       <div className="flex items-center justify-center col-span-2">
         <Checkbox size="small" />
       </div>
       <img
-        className="col-span-2 max-h-16"
-        src={process.env.PUBLIC_URL + "/assets/images/logo.png"}
+        className="col-span-2 max-h-24"
+        src={
+          "data:" +
+          principalImage.imageExtension +
+          ";base64," +
+          principalImage.imageBytes
+        }
         alt={product.productReference}
       />
 
@@ -111,11 +121,19 @@ const ProductTableRow = ({ product }: Props) => {
         </span>
       </div>
       <div className="col-span-2 flex items-center justify-center">
-        <IconButton size="small" className="mr-1">
-          <FiEdit onClick={() => setOpenUpdateProductDialog(true)} />
+        <IconButton
+          size="small"
+          className="mr-1"
+          onClick={() => setOpenUpdateProductDialog(true)}
+        >
+          <FiEdit />
         </IconButton>
-        <IconButton size="small" color="error">
-          <BsTrash onClick={() => setOpenDeletionAlert(true)} />
+        <IconButton
+          size="small"
+          color="error"
+          onClick={() => setOpenDeletionAlert(true)}
+        >
+          <BsTrash />
         </IconButton>
       </div>
       <UpdateProductDialog
@@ -144,6 +162,8 @@ const ProductTableRow = ({ product }: Props) => {
             tout ce qui est lié à ce dernier sera aussi supprimé, les commandes, les livraisons etc ..."
       />
     </div>
+  ) : (
+    <Skeleton className="pt-5 w-full " />
   );
 };
 

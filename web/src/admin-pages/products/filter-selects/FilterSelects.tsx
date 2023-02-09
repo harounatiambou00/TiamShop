@@ -62,6 +62,7 @@ const FilterSelects = ({
             <MenuItem
               value={subCategory.SubCategoryId}
               className="font-kanit font-light"
+              key={subCategory.SubCategoryId}
             >
               {subCategory.SubCategoryTitle}
             </MenuItem>
@@ -90,7 +91,11 @@ const FilterSelects = ({
             Toutes les marques
           </MenuItem>
           {brands.map((brand) => (
-            <MenuItem value={brand.brandId} className="font-kanit font-light">
+            <MenuItem
+              value={brand.brandId}
+              className="font-kanit font-light"
+              key={brand.brandId}
+            >
               {brand.BrandName}
             </MenuItem>
           ))}

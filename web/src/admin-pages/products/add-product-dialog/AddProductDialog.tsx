@@ -192,7 +192,6 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
       }
     } else {
       setFormError("NONE");
-      setIsSaving(false);
     }
 
     //Adding the product
@@ -228,6 +227,8 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
     addProductFormData.append("ProductPrincipalImageId", "");
     addProductFormData.append("SubCategoryId", values.subCategoryId.toString());
     addProductFormData.append("BrandId", values.brandId.toString());
+    console.log(addProductFormData);
+
     let addProductResponse = await fetch(
       process.env.REACT_APP_API_URL + "products",
       {
@@ -235,8 +236,9 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
         body: addProductFormData,
       }
     );
-
+    console.log(addProductResponse);
     let addProductResponseContent = await addProductResponse.json();
+    console.log(addProductResponseContent);
     if (
       addProductResponseContent !== null &&
       addProductResponseContent.success
@@ -260,6 +262,8 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
               },
             }
           );
+          let content = await addProductCaracteristicResponse.json();
+          if (!content.success) console.log(content);
         }
       }
       setFormError("NONE");

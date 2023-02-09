@@ -30,24 +30,12 @@ namespace api.Services.ProductCaracteristicService
                     };
                     var parameters = new DynamicParameters(dictionary);
                     var affectedRows = await connection.ExecuteAsync(sql, parameters);
-                    if (affectedRows >= 1)
+                    return new ServiceResponse<string?>
                     {
-                        return new ServiceResponse<string?>
-                        {
-                            Data = null,
-                            Success = true,
-                            Message = "PRODUCT_CARACTERISTIC_CREATED_SUCCESSFULLY"
-                        };
-                    }
-                    else
-                    {
-                        return new ServiceResponse<string?>
-                        {
-                            Data = null,
-                            Success = false,
-                            Message = "PRODUCT_CARACTERISTIC_CREATION_FAILED"
-                        };
-                    }
+                        Data = null,
+                        Success = true,
+                        Message = "PRODUCT_CARACTERISTIC_CREATED_SUCCESSFULLY"
+                    };
                 }
                 catch(Exception e)
                 {
@@ -178,7 +166,7 @@ namespace api.Services.ProductCaracteristicService
                 try
                 {
                     connection.Open();
-                    string sql = "@EXEC dbo.UpdateProductCaracteristic @ProductCaracteristicId, @ProductCaracteristicKey, @ProductCaracteristicValue, @ProductID";
+                    string sql = "EXEC dbo.UpdateProductCaracteristic @ProductCaracteristicId, @ProductCaracteristicKey, @ProductCaracteristicValue, @ProductID";
                     var dictionary = new Dictionary<string, object>
                     {
                         {"@ProductCaracteristicId", newProductCracteristic.ProductCaracteristicId},
@@ -188,32 +176,20 @@ namespace api.Services.ProductCaracteristicService
                     };
                     var parameters = new DynamicParameters(dictionary);
                     var affectedRows = await connection.ExecuteAsync(sql, parameters);
-                    if (affectedRows == 1)
+                    return new ServiceResponse<string?>
                     {
-                        return new ServiceResponse<string?>
-                        {
-                            Data = null,
-                            Success = true,
-                            Message = "PRODUCT_CARACTERISTIC_UPDATED_SUCCESSFULLY"
-                        };
-                    }
-                    else
-                    {
-                        return new ServiceResponse<string?>
-                        {
-                            Data = null,
-                            Success = false,
-                            Message = "PRODUCT_CARACTERISTIC_NOT_FOUND"
-                        };
-                    }
+                        Data = null,
+                        Success = true,
+                        Message = "PRODUCT_CARACTERISTIC_UPDATED_SUCCESSFULLY"
+                    };
                 }
-                catch
+                catch(Exception e)
                 {
                     return new ServiceResponse<string?>
                     {
                         Data = null,
                         Success = false,
-                        Message = "PRODUCT_CARACTERISTIC_UPDATE_FAILED"
+                        Message = e.Message
                     };
                 }
             }

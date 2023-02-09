@@ -1,8 +1,7 @@
 import React from "react";
 import { Page } from "../../components/admin-layout";
-import { Product, isAProduct } from "../../data/models/Product";
+import { Product } from "../../data/models/Product";
 import { CircularProgress } from "@mui/material";
-import { BsFilter, BsSearch } from "react-icons/bs";
 import SearchProducts from "./search-products/SearchProducts";
 import SortButton from "./sort-button/SortButton";
 import FilterSelects from "./filter-selects/FilterSelects";
@@ -10,7 +9,6 @@ import ProductsTable from "./products-table/ProductsTable";
 import AddProductDialog from "./add-product-dialog/AddProductDialog";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
-import UpdateProductDialog from "./update-product-dialog/UpdateProductDialog";
 
 const ProductsPage = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -34,7 +32,7 @@ const ProductsPage = () => {
 
   const [openAddProductDialog, setOpenAddProductDialog] =
     React.useState<boolean>(false);
-  return !isLoading && products.length !== 0 ? (
+  return !isLoading ? (
     <Page
       title="Les produits"
       buttonTitle="Ajouter"
@@ -62,7 +60,7 @@ const ProductsPage = () => {
       />
     </Page>
   ) : (
-    <div>
+    <div className="w-full h-full flex items-center justify-center">
       <CircularProgress />
     </div>
   );

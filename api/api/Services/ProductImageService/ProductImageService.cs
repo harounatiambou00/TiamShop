@@ -252,5 +252,39 @@ namespace api.Services.ProductImageService
             }
         }
 
+        public async Task<ServiceResponse<ProductImage?>> GetProductImageByProductIdAndImageId(Guid productId, long imageId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string SQL = "Select * FROM dbo.tblProductImages WHERE ProductId=@ProductId AND ImageId=@ImageId;";
+                    var dictionary = new Dictionary<string, object?>
+                        {
+                            {"@ProductId", productId},
+                            {"@ImageId", imageId},
+                        };
+                    var parameters = new DynamicParameters(dictionary);
+                    var productImage = await connection.QueryFirstAsync<ProductImage>(SQL, parameters);
+                    return new ServiceResponse<ProductImage?>()
+                    {
+                        Data = productImage == null ? null : productImage,
+                        Success = productImage == null ? false : true,
+                        Message = productImage == null ? "PRODUCT_IMAGE_NOT_FOUND" : "PRODUCT_IMAGE_FOUND_SUCCESSFULLY"
+                    };
+
+                }
+                catch (Exception e)
+                {
+                    return new ServiceResponse<ProductImage?>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message,
+                    };
+                }
+            }
+        }
     }
 }
