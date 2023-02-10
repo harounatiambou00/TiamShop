@@ -8,7 +8,6 @@ import { LoadingButton } from "@mui/lab";
 import Form from "./form/Form";
 import moment from "moment";
 import { ErrorType } from "./form/ErrorType";
-import { SubCategory } from "../../../data/models/SubCategory";
 
 type Props = {
   open: boolean;
@@ -40,8 +39,15 @@ export type ValuesState = {
 };
 
 export type ProductCaracteristic = {
+  id: number;
   key: string;
   value: string;
+};
+
+export type ImageToBeAddedType = {
+  id: number;
+  file: File;
+  base64: string;
 };
 
 const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
@@ -114,19 +120,11 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
     });
   };
 
-  const [imageFiles, setImageFiles] = React.useState<FileList | null>(null);
-  const [base64ImagesStrings, setBase64ImagesStrings] = React.useState<
-    string[]
-  >([]);
+  const [images, setImages] = React.useState<ImageToBeAddedType[]>([]);
 
   const [caracteristics, setCaracteristics] = React.useState<
     ProductCaracteristic[]
   >([]);
-  const [currentCaracteristic, setCurrentCaracteristic] =
-    React.useState<ProductCaracteristic>({
-      key: "",
-      value: "",
-    });
 
   const [errorMessage, setErrorMessage] = React.useState("");
 
@@ -166,11 +164,11 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
       setFormError("PRODUCT_BRAND_IS_REQUIRED");
       setIsSaving(false);
       return;
-    } else if (imageFiles && imageFiles.length === 0) {
+    } else if (images.length === 0) {
       setFormError("PRODUCT_MUST_HAVE_AT_LEAST_ONE_IMAGE");
       setIsSaving(false);
       return;
-    } else if (imageFiles && imageFiles.length > 10) {
+    } else if (images.length > 10) {
       setFormError("PRODUCT_MUST_HAVE_LESS_THAN_11_IMAGES");
       setIsSaving(false);
       return;
@@ -197,10 +195,8 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
     //Adding the product
     let addProductFormData = new FormData();
 
-    if (imageFiles !== null) {
-      for (let i = 0; i < imageFiles.length; i++) {
-        addProductFormData.append("images", imageFiles[i]);
-      }
+    for (let i = 0; i < images.length; i++) {
+      addProductFormData.append("images", images[i].file);
     }
     addProductFormData.append("ProductName", values.productName);
     addProductFormData.append("ProductDescription", values.productDescription);
@@ -227,13 +223,16 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
     addProductFormData.append("ProductPrincipalImageId", "");
     addProductFormData.append("SubCategoryId", values.subCategoryId.toString());
     addProductFormData.append("BrandId", values.brandId.toString());
-    console.log(addProductFormData);
 
     let addProductResponse = await fetch(
       process.env.REACT_APP_API_URL + "products",
       {
         method: "POST",
         body: addProductFormData,
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     console.log(addProductResponse);
@@ -282,10 +281,6 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
       });
       setErrorMessage("");
       setCaracteristics([]);
-      setCurrentCaracteristic({
-        key: "",
-        value: "",
-      });
     } else {
       let error = addProductResponseContent.message;
       if (
@@ -297,7 +292,7 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
         );
       } else if (error === "BRAND_NOT_FOUND") {
         setErrorMessage("Cette marque de produit n'existe pas.");
-      } else if ("SUBCATEGORY_NOT_FOUND") {
+      } else if (error === "SUBCATEGORY_NOT_FOUND") {
         setErrorMessage("Cette sous-catégorie de produit n'existe pas.");
       } else {
         setErrorMessage("Nous n'avons pas pu ajouter le produit");
@@ -347,14 +342,10 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
           handleChangeProductPrice={handleChangeProductPrice}
           handleChangeProductQuantity={handleChangeProductQuantity}
           handleSave={handleSave}
-          imageFiles={imageFiles}
-          setImageFiles={setImageFiles}
-          base64ImagesStrings={base64ImagesStrings}
-          setBase64ImagesStrings={setBase64ImagesStrings}
+          images={images}
+          setImages={setImages}
           caracteristics={caracteristics}
           setCaracteristics={setCaracteristics}
-          currentCaracteristic={currentCaracteristic}
-          setCurrentCaracteristic={setCurrentCaracteristic}
           formError={formError}
           setFormError={setFormError}
           isSaving={isSaving}

@@ -41,7 +41,7 @@ const Form = ({
     (state: RootState) => state.subCategories.subCategories
   );
   return (
-    <div className="px-10 grid grid-cols-4 mt-10 items-start justify-start">
+    <div className="px-10 grid grid-cols-4 mt-10 h-fit justify-start">
       <FormGroup className="col-span-4">
         <label className="font-kanit mb-1 pl-2">Nom</label>
         <OutlinedInput

@@ -20,11 +20,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import { ProductCaracteristic, ValuesState } from "../AddProductDialog";
+import {
+  ImageToBeAddedType,
+  ProductCaracteristic,
+  ValuesState,
+} from "../AddProductDialog";
 import { SubCategory } from "../../../../data/models/SubCategory";
 import { Brand } from "../../../../data/models/Brand";
-import { BsTrash } from "react-icons/bs";
 import { ErrorType } from "./ErrorType";
+import { FiEdit } from "react-icons/fi";
+import CaracteristicsSection from "./caracteristics-section/CaracteriticsSection";
 
 type Props = {
   subCategories: SubCategory[];
@@ -39,17 +44,11 @@ type Props = {
   handleChangeProductDiscountEndEnd: (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void;
-  imageFiles: FileList | null;
-  setImageFiles: React.Dispatch<React.SetStateAction<FileList | null>>;
-  base64ImagesStrings: string[];
-  setBase64ImagesStrings: React.Dispatch<React.SetStateAction<string[]>>;
+  images: ImageToBeAddedType[];
+  setImages: React.Dispatch<React.SetStateAction<ImageToBeAddedType[]>>;
   caracteristics: ProductCaracteristic[];
   setCaracteristics: React.Dispatch<
     React.SetStateAction<ProductCaracteristic[]>
-  >;
-  currentCaracteristic: ProductCaracteristic;
-  setCurrentCaracteristic: React.Dispatch<
-    React.SetStateAction<ProductCaracteristic>
   >;
   formError: ErrorType;
   setFormError: React.Dispatch<React.SetStateAction<ErrorType>>;
@@ -70,19 +69,19 @@ const Form = ({
   formError,
   caracteristics,
   setCaracteristics,
-  currentCaracteristic,
-  setCurrentCaracteristic,
-  imageFiles,
-  setImageFiles,
-  base64ImagesStrings,
-  setBase64ImagesStrings,
+  images,
+  setImages,
   isSaving,
   setIsSaving,
 }: Props) => {
   const imagesInputRef = useRef<HTMLInputElement>(null);
+  const updateImageInputRef = React.useRef<HTMLInputElement>(null);
+  const [imageBeingUpdatedId, setImageBeingUpdatedId] = React.useState<
+    number | null
+  >(null);
   return (
     <div className="w-full flex justify-between p-5">
-      <div className="w-1/2 pr-10 grid grid-cols-4 gap-4">
+      <div className="w-1/2 pr-10 grid grid-cols-4 gap-4 h-fit">
         <div className="col-span-4">
           <div className="text-md font-medium">
             Nom du produit <span className="text-red-500">*</span>
@@ -120,7 +119,7 @@ const Form = ({
             size="small"
             className="font-kanit"
             multiline
-            rows={4}
+            rows={6}
             value={values.productDescription}
             onChange={(e) =>
               setValues({ ...values, productDescription: e.target.value })
@@ -301,29 +300,28 @@ const Form = ({
             <Swiper slidesPerView={3} spaceBetween={20} className="mb-2">
               <SwiperSlide className="h-full border-dashed border-2 border-primary rounded-md bg-transparent flex flex-col items-center justify-center">
                 <AiOutlinePicture className="text-4xl text-primary" />
-                <p className="text-sm text-gray-500 ">
+                <p className="text-sm font-light text-gray-500 ">
                   Déposez votre image ici, ou{" "}
                   <Button
                     size="small"
-                    className="inline normal-case text-xm"
+                    className="inline normal-case text-xm font-kanit font-light"
                     onClick={() => imagesInputRef.current?.click()}
                   >
                     cliquez pour parcourir
                   </Button>
                 </p>
               </SwiperSlide>
-              {imageFiles &&
-                base64ImagesStrings.length !== 0 &&
-                base64ImagesStrings.map((base64) => {
+              {images &&
+                images.map((image) => {
                   return (
                     <SwiperSlide
                       className="h-full rounded-md bg-transparent drop-shadow-md"
-                      key={base64}
+                      key={image.id}
                     >
-                      <ImageListItem>
+                      <ImageListItem className="h-11/12 w-11/12">
                         <img
-                          src={base64}
-                          alt="product"
+                          src={image.base64}
+                          alt={image.file.name}
                           className="h-full w-full"
                         />
                         <ImageListItemBar
@@ -331,18 +329,36 @@ const Form = ({
                           position="top"
                           actionIcon={
                             <div className="w-full flex justify-between">
-                              <Button
+                              <IconButton
                                 size="small"
-                                variant="contained"
-                                className="bg-primary font-kanit font-light normal-case"
-                                startIcon={<MdClose />}
+                                color="error"
                                 onClick={() => {
-                                  setImageFiles(null);
-                                  setBase64ImagesStrings([]);
+                                  setImages(
+                                    images.filter((i) => i.id !== image.id)
+                                  );
                                 }}
                               >
-                                Réinitialiser
-                              </Button>
+                                <MdClose />
+                              </IconButton>
+                            </div>
+                          }
+                          actionPosition="right"
+                        />
+                        <ImageListItemBar
+                          className="bg-transparent"
+                          position="bottom"
+                          actionIcon={
+                            <div className="w-full flex justify-between">
+                              <IconButton
+                                size="small"
+                                color="primary"
+                                onClick={() => {
+                                  setImageBeingUpdatedId(image.id);
+                                  updateImageInputRef.current?.click();
+                                }}
+                              >
+                                <FiEdit />
+                              </IconButton>
                             </div>
                           }
                           actionPosition="right"
@@ -351,6 +367,37 @@ const Form = ({
                     </SwiperSlide>
                   );
                 })}
+              <input
+                className="hidden"
+                accept="image/*"
+                type="file"
+                ref={updateImageInputRef}
+                onChange={(e) => {
+                  if (e.currentTarget && e.currentTarget.files) {
+                    let file = e.currentTarget.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.readAsDataURL(file);
+                      reader.onloadend = () => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onloadend = () => {
+                          setImages(
+                            images.map((i) => {
+                              if (i.id === imageBeingUpdatedId) {
+                                i.file = file;
+                                i.base64 = reader.result as string;
+                              }
+                              return i;
+                            })
+                          );
+                        };
+                      };
+                    }
+                  }
+                  setImageBeingUpdatedId(null);
+                }}
+              />
             </Swiper>
             <small className="font-light text-gray-500">
               Vous devez ajouter au moins une image et au plus 10 images.
@@ -362,20 +409,25 @@ const Form = ({
               ref={imagesInputRef}
               multiple
               onChange={(e) => {
-                setImageFiles(e.target.files);
-                if (imageFiles !== null) {
-                  setBase64ImagesStrings([]);
-                  for (var i of Array.from(imageFiles)) {
+                if (e.currentTarget && e.currentTarget.files !== null) {
+                  setImages([]);
+                  for (let i = 0; e.currentTarget.files.length; i++) {
+                    let file = e.currentTarget.files[i];
                     const reader = new FileReader();
-                    reader.onload = (e) => {
-                      if (e.target) {
-                        setBase64ImagesStrings([
-                          ...base64ImagesStrings,
-                          e.target.result as string,
-                        ]);
-                      }
+                    reader.readAsDataURL(file);
+                    reader.onloadend = () => {
+                      setImages([
+                        ...images,
+                        {
+                          id:
+                            images.length !== 0
+                              ? images[images.length - 1].id + 1
+                              : 1,
+                          file: file,
+                          base64: reader.result as string,
+                        },
+                      ]);
                     };
-                    reader.readAsDataURL(i);
                   }
                 }
               }}
@@ -383,12 +435,12 @@ const Form = ({
           </div>
         </div>
         <div className="mt-10">
-          <Accordion className="hover:bg-gray-50" elevation={0}>
+          <Accordion className="bg-gray-50" elevation={0}>
             <AccordionSummary
               expandIcon={
                 <MdKeyboardArrowDown className="font-medium text-2xl" />
               }
-              className="pl-0 font-medium"
+              className="pl-2 font-medium"
             >
               Voulez-vous appliquer une reduction au produit ?
             </AccordionSummary>
@@ -400,8 +452,8 @@ const Form = ({
                     fullWidth
                     size="small"
                     type="number"
-                    className="font-raleway font-medium text-xl"
-                    endAdornment={<div className="h-full text-xl">%</div>}
+                    className="font-raleway font-medium text-lg"
+                    endAdornment={<div className="h-full text-lg">%</div>}
                     value={
                       values.ProductDiscountPercentage === undefined
                         ? ""
@@ -430,104 +482,10 @@ const Form = ({
           </Accordion>
         </div>
         <div className="mt-10">
-          <div className="flex justify-between items-center">
-            <div className="text-md font-medium">Caractéristiques</div>
-            <Button
-              size="small"
-              startIcon={<AiOutlinePlusCircle />}
-              className="font-kanit normal-case font-light"
-              onClick={() => {
-                if (
-                  currentCaracteristic.key !== "" &&
-                  currentCaracteristic.value !== ""
-                ) {
-                  setCaracteristics([...caracteristics, currentCaracteristic]);
-                  setCurrentCaracteristic({ key: "", value: "" });
-                }
-              }}
-            >
-              Ajouter
-            </Button>
-          </div>
-          <div className="mt-4">
-            <div className="grid grid-cols-4 gap-2">
-              <div className="col-span-1">
-                <div className="text-sm font-medium">Nom</div>
-              </div>
-              <div className="col-span-3">
-                <div className="text-sm font-medium">Valeur</div>
-              </div>
-            </div>
-            {caracteristics.map((caracteristic) => {
-              return (
-                <div className="grid grid-cols-4 gap-2 mb-2">
-                  <div className="col-span-1">
-                    <OutlinedInput
-                      value={caracteristic.key}
-                      disabled
-                      size="small"
-                      className="font-kanit"
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <OutlinedInput
-                      value={caracteristic.value}
-                      disabled
-                      fullWidth
-                      size="small"
-                      className="font-kanit"
-                      endAdornment={
-                        <IconButton
-                          color="error"
-                          size="small"
-                          onClick={() =>
-                            setCaracteristics(
-                              caracteristics.filter(
-                                (c) =>
-                                  c.key !== caracteristic.key ||
-                                  c.value !== caracteristic.value
-                              )
-                            )
-                          }
-                        >
-                          <BsTrash />
-                        </IconButton>
-                      }
-                    />
-                  </div>
-                </div>
-              );
-            })}
-            <div className="grid grid-cols-4 gap-2">
-              <div className="col-span-1">
-                <OutlinedInput
-                  value={currentCaracteristic.key}
-                  onChange={(e) =>
-                    setCurrentCaracteristic({
-                      ...currentCaracteristic,
-                      key: e.target.value,
-                    })
-                  }
-                  size="small"
-                  className="font-kanit"
-                />
-              </div>
-              <div className="col-span-3">
-                <OutlinedInput
-                  value={currentCaracteristic.value}
-                  onChange={(e) =>
-                    setCurrentCaracteristic({
-                      ...currentCaracteristic,
-                      value: e.target.value,
-                    })
-                  }
-                  fullWidth
-                  size="small"
-                  className="font-kanit"
-                />
-              </div>
-            </div>
-          </div>
+          <CaracteristicsSection
+            caracteristics={caracteristics}
+            setCaracteristics={setCaracteristics}
+          />
         </div>
       </div>
     </div>

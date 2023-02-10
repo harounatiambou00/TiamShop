@@ -1,7 +1,6 @@
 import React from "react";
 import { Product } from "../../../../data/models/Product";
 import { Checkbox, IconButton, Skeleton } from "@mui/material";
-import ProductCaracteristic from "../../../../data/models/ProductCaracteristic";
 import { BsTrash } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import ConfirmDeletionDialog from "../../../../components/core/confirm-deletion-dialog/ConfirmDeletionDialog";
@@ -15,9 +14,6 @@ type Props = {
 };
 
 const ProductTableRow = ({ product }: Props) => {
-  const [caracteristics, setCaracteristics] = React.useState<
-    ProductCaracteristic[]
-  >([]);
   const [principalImage, setPrincipalImage] =
     React.useState<CustomImage | null>(null);
   React.useEffect(() => {
@@ -35,31 +31,7 @@ const ProductTableRow = ({ product }: Props) => {
       } else console.log(content);
     };
 
-    const getProductCaracteristics = async () => {
-      let url =
-        process.env.REACT_APP_API_URL +
-        "products/get-caracteristics/" +
-        product.productId;
-      let response = await fetch(url);
-      let content = await response.json();
-      if (content.success) {
-        let data = content.data as ProductCaracteristic[];
-        for (let c of data) {
-          setCaracteristics((currentCaracteristics) => [
-            ...currentCaracteristics,
-            {
-              ...{},
-              productCaracteristicId: c.productCaracteristicId,
-              productCaracteristicKey: c.productCaracteristicKey,
-              productCaracteristicValue: c.productCaracteristicValue,
-              productID: c.productID,
-            },
-          ]);
-        }
-      }
-    };
     getPrincipalImageOfTheProduct();
-    getProductCaracteristics();
   }, []);
 
   const [openDeletionAlert, setOpenDeletionAlert] =
