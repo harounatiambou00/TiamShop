@@ -8,12 +8,20 @@ import SuccessSnackbar from "../../../../components/core/suucess-snackbar/Succes
 import ErrorSnackbar from "../../../../components/core/error-snackbar/ErrorSnackbar";
 import UpdateProductDialog from "../../update-product-dialog/UpdateProductDialog";
 import { CustomImage } from "../../../../data/models/Image";
+import { useAppSelector } from "../../../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../../../redux/store";
+import { useAppDispatch } from "../../../../hooks/redux-custom-hooks/useAppDispatch";
+import { setAllProducts } from "../../../../redux/slices/allProductsSlice";
 
 type Props = {
   product: Product;
 };
 
 const ProductTableRow = ({ product }: Props) => {
+  let products = useAppSelector(
+    (state: RootState) => state.allProducts.allProducts
+  );
+  const dispatch = useAppDispatch();
   const [principalImage, setPrincipalImage] =
     React.useState<CustomImage | null>(null);
   React.useEffect(() => {
@@ -46,9 +54,17 @@ const ProductTableRow = ({ product }: Props) => {
     let content = await response.json();
     if (content.success) {
       setOpenDeletionSuccessSnackbar(true);
+      dispatch(
+        setAllProducts({
+          allProducts: products.filter(
+            (p) => p.productId !== product.productId
+          ),
+        })
+      );
     } else {
       setOpenDeletionSuccessSnackbar(false);
     }
+    setOpenDeletionAlert(false);
   };
 
   const [openUpdateProductDialog, setOpenUpdateProductDialog] =

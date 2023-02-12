@@ -1,0 +1,7 @@
+#app_homepage_billboard_swiper {
+  --swiper-navigation-size: 30px;
+  --swiper-navigation-top-offset: 50%;
+  --swiper-navigation-sides-offset: 10px;
+  --swiper-navigation-color: #d67d3e;
+  --swiper-pagination-color: #d67d3e;
+}

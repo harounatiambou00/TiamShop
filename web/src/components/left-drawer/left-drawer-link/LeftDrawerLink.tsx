@@ -68,8 +68,13 @@ const LeftDrawerLink = ({
           <List component="div" disablePadding>
             {subCategories.map((subCategory) => {
               return (
-                <ListItemButton sx={{ pl: 4 }} key={subCategory.SubCategoryId}>
+                <ListItemButton
+                  className="border-l-2 border-l-secondary"
+                  sx={{ pl: 4 }}
+                  key={subCategory.SubCategoryId}
+                >
                   <ListItemText
+                    className="border-l-2 border-l-secondary"
                     primary={subCategory.SubCategoryTitle}
                     primaryTypographyProps={{
                       sx: {

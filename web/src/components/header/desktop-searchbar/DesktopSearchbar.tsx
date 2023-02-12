@@ -2,6 +2,7 @@ import React from "react";
 
 import { BsSearch } from "react-icons/bs";
 import DesktopSearchbarSuggestionPopover from "./suggestion-popover/DesktopSearchbarSuggestionPopover";
+import { MenuItem, Select } from "@mui/material";
 
 const DesktopSearchbar = () => {
   const [openDesktopSearchbarPopover, setOpenDesktopSearchbarPopover] =
@@ -65,29 +66,36 @@ const DesktopSearchbar = () => {
             : "sm:hidden lg:flex h-full w-full text-gray-900 border-2 border-primary rounded-md bg-primary"
         }
       >
-        <div className="w-3/12">
-          <select
+        <div className="w-3/12 bg-white rounded-l-md">
+          <Select
             className={
               openDesktopSearchbarPopover
-                ? "h-full w-full rounded-tl-md"
-                : "h-full w-full rounded-l-md"
+                ? "h-full w-full rounded-tl-md font-light font-kanit"
+                : "h-full w-full rounded-l-md font-light font-kanit"
             }
+            sx={{
+              "& 	.MuiOutlinedInput-notchedOutline": {
+                border: "0px 0px 0px 1px",
+                borderRadius: 0,
+              },
+            }}
+            defaultValue={0}
           >
-            <option value="" className="">
+            <MenuItem value={0} className="font-kanit font-light">
               Toutes les catégories
-            </option>
+            </MenuItem>
             {categories.map((category) => {
               return (
-                <option
+                <MenuItem
                   key={category.CategoryId}
                   value={category.CategoryId}
-                  className="font-light"
+                  className="font-light font-kanit"
                 >
                   {category.CategoryTitle}
-                </option>
+                </MenuItem>
               );
             })}
-          </select>
+          </Select>
         </div>
         <input
           type="search"

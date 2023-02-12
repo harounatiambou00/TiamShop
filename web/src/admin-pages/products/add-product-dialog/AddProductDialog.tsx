@@ -229,10 +229,6 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
       {
         method: "POST",
         body: addProductFormData,
-        headers: {
-          Accept: "text/plain",
-          "Content-Type": "multipart/form-data",
-        },
       }
     );
     console.log(addProductResponse);
