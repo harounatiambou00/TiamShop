@@ -29,6 +29,7 @@ import {
   ResetPassword,
   AccountDetails,
   AccountSettings,
+  CategoryPage,
 } from "./pages";
 
 //layouts
@@ -259,6 +260,7 @@ function App() {
           </Route>
           {/*On this page a visitor can see all our product categories */}
           <Route path="categories" element={<CategoriesPage />} />
+          <Route path="category/:categoryName" element={<CategoryPage />} />
           {/*On this page a client will see his cart, update it, or make an order */}
           <Route path="cart/:cartId" element={<CartPage />} />
 

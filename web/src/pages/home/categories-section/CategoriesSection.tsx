@@ -12,11 +12,13 @@ import "./style.css";
 
 // import required modules
 import { Navigation, Pagination } from "swiper";
+import { useNavigate } from "react-router-dom";
 
 const CategoriesSection = () => {
   let categories = useAppSelector(
     (state: RootState) => state.categories.categories
   );
+  const navigate = useNavigate();
   return (
     <HomePageSection title="Nos rayons">
       <Swiper
@@ -36,6 +38,7 @@ const CategoriesSection = () => {
             <SwiperSlide
               key={category.CategoryId}
               className="drop-shadow-md rounded-md h-40 cursor-pointer hover:drop-shadow-lg"
+              onClick={() => navigate(`/category/${category.CategoryName}`)}
             >
               <CategoriesItem category={category} />
             </SwiperSlide>
