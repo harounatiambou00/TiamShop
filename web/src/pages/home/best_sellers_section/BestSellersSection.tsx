@@ -10,8 +10,12 @@ import "./styles.css";
 
 // import required modules
 import { Navigation, Pagination } from "swiper";
+import { ProductCard } from "../../../components/core";
 
 const BestSellersSection = () => {
+  let products = useAppSelector(
+    (state: RootState) => state.allProducts.allProducts
+  );
   return (
     <HomePageSection title="Les plus populaires cette semaine">
       <Swiper
@@ -29,7 +33,13 @@ const BestSellersSection = () => {
         {[0, 1, 2, 3, , 5, 6, 7, 8, 9].map((i) => {
           return (
             <SwiperSlide key={i} className="drop-shadow-sm">
-              {i}
+              {products[0] && (
+                <ProductCard
+                  product={products[0]}
+                  isNew={true}
+                  isTrend={true}
+                />
+              )}
             </SwiperSlide>
           );
         })}
