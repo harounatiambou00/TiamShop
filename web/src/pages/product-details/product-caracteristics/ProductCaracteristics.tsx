@@ -31,10 +31,10 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
                       : "bg-gray-100"
                   }
                 >
-                  <TableCell className="font-kanit">
+                  <TableCell className="font-raleway font-medium">
                     {caracteristic.productCaracteristicKey}
                   </TableCell>
-                  <TableCell className="font-kanit">
+                  <TableCell className="font-raleway font-medium">
                     {caracteristic.productCaracteristicValue}
                   </TableCell>
                 </TableRow>
@@ -53,10 +53,10 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
                       : "bg-gray-100"
                   }
                 >
-                  <TableCell className="font-kanit">
+                  <TableCell className="font-raleway font-medium">
                     {caracteristic.productCaracteristicKey}
                   </TableCell>
-                  <TableCell className="font-kanit">
+                  <TableCell className="font-raleway font-medium">
                     {caracteristic.productCaracteristicValue}
                   </TableCell>
                 </TableRow>
@@ -78,10 +78,10 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
                       : "bg-gray-100"
                   }
                 >
-                  <TableCell className="font-kanit text-xl">
+                  <TableCell className="font-raleway font-medium text-xl">
                     {caracteristic.productCaracteristicKey}
                   </TableCell>
-                  <TableCell className="font-kanit text-xl">
+                  <TableCell className="font-raleway font-medium text-xl">
                     {caracteristic.productCaracteristicValue}
                   </TableCell>
                 </TableRow>

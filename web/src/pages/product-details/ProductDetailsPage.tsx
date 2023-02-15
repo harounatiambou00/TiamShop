@@ -1,12 +1,16 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import ProductDetailsBreadcumb from "./product-details-breadcumb/ProductDetailsBreadcumb";
 import ProductDetailsImagesSection from "./product-details-images-section/ProductDetailsImagesSection";
-import DetailsSection from "./details-section/DetailsSection";
 import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 import ProductCaracteristics from "./product-caracteristics/ProductCaracteristics";
-
+import { CustomImage } from "../../data/models/Image";
+import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../redux/store";
+const DetailsSection = React.lazy(
+  () => import("./details-section/DetailsSection")
+);
 const ProductDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -31,7 +35,6 @@ const ProductDetailsPage: React.FC = () => {
       productDiscountPercentage: 0,
       productDiscountEndDate: null,
     });
-
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   React.useEffect(() => {
     const getProductAndRelatedInfo = async () => {
@@ -99,9 +102,11 @@ const ProductDetailsPage: React.FC = () => {
           {productAndRelatedInfo.productReference}
         </span>
       </div>
-      <div className="sm:mt-10 lg:mt-6 grid sm:grid-cols-1 lg:grid-cols-2 gap-1 w-full">
+      <div className="sm:mt-10 lg:mt-6 grid sm:grid-cols-1 lg:grid-cols-2 gap-1 w-full bg-white">
         <ProductDetailsImagesSection images={productAndRelatedInfo.images} />
-        <DetailsSection product={productAndRelatedInfo} />
+        <Suspense fallback={<div>loading ...</div>}>
+          <DetailsSection product={productAndRelatedInfo} />
+        </Suspense>
       </div>
       <div>
         <ProductCaracteristics

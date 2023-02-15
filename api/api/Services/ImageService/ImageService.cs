@@ -126,7 +126,7 @@ namespace api.Services.ImageService
                     return new ServiceResponse<List<Image>>
                     {
                         Data = images.AsList(),
-                        Success = false,
+                        Success = true,
                         Message = ""
                     };
                 }

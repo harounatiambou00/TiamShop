@@ -1,83 +1,130 @@
 import React from "react";
-import { Button, Paper } from "@mui/material";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
-import { AiOutlineStar } from "react-icons/ai";
 import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
+import { Button, Skeleton } from "@mui/material";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
+import { GiShoppingCart } from "react-icons/gi";
+import { AnimatedButton } from "../../../components/core";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 
 type Props = {
   product: ProductAndRelatedInfo;
 };
 
-const DetailsSection = ({ product }: Props) => {
-  return (
-    <div className="grid grid-cols-4 justify-start">
-      <Paper
-        elevation={2}
-        className="col-span-4 sm:h-60 lg:h-44 sm:mt-10 lg:mt-0 sm:py-5 lg:py-2 sm:px-10 lg:px-5 flex items-center justify-between"
-      >
-        <div className="h-full flex flex-col">
-          <div className="font-bold sm:text-5xl lg:text-3xl tracking-wide text-primary font-amita">
-            {product.productPrice -
-              (product.productDiscountPercentage * product.productPrice) /
-                100}{" "}
-            <span className="font-raleway font-medium">FCFA</span>
-          </div>
-          <span className="flex items-start mb-3">
-            <span className="flex items-center text-red-600 line-through sm:text-4xl lg:text-2xl font-amita">
-              {product.productPrice}
-            </span>
-            <span className="flex text-gray-400 sm:text-lg lg:text-xs ml-2">
-              -10% jusqu'au{" "}
-              {product.productDiscountEndDate?.toLocaleString().slice(0, 10)}
-            </span>
-          </span>
+const Stars = ({ grade }: { grade: number }) => {
+  if (grade < 0 || grade > 5)
+    return (
+      <div className="flex items-center">
+        <span className="font-medium text-md text-gray-600 mr-1">{grade}</span>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <BsStar key={i} className="text-yellow-500 text-lg mr-1" />
+        ))}
+      </div>
+    );
+  else {
+    let round = grade.toFixed();
 
-          {product.productPrice >= 500000 && (
-            <span className="bg-green-200 px-3 rounded-full drop-shadow-sm sm:text-lg lg:text-xs  w-fit">
+    return (
+      <div className="flex items-center">
+        <span className="font-medium text-md text-gray-600 mr-1">{grade}</span>
+        {[1, 2, 3, 4, 5].map((i) => {
+          if (i <= Number(round))
+            return (
+              <BsStarFill key={i} className="text-yellow-500 text-lg mr-1" />
+            );
+          else {
+            return <BsStar key={i} className="text-yellow-500 text-lg mr-1" />;
+          }
+        })}
+      </div>
+    );
+  }
+};
+
+const DetailsSection = ({ product }: Props) => {
+  const brand = useAppSelector(
+    (state: RootState) => state.allBrands.brands
+  ).find((i) => i.brandId === product.brandId);
+  const brandImage = useAppSelector(
+    (state: RootState) => state.images.images
+  ).find((i) => i.imageId === brand?.BrandImageId);
+
+  if (brandImage === undefined) {
+    return <Skeleton />;
+  }
+
+  return (
+    <div className="w-full h-full px-6 py-2">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="font-amita sm:text-6xl lg:text-4xl text-red-600">
+            {product.productDiscountPercentage !== undefined &&
+            product.productDiscountPercentage !== 0
+              ? product.productPrice -
+                product.productPrice * (product.productDiscountPercentage / 100)
+              : product.productPrice}{" "}
+            <span className="font-raleway">FCFA</span>
+          </h1>
+          {product.productDiscountPercentage !== undefined &&
+            product.productDiscountPercentage !== 0 && (
+              <span className="text-gray-400 sm:text-3xl lg:text-xl font-amita line-through">
+                {product.productPrice} fcfa
+              </span>
+            )}
+        </div>
+        {brandImage !== undefined && (
+          <img
+            alt={brandImage.imageName}
+            src={
+              "data:" +
+              brandImage.imageExtension +
+              ";base64," +
+              brandImage.imageBytes
+            }
+            className="sm:h-32 lg:h-24"
+          />
+        )}
+      </div>
+      <div className="flex justify-between items-center">
+        <div>
+          <Stars grade={3.6} />
+          <span className="text-gray-600">1000 ventes</span>
+        </div>
+        <div>
+          {product.productPrice > 500000 && (
+            <span className="bg-green-100 text-green-900 px-2 rounded-full drop-shadow-sm sm:text-xl lg:text-sm">
               Livraison gratuite
             </span>
           )}
-          <span className="flex items-center mt-2 sm:text-lg lg:text-base">
-            <AiOutlineStar className=" text-yellow-400 mr-2 sm:text-2xl lg:text-lg" />{" "}
-            4.5 / 5
-            <span className="flex items-center text-gray-400 font-raleway ml-2">
-              1 000 ventes
+          {product.productQuantity <= 20 && (
+            <span className="bg-red-100 text-red-700 px-2 rounded-full drop-shadow-sm sm:text-xl lg:text-sm ml-4">
+              Faites vite, il n'en reste plus que {product.productQuantity} !
             </span>
-          </span>
+          )}
         </div>
-        <div className="flex flex-col items-center justify-between w-4/12">
+      </div>
+      <div className="flex w-full justify-center items-center mt-4">
+        <div className="w-1/2 sm:h-20 lg:h-12 pr-2">
           <Button
             variant="contained"
-            className="bg-secondary mb-3 font-raleway font-medium sm:h-16 lg:h-auto sm:w-80 lg:w-auto sm:text-xl lg:text-sm"
-            startIcon={
-              <MdOutlineAddShoppingCart className="sm:text-2xl lg:text-base" />
-            }
+            startIcon={<GiShoppingCart className="sm:text-6xl lg:text-4xl" />}
+            className="sm:h-20 lg:h-12 sm:text-2xl lg:text-base bg-secondary font-raleway w-full"
           >
             Ajouter au panier
           </Button>
-          <Button
-            variant="outlined"
-            className="font-raleway font-medium sm:h-16 lg:h-auto sm:w-80 lg:w-auto sm:text-xl lg:text-sm"
-          >
-            Acheter maintenant
-          </Button>
-          {product.productQuantity <= 20 && (
-            <small className="text-red-600 font-light sm:text-lg lg:text-sm text-center">
-              Ne manquez pas cette occasion il n'en reste que{" "}
-              {product.productQuantity}.
-            </small>
-          )}
         </div>
-      </Paper>
-      <div className="sm:mt-10 lg:mt-0 w-full col-span-4">
-        <span className="sm:text-2xl lg:text-xl font-raleway font-medium text-gray-700 w-full uppercase">
+        <div className="w-1/2 pl-2">
+          <AnimatedButton text="Acheter" isLoading={false} />
+        </div>
+      </div>
+      <div className="mt-5 min-h-96 w-full bg-gray-100 p-5">
+        <h1 className="uppercase font-raleway sm:text-2xl lg:text-xl font-medium">
           Description
-        </span>
-        <div className="font-kanit sm:px-5 sm:pt-8 lg:px-2 lg:pt-3 mt-1 sm:text-xl lg:text-base">
+        </h1>
+        <span className="pl-3 w-full font-light sm:text-xl lg:text-sm">
           {product.productDescription}
-        </div>
+        </span>
       </div>
     </div>
   );

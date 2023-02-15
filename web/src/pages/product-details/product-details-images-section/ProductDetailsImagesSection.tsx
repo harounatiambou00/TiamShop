@@ -14,6 +14,7 @@ import { Navigation, Pagination } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "./styles.css";
+import { AiOutlineShareAlt } from "react-icons/ai";
 
 type Props = {
   images: CustomImage[];
@@ -21,42 +22,59 @@ type Props = {
 
 const ProductDetailsImagesSection = ({ images }: Props) => {
   return (
-    <div className="w-full lg:pr-5 static h-128">
+    <div className="w-full lg:px-10 relative h-128">
       <Swiper
-        pagination={{
-          type: "fraction",
-        }}
+        id="app_product_details_page_images_swiper"
+        pagination={true}
         navigation={true}
         modules={[Navigation, Pagination]}
-        className="flex items-center justify-center  rounded-lg drop-shadow-md bg-transparent h-full"
+        className="flex items-center justify-center rounded-lg h-3/4 z-40"
       >
         {images.map((image) => {
           return (
-            <SwiperSlide>
+            <SwiperSlide key={image.imageId}>
               <img
                 alt={image.imageName}
                 src={
                   "data:" + image.imageExtension + ";base64," + image.imageBytes
                 }
-                className="w-96 h-96"
+                className="w-72 h-72"
               />
             </SwiperSlide>
           );
         })}
       </Swiper>
-      <div className="absolute top-0 right-0 pt-3 pr-3">
+      <Swiper
+        slidesPerView={5}
+        className="w-full flex justify-center items-center pl-5"
+      >
+        {images.map((image) => {
+          return (
+            <SwiperSlide
+              key={image.imageId}
+              className="w-20 h-20 border-2 mr-2 rounded-md flex items-center justify-center cursor-pointer"
+            >
+              <img
+                alt={image.imageName}
+                src={
+                  "data:" + image.imageExtension + ";base64," + image.imageBytes
+                }
+                className="h-16"
+              />
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
+      <div className="absolute top-0 left-5 z-50 pt-3 pr-3">
         <div className="flex flex-col">
-          <IconButton
-            size="large"
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <IconButton color="primary" className="border-2">
             <RiHeartAddLine />
           </IconButton>
-          <IconButton
-            size="large"
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <IconButton color="primary" className="">
             <MdOutlineCompareArrows />
+          </IconButton>
+          <IconButton color="primary" className="">
+            <AiOutlineShareAlt />
           </IconButton>
         </div>
       </div>

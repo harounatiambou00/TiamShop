@@ -58,6 +58,8 @@ import { Brand } from "./data/models/Brand";
 import { SubCategory } from "./data/models/SubCategory";
 import { setSubCategories } from "./redux/slices/subCategoriesSlice";
 import { setAllBrands } from "./redux/slices/allBrandsSlice";
+import { CustomImage } from "./data/models/Image";
+import { setImages } from "./redux/slices/imagesSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -221,6 +223,32 @@ function App() {
       }
     };
     getBrands();
+  }, []);
+
+  //Get The brands
+  React.useEffect(() => {
+    const getImages = async () => {
+      const url = process.env.REACT_APP_API_URL + "images";
+      let response = await fetch(url);
+      let content = await response.json();
+      if (content.success) {
+        let images = [] as CustomImage[];
+        let data = content.data as CustomImage[];
+        for (let i of data) {
+          images.push({
+            ...{},
+            imageId: i.imageId,
+            imageName: i.imageName,
+            imageDescription: i.imageDescription,
+            imageBytes: i.imageBytes,
+            imageExtension: i.imageExtension,
+            imageSize: i.imageSize,
+          });
+        }
+        dispatch(setImages({ images }));
+      }
+    };
+    getImages();
   }, []);
 
   return (

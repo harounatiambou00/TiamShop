@@ -1,0 +1,26 @@
+/*There is a hacky way to do this, using the :before pseudo element. You give the :before a border, then rotate it with a CSS transform. Doing it this way adds no extra elements to the DOM, and adding/removing the strikethrough is a simple as adding/removing the class.
+
+Here's a demo
+
+Caveats
+This will only work down to IE8. IE7 does not support :before, however will degrade gracefully in browsers that do support :before but don't support CSS transforms.
+The angle of rotation is fixed. If the text is longer, the line will not touch the corners of the text. Be mindful of this.
+CSS*/
+.strikethrough {
+  position: relative;
+}
+.strikethrough:before {
+  position: absolute;
+  content: "";
+  left: 0;
+  top: 50%;
+  right: 0;
+  border-top: 1px solid;
+  border-color: red;
+
+  -webkit-transform: rotate(-5deg);
+  -moz-transform: rotate(-5deg);
+  -ms-transform: rotate(-5deg);
+  -o-transform: rotate(-5deg);
+  transform: rotate(-5deg);
+}

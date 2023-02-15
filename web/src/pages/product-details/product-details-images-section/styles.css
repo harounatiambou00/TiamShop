@@ -1,7 +1,10 @@
-.swiper-button-next {
-  color: #003049;
-}
-
-.swiper-button-prev {
-  color: #003049;
+#app_product_details_page_images_swiper {
+  --swiper-navigation-size: 25px;
+  --swiper-navigation-top-offset: 50%;
+  --swiper-navigation-sides-offset: 100px;
+  --swiper-navigation-color: #003049;
+  --swiper-pagination-color: #003049;
+  --swiper-pagination-bullet-size: 8px;
+  --swiper-pagination-bullet-width: 8px;
+  --swiper-pagination-bullet-height: 8px;
 }

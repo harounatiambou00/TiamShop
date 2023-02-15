@@ -6,6 +6,7 @@ import { subCategoriesSlice } from "./slices/subCategoriesSlice";
 import { allProductSlice } from "./slices/allProductsSlice";
 import { currentProductSlice } from "./slices/currentProductSlice";
 import { allBrandsSlice } from "./slices/allBrandsSlice";
+import { imagesSlice } from "./slices/imagesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     allProducts: allProductSlice.reducer,
     currentProduct: currentProductSlice.reducer,
     allBrands: allBrandsSlice.reducer,
+    images: imagesSlice.reducer,
   },
 });
 
