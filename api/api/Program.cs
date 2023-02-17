@@ -26,6 +26,7 @@ using api.Services.ProductCaracteristicService;
 using api.Services.ProductService;
 using api.Services.ProductImageService;
 using api.Services.ProductDiscountService;
+using api.Services.ProductGradeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +71,7 @@ builder.Services.AddScoped<IProductCarateristicService, ProductCaracteristicServ
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IProductDiscountService, ProductDiscountService>();
+builder.Services.AddScoped<IProductGradeService, ProductGradeService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

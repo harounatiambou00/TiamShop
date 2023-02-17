@@ -47,7 +47,7 @@ import {
 } from "./admin-pages";
 
 import "./App.css";
-import { Client } from "./data/models/Client";
+import { Client } from "./data/models";
 import { useAppDispatch } from "./hooks/redux-custom-hooks/useAppDispatch";
 import { setAuthenticatedClient } from "./redux/slices/authenticatedClientSlice";
 import { setCategories } from "./redux/slices/categoriesSlice";
@@ -85,7 +85,15 @@ function App() {
             Email: data.email,
             PhoneNumber: data.phoneNumber,
             CompleteAddress: data.completeAddress,
-            BirthDate: new Date(data.birthDate),
+            BirthDate:
+              //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match
+              data.birthDate != null
+                ? new Date(
+                    parseInt(data.birthDate.slice(0, 4)),
+                    parseInt(data.birthDate.slice(5, 7)) - 1,
+                    parseInt(data.birthDate.slice(8, 10))
+                  )
+                : null,
             NeighborhoodId: data.neighborhoodId,
           };
 

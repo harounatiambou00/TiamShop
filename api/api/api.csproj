@@ -36,6 +36,9 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-32-ALTERING_THE_PRODUCT_CARACTERISTICS_TABLE_FOR_PK.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-33-ALTERNING_THE_InsertProductCaracteristic_SP.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-34-ALTERNING_THE_UpdateProductCaracteristic_SP.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-35-ProductGrade_TABLE_CREATE.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-36-ProductGrade_SPs.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-37-RENAMING_AllGetProductGrades_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +74,9 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-31-DeleteSubCategory.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-32-ALTERING_THE_PRODUCT_CARACTERISTICS_TABLE_FOR_PK.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-33-ALTERNING_THE_InsertProductCaracteristic_SP.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-35-ProductGrade_TABLE_CREATE.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-36-ProductGrade_SPs.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-37-RENAMING_AllGetProductGrades_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>

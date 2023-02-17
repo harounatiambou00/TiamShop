@@ -8,11 +8,13 @@ import MobileSearchbar from "./mobile-searchbar/MobileSearchbar";
 import DesktopSearchbar from "./desktop-searchbar/DesktopSearchbar";
 
 import "./header.css";
-import { categoryLinks } from "../../data/category-links";
 import Navlinks from "./navlinks/Navlinks";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper";
+import { FiMenu } from "react-icons/fi";
 
 interface Props {
   /**
@@ -60,22 +62,31 @@ const Header = (props: Props) => {
           </div>
           {/** Desktop categories links */}
           <div className="sm:hidden lg:flex lg:h-1/3 lg:w-full items-center justify-between lg:px-2">
-            <Button
-              startIcon={<BiMenuAltLeft />}
-              variant="outlined"
-              className="font-medium font-kanit"
-              onClick={() => props.setOpenLeftDrawer(true)}
+            <IconButton onClick={() => props.setOpenLeftDrawer(true)}>
+              <FiMenu />
+            </IconButton>
+            <Swiper
+              id="app_header_categories_links_swiper"
+              slidesPerView={8}
+              spaceBetween={0}
+              navigation={true}
+              modules={[Navigation]}
+              className="bg-transparent"
             >
-              MENU
-            </Button>
-            {categories.map((category) => (
-              <Button
-                key={category.CategoryId}
-                className="text-gray-200 text-sm font-medium font-raleway normal-case hover:text-primary"
-              >
-                {category.CategoryTitle}
-              </Button>
-            ))}
+              {categories.map((category) => (
+                <SwiperSlide
+                  key={category.CategoryId}
+                  className="bg-transparent"
+                >
+                  <Button
+                    size="small"
+                    className="text-gray-200 text-xs font-medium font-raleway normal-case hover:text-primary"
+                  >
+                    {category.CategoryTitle}
+                  </Button>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
           {/** Mobile sceen searchbar, will be displayed only on small screens otherwise it'll be hidden  */}
           <MobileSearchbar />

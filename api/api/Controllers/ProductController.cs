@@ -5,6 +5,7 @@ using api.Models;
 using api.Services.BrandService;
 using api.Services.ProductCaracteristicService;
 using api.Services.ProductDiscountService;
+using api.Services.ProductGradeService;
 using api.Services.ProductImageService;
 using api.Services.ProductService;
 using api.Services.SubCategoryService;
@@ -25,8 +26,9 @@ namespace api.Controllers
         private readonly IBrandService _brandService;
         private readonly ISubCategoryService _subCategoryService;
         private readonly IProductCarateristicService _productCaracteristicService;
+        private readonly IProductGradeService _productGradeService;
 
-        public ProductController(IImageService imageService, IProductDiscountService productDiscountService, IProductService productService, IProductImageService productImageService, IBrandService brandService, ISubCategoryService subCategoryService, IProductCarateristicService productCaracteristicService)
+        public ProductController(IImageService imageService, IProductDiscountService productDiscountService, IProductService productService, IProductImageService productImageService, IBrandService brandService, ISubCategoryService subCategoryService, IProductCarateristicService productCaracteristicService, IProductGradeService productGradeService)
         {
             _imageService = imageService;
             _productDiscountService = productDiscountService;
@@ -35,6 +37,7 @@ namespace api.Controllers
             _brandService = brandService;
             _subCategoryService = subCategoryService;
             _productCaracteristicService = productCaracteristicService;
+            _productGradeService = productGradeService;
         }
 
         [HttpGet("get-all-products")]
@@ -182,6 +185,23 @@ namespace api.Controllers
         [HttpDelete("{productId}")]
         public async Task<ActionResult<ServiceResponse<string?>>> DeleteProduct(Guid productId)
         {
+            var getProductGrades = await _productGradeService.GetProductGradesByProductId(productId);
+            if (getProductGrades.Success)
+            {
+                foreach(ProductGrade productGrade in getProductGrades.Data)
+                {
+                    var deletedProductGradeResponse = await _productGradeService.DeleteProductGrade(productGrade.ProductGradeId);
+                    if (!deletedProductGradeResponse.Success)
+                    {
+                        return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "SOMETHING_WENT_WRONG_WHILE_DELETING_THE_GRADES"
+                        };
+                    }
+                }
+            }
             return await _productService.DeleteProduct(productId);
         }
 
@@ -288,7 +308,9 @@ namespace api.Controllers
                                     Images = getImages.Data,
                                     Caracteristics = getProductCaracteristicsResponse.Data,
                                     ProductDiscountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage,
-                                    ProductDiscountEndDate = getProductDiscountResponse.Data.ProductDiscountEndDate
+                                    ProductDiscountEndDate = getProductDiscountResponse.Data.ProductDiscountEndDate,
+                                    Rating = (await _productGradeService.GetProductAverageGradeByProductId(product.ProductId)).Data,
+                                    NumberOfVotes =  (await _productGradeService.GetProductGradesByProductId(product.ProductId)).Data.Count
                                 };
 
                                 return new ServiceResponse<GetProductAndOtherRelatedInformationDTO>()

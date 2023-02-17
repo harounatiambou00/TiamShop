@@ -7,6 +7,7 @@ import { GiShoppingCart } from "react-icons/gi";
 import { AnimatedButton } from "../../../components/core";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
+import RateProductDialog from "./rate-product-dialog/RateProductDialog";
 
 type Props = {
   product: ProductAndRelatedInfo;
@@ -49,11 +50,14 @@ const DetailsSection = ({ product }: Props) => {
   const brandImage = useAppSelector(
     (state: RootState) => state.images.images
   ).find((i) => i.imageId === brand?.BrandImageId);
-
+  const [openRateProductDialog, setOpenRateProductDialog] =
+    React.useState<boolean>(false);
+  const authenticatedClient = useAppSelector(
+    (state: RootState) => state.authenticatedClient.client
+  );
   if (brandImage === undefined) {
     return <Skeleton />;
   }
-
   return (
     <div className="w-full h-full px-6 py-2">
       <div className="flex justify-between items-center">
@@ -87,9 +91,21 @@ const DetailsSection = ({ product }: Props) => {
         )}
       </div>
       <div className="flex justify-between items-center">
-        <div>
-          <Stars grade={3.6} />
-          <span className="text-gray-600">1000 ventes</span>
+        <div
+          className={
+            authenticatedClient
+              ? "bg-amber-50 px-4 py-1 rounded-sm drop-shadow-sm cursor-pointer "
+              : "bg-amber-50 px-4 py-1 rounded-sm drop-shadow-sm"
+          }
+          onClick={() => authenticatedClient && setOpenRateProductDialog(true)}
+        >
+          <Stars grade={product.rating} />
+          <div className="w-full flex items-center justify-between mt-2">
+            <small className="text-gray-500">
+              {product.numberOfVotes} votes
+            </small>
+            <small className="text-gray-500">15 ventes</small>
+          </div>
         </div>
         <div>
           {product.productPrice > 500000 && (
@@ -126,6 +142,11 @@ const DetailsSection = ({ product }: Props) => {
           {product.productDescription}
         </span>
       </div>
+      <RateProductDialog
+        product={product}
+        open={openRateProductDialog}
+        setOpen={setOpenRateProductDialog}
+      />
     </div>
   );
 };

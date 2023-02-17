@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Client } from "../../data/models/Client";
+import { Client } from "../../data/models";
 
 export interface AuthenticatedClientType {
   client: null | Client;

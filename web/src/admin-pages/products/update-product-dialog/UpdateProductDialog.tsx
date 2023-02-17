@@ -81,6 +81,8 @@ const UpdateProductDialog = ({ open, setOpen, product }: Props) => {
       caracteristics: [],
       productDiscountPercentage: 0,
       productDiscountEndDate: moment().format("YYYY-MM-DD"),
+      rating: 0,
+      numberOfVotes: 0,
     });
 
   const [caracteristics, setCaracteristics] = React.useState<
@@ -127,6 +129,8 @@ const UpdateProductDialog = ({ open, setOpen, product }: Props) => {
             caracteristics: data.caracteristics,
             productDiscountPercentage: data.productDiscountPercentage,
             productDiscountEndDate: data.productDiscountEndDate,
+            rating: data.rating,
+            numberOfVotes: data.numberOfVotes,
           }));
           setCaracteristics(data.caracteristics);
           setImages(data.images);

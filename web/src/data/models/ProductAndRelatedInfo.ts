@@ -19,4 +19,6 @@ export default interface ProductAndRelatedInfo {
   caracteristics: ProductCaracteristic[];
   productDiscountPercentage: number;
   productDiscountEndDate: Date | null | string;
+  rating: number;
+  numberOfVotes: number;
 }

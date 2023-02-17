@@ -5,9 +5,7 @@ import ProductDetailsBreadcumb from "./product-details-breadcumb/ProductDetailsB
 import ProductDetailsImagesSection from "./product-details-images-section/ProductDetailsImagesSection";
 import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 import ProductCaracteristics from "./product-caracteristics/ProductCaracteristics";
-import { CustomImage } from "../../data/models/Image";
-import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
-import { RootState } from "../../redux/store";
+
 const DetailsSection = React.lazy(
   () => import("./details-section/DetailsSection")
 );
@@ -34,6 +32,8 @@ const ProductDetailsPage: React.FC = () => {
       caracteristics: [],
       productDiscountPercentage: 0,
       productDiscountEndDate: null,
+      rating: 0,
+      numberOfVotes: 0,
     });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   React.useEffect(() => {
@@ -74,6 +74,8 @@ const ProductDetailsPage: React.FC = () => {
             caracteristics: data.caracteristics,
             productDiscountPercentage: data.productDiscountPercentage,
             productDiscountEndDate: data.productDiscountEndDate,
+            rating: data.rating,
+            numberOfVotes: data.numberOfVotes,
           }));
         }
       } else {

@@ -6,3 +6,14 @@
     rgba(255, 174, 109, 1) 100%
   );
 }
+
+#app_header_categories_links_swiper {
+  --swiper-navigation-size: 15px;
+  --swiper-navigation-top-offset: 50%;
+  --swiper-navigation-sides-offset: 10px;
+  --swiper-navigation-color: #003049;
+  --swiper-pagination-color: #003049;
+  --swiper-pagination-bullet-size: 8px;
+  --swiper-pagination-bullet-width: 8px;
+  --swiper-pagination-bullet-height: 8px;
+}

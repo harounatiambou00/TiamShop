@@ -6,6 +6,7 @@ namespace api.Services.ProductService
     public interface IProductService
     {
         Task<ServiceResponse<List<Product>>> GetAllProducts();
+        Task<ServiceResponse<List<Product>>> GetTheTwentyNewestProducts();
         Task<ServiceResponse<Product?>> GetProductById(Guid productId);
         Task<ServiceResponse<Product?>> GetProductByReference(string productReference);
         Task<ServiceResponse<Image?>> GetPrincipalImageOfProduct(Guid productId);

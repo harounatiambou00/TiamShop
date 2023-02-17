@@ -46,6 +46,7 @@ const AccountButtonPopover = ({ open, setOpen }: Props) => {
     });
 
     let content = await response.json();
+    console.log(content);
     if (content && content.success) {
       dispatch(setAuthenticatedClient({ client: null }));
     }

@@ -529,5 +529,10 @@ namespace api.Services.ProductService
                 }
             }
         }
+
+        public Task<ServiceResponse<List<Product>>> GetTheTwentyNewestProducts()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

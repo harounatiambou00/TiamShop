@@ -21,5 +21,7 @@
         public List<ProductCaracteristic> Caracteristics { get; set; } = new List<ProductCaracteristic>();
         public float ProductDiscountPercentage { get; set; }
         public DateTime? ProductDiscountEndDate { get; set; }
+        public float Rating { get; set; } = 0;
+        public int NumberOfVotes { get; set; } = 0;
     }
 }

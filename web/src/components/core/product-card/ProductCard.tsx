@@ -112,7 +112,12 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
               {productAndRelatedInfos.productName}
             </h1>
             <div className="flex items-center justify-between w-full px-2">
-              <p>{productAndRelatedInfos.productPrice} FCFA</p>
+              <p>
+                {productAndRelatedInfos.productPrice -
+                  productAndRelatedInfos.productDiscountPercentage *
+                    (productAndRelatedInfos.productPrice / 100)}{" "}
+                FCFA
+              </p>
               {brand !== undefined && <small>{brand.BrandName}</small>}
             </div>
             <div className="flex items-center justify-center">
@@ -129,14 +134,16 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
             </div>
             <div className="w-full flex justify-between px-2 items-center">
               <small className="text-center">
-                {[0, 1, 2, 3, 4].map((i) =>
-                  i < 3 ? (
+                {[1, 2, 3, 4, 5].map((i) =>
+                  i <= productAndRelatedInfos.rating ? (
                     <AiFillStar className="text-yellow-500 inline" />
                   ) : (
                     <AiOutlineStar className="inline" />
                   )
                 )}
-                <span className="block">100 votes</span>
+                <span className="block">
+                  {productAndRelatedInfos.numberOfVotes} votes
+                </span>
               </small>
               <small className="text-center text-gray-500">1000 ventes</small>
             </div>
