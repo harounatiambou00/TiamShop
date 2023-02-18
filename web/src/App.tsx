@@ -30,6 +30,7 @@ import {
   AccountDetails,
   AccountSettings,
   CategoryPage,
+  SubCategoryPage,
 } from "./pages";
 
 //layouts
@@ -297,6 +298,10 @@ function App() {
           {/*On this page a visitor can see all our product categories */}
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="category/:categoryName" element={<CategoryPage />} />
+          <Route
+            path="sub-category/:subCategoryName"
+            element={<SubCategoryPage />}
+          />
           {/*On this page a client will see his cart, update it, or make an order */}
           <Route path="cart/:cartId" element={<CartPage />} />
 

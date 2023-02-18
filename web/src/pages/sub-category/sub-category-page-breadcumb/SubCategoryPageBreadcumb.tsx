@@ -1,30 +1,24 @@
-import { MdKeyboardArrowRight } from "react-icons/md";
+import React from "react";
+import { SubCategory } from "../../../data/models/SubCategory";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineHome } from "react-icons/ai";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
-import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
+import { AiOutlineHome } from "react-icons/ai";
+import { MdKeyboardArrowRight } from "react-icons/md";
 import { Category } from "../../../data/models/Category";
 
 type Props = {
-  product: ProductAndRelatedInfo;
+  subCategory: SubCategory;
 };
 
-const ProductDetailsBreadcumb = ({ product }: Props) => {
+const SubCategoryPageBreadcumb = ({ subCategory }: Props) => {
   const navigate = useNavigate();
   let categories = useAppSelector(
     (state: RootState) => state.categories.categories
   ) as Category[];
-  let subCategories = useAppSelector(
-    (state: RootState) => state.subCategories.subCategories
-  );
 
-  let productSubCategory = subCategories.find(
-    (s) => s.SubCategoryId === product.subCategoryId
-  );
-
-  let productCategory = categories.find(
-    (c) => c.CategoryId === productSubCategory?.CategoryId
+  let category = categories.find(
+    (c) => c.CategoryId === subCategory.CategoryId
   );
 
   return (
@@ -36,20 +30,26 @@ const ProductDetailsBreadcumb = ({ product }: Props) => {
         <AiOutlineHome className="mr-2" />
         Acceuil
       </span>
-      <span className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer">
+      <span
+        className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer"
+        onClick={() => navigate("/categories")}
+      >
         <MdKeyboardArrowRight className="mx-2" />
-        {productCategory?.CategoryTitle}
+        Catégories
       </span>
-      <span className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer">
+      <span
+        className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer"
+        onClick={() => navigate("/category/" + category?.CategoryName)}
+      >
         <MdKeyboardArrowRight className="mx-2" />
-        {productSubCategory?.SubCategoryTitle}
+        {category?.CategoryTitle}
       </span>
       <span className="flex items-center text-gray-600">
         <MdKeyboardArrowRight className="mx-2" />
-        {product.productName}
+        {subCategory.SubCategoryTitle}
       </span>
     </div>
   );
 };
 
-export default ProductDetailsBreadcumb;
+export default SubCategoryPageBreadcumb;

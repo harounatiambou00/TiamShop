@@ -13,6 +13,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { SubCategory } from "../../../data/models/SubCategory";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   name: string;
@@ -33,6 +34,7 @@ const LeftDrawerLink = ({
   setOpennedCategory,
   icon,
 }: Props) => {
+  const navigate = useNavigate();
   const handleClickCategoryLink = (name: string) => {
     if (opennedCategory === name) setOpennedCategory("none");
     else setOpennedCategory(name);
@@ -69,12 +71,15 @@ const LeftDrawerLink = ({
             {subCategories.map((subCategory) => {
               return (
                 <ListItemButton
-                  className="border-l-2 border-l-secondary"
+                  className=""
                   sx={{ pl: 4 }}
                   key={subCategory.SubCategoryId}
+                  onClick={() => {
+                    navigate("/sub-category/" + subCategory.SubCategoryName);
+                  }}
                 >
                   <ListItemText
-                    className="border-l-2 border-l-secondary"
+                    className=""
                     primary={subCategory.SubCategoryTitle}
                     primaryTypographyProps={{
                       sx: {
