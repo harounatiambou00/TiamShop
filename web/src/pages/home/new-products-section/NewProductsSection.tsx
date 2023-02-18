@@ -6,16 +6,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
 import "./styles.css";
 
 // import required modules
 import { Navigation, Pagination } from "swiper";
-import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { ProductCard } from "../../../components/core";
-import { useNavigate } from "react-router-dom";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 
-const OnDiscountSection = () => {
+const NewProductsSection = () => {
   let allProducts = useAppSelector(
     (state: RootState) => state.allProducts.allProducts
   );
@@ -25,29 +23,21 @@ const OnDiscountSection = () => {
   React.useEffect(() => {
     setProductsToBeDisplayed(
       allProducts
-        .filter(
-          (p) =>
-            p.productDiscountPercentage !== 0 &&
-            p.productDiscountEndDate !== null
-        )
+        .filter((p) => p.createdAt !== null && typeof p.createdAt === "string")
         .sort((p1, p2) => {
-          if (p1.productDiscountPercentage > p2.productDiscountPercentage)
-            return -1;
-          else if (p1.productDiscountPercentage < p2.productDiscountPercentage)
-            return 1;
-          else return 0;
+          if (p1.createdAt !== null && p2.createdAt !== null) {
+            if (new Date(p1.createdAt) > new Date(p2.createdAt)) return -1;
+            else if (new Date(p1.createdAt) < new Date(p2.createdAt)) return 1;
+            else return 0;
+          } else return 0;
         })
-        .slice(0, 10)
+        .slice(0, 9)
     );
   }, [allProducts]);
-  const navigate = useNavigate();
   return (
-    <HomePageSection
-      title="En solde"
-      handleClickSeeMoreButton={() => navigate("/on-discount-products")}
-    >
+    <HomePageSection title="Nouvel arrivage">
       <Swiper
-        id="app_homepage_categories_swiper"
+        id="app_homepage_new_products_swiper"
         className="h-96"
         draggable={true}
         slidesPerView={4}
@@ -61,7 +51,7 @@ const OnDiscountSection = () => {
         {productsToBeDisplayed.map((p) => {
           return (
             <SwiperSlide key={p.productId} className="drop-shadow-sm">
-              <ProductCard product={p} />
+              <ProductCard product={p} isNew={true} />
             </SwiperSlide>
           );
         })}
@@ -70,4 +60,4 @@ const OnDiscountSection = () => {
   );
 };
 
-export default OnDiscountSection;
+export default NewProductsSection;

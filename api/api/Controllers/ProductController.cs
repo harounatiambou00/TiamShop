@@ -370,5 +370,106 @@ namespace api.Controllers
                 };
             }
         }
+
+        [HttpGet("get-all-products-and-their-related-info")]
+        public async Task<ActionResult<ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>>> GetAllProductsAndTheirRelatedInformation()
+        {
+            var getAllProductsResponse = await _productService.GetAllProducts();
+            if (getAllProductsResponse.Success && getAllProductsResponse.Data != null)
+            {
+                var response = new List<GetProductAndOtherRelatedInformationDTO>();
+                foreach(var product in getAllProductsResponse.Data)
+                {
+                    if (product != null && product.ProductDiscountId != null)
+                    {
+                        var getProductDiscountResponse = await _productDiscountService.GetProductDiscountById((long)product.ProductDiscountId);
+                        if (getProductDiscountResponse.Success)
+                        {
+                            var getProductCaracteristicsResponse = await _productService.GetCaracteristicsOfProduct((Guid)product.ProductId);
+                            if (getProductCaracteristicsResponse.Success)
+                            {
+                                var getImages = await _productService.GetProductImages(product.ProductId);
+                                if (getImages.Success)
+                                {
+                                    response.Add(new GetProductAndOtherRelatedInformationDTO()
+                                    {
+                                        ProductId = product.ProductId,
+                                        ProductName = product.ProductName,
+                                        ProductReference = product.ProductReference,
+                                        ProductDescription = product.ProductDescription,
+                                        ProductPrice = product.ProductPrice,
+                                        ProductQuantity = product.ProductQuantity,
+                                        CreatedAt = product.CreatedAt,
+                                        Waranty = product.Waranty,
+                                        Color = product.Color,
+                                        ProductPrincipalImageId = product.ProductPrincipalImageId,
+                                        BrandId = product.BrandId,
+                                        SubCategoryId = product.SubCategoryId,
+                                        ProductDiscountId = product.ProductDiscountId,
+                                        Images = getImages.Data,
+                                        Caracteristics = getProductCaracteristicsResponse.Data,
+                                        ProductDiscountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage,
+                                        ProductDiscountEndDate = getProductDiscountResponse.Data.ProductDiscountEndDate,
+                                        Rating = (await _productGradeService.GetProductAverageGradeByProductId(product.ProductId)).Data,
+                                        NumberOfVotes = (await _productGradeService.GetProductGradesByProductId(product.ProductId)).Data.Count
+                                    });
+                                }
+                                else
+                                {
+                                    return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                                    {
+                                        Data = { },
+                                        Success = false,
+                                        Message = getImages.Message,
+                                    };
+                                }
+                            }
+                            else
+                            {
+                                return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                                {
+                                    Data = { },
+                                    Success = false,
+                                    Message = getProductCaracteristicsResponse.Message,
+                                };
+                            }
+                        }
+                        else
+                        {
+                            return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                            {
+                                Data = { },
+                                Success = false,
+                                Message = "PRODUCT_DISCOUNT_NOT_FOUND"
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                        {
+                            Data = { },
+                            Success = false,
+                            Message = "PRODUCT_DISCOUNT_NOT_FOUND"
+                        };
+                    }
+                }
+                return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                {
+                    Data = response,
+                    Success = true,
+                    Message = "",
+                };
+            }
+            else
+            {
+                return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                {
+                    Data = { },
+                    Success = false,
+                    Message = "PRODUCT_NOT_FOUND"
+                };
+            }
+        }
     }
 }

@@ -1,11 +1,13 @@
 import React from "react";
-import { Product } from "../../../data/models/Product";
 import { Button, FormControl, OutlinedInput } from "@mui/material";
 import { BsFilter, BsSearch } from "react-icons/bs";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 
 type Props = {
-  displayedProducts: Product[];
-  setDisplayedProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  displayedProducts: ProductAndRelatedInfo[];
+  setDisplayedProducts: React.Dispatch<
+    React.SetStateAction<ProductAndRelatedInfo[]>
+  >;
 };
 
 const SearchProducts = ({ displayedProducts, setDisplayedProducts }: Props) => {

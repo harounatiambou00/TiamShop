@@ -8,6 +8,7 @@ import OnDiscountSection from "./on-discounts-section/OnDiscountSection";
 import AboutTiamtechSection from "./about-tiamtech-section/AboutTiamtechSection";
 import OurStrenghsSection from "./our_strenghs_section/OurStrenghsSection";
 import RecommendationSection from "./recommendation-section/RecommendationSection";
+import NewProductsSection from "./new-products-section/NewProductsSection";
 
 const HomePage: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const HomePage: React.FC = () => {
         <BrandsSection />
         <OnDiscountSection />
         <PartnersSection />
+        <NewProductsSection />
       </div>
       <div className="w-full mt-10 flex items-center justify-center">
         <AboutTiamtechSection />

@@ -31,6 +31,9 @@ import {
   AccountSettings,
   CategoryPage,
   SubCategoryPage,
+  BestSellersPage,
+  OnDiscountProductsPage,
+  RecommendationsPage,
 } from "./pages";
 
 //layouts
@@ -53,7 +56,6 @@ import { useAppDispatch } from "./hooks/redux-custom-hooks/useAppDispatch";
 import { setAuthenticatedClient } from "./redux/slices/authenticatedClientSlice";
 import { setCategories } from "./redux/slices/categoriesSlice";
 import { Category } from "./data/models/Category";
-import { Product } from "./data/models/Product";
 import { setAllProducts } from "./redux/slices/allProductsSlice";
 import { Brand } from "./data/models/Brand";
 import { SubCategory } from "./data/models/SubCategory";
@@ -61,6 +63,7 @@ import { setSubCategories } from "./redux/slices/subCategoriesSlice";
 import { setAllBrands } from "./redux/slices/allBrandsSlice";
 import { CustomImage } from "./data/models/Image";
 import { setImages } from "./redux/slices/imagesSlice";
+import ProductAndRelatedInfo from "./data/models/ProductAndRelatedInfo";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -88,13 +91,7 @@ function App() {
             CompleteAddress: data.completeAddress,
             BirthDate:
               //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match
-              data.birthDate != null
-                ? new Date(
-                    parseInt(data.birthDate.slice(0, 4)),
-                    parseInt(data.birthDate.slice(5, 7)) - 1,
-                    parseInt(data.birthDate.slice(8, 10))
-                  )
-                : null,
+              data.birthDate,
             NeighborhoodId: data.neighborhoodId,
           };
 
@@ -110,11 +107,13 @@ function App() {
   //Get all the products
   React.useEffect(() => {
     const getProducts = async () => {
-      let url = process.env.REACT_APP_API_URL + "products/get-all-products";
+      let url =
+        process.env.REACT_APP_API_URL +
+        "products/get-all-products-and-their-related-info";
       let response = await fetch(url);
       let content = await response.json();
       if (content.success) {
-        let products = [] as Product[];
+        let products = [] as ProductAndRelatedInfo[];
         let data = content.data;
         for (let i of data) {
           products = [
@@ -134,10 +133,16 @@ function App() {
               brandId: i.brandId,
               subCategoryId: i.subCategoryId,
               productDiscountId: i.productDiscountId,
+              productDiscountEndDate: i.productDiscountEndDate,
+              productDiscountPercentage: i.productDiscountPercentage,
+              rating: i.rating,
+              numberOfVotes: i.numberOfVotes,
+              images: i.images,
+              caracteristics: i.caracteristics,
             },
           ];
         }
-
+        console.log(products);
         dispatch(setAllProducts({ allProducts: products }));
       } else {
         dispatch(setAllProducts({ allProducts: [] }));
@@ -216,14 +221,7 @@ function App() {
             ...{},
             brandId: i.brandId,
             BrandName: i.brandName,
-            PartnershipDate:
-              i.partnershipDate != null
-                ? new Date(
-                    parseInt(i.partnershipDate.slice(0, 4)),
-                    parseInt(i.partnershipDate.slice(5, 7)) - 1,
-                    parseInt(i.partnershipDate.slice(8, 10))
-                  )
-                : null,
+            PartnershipDate: i.partnershipDate,
             BrandWebsiteLink: i.brandWebsiteLink,
             BrandImageId: i.brandImageId,
           });
@@ -314,6 +312,12 @@ function App() {
           <Route path="order-congrats" element={<OrderCongratulationsPage />} />
           {/*On this page a client will can finalize his order process */}
           <Route path="finalize-order" element={<GiveOrderInfoPage />} />
+          <Route path="best-sellers" element={<BestSellersPage />} />
+          <Route
+            path="on-discount-products"
+            element={<OnDiscountProductsPage />}
+          />
+          <Route path="recommendations" element={<RecommendationsPage />} />
         </Route>
         {/*On this page a client can login*/}
         <Route path="sign-in" element={<SignInPage />} />

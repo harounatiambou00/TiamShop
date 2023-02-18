@@ -205,8 +205,9 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
       "ProductQuantity",
       values.productQuantity.toString()
     );
-    addProductFormData.append("Waranty", values.waranty);
-    addProductFormData.append("Color", values.color);
+    values.waranty !== "" &&
+      addProductFormData.append("Waranty", values.waranty);
+    values.color !== "" && addProductFormData.append("Color", values.color);
     if (values.ProductDiscountPercentage !== undefined) {
       addProductFormData.append(
         "ProductDiscountPercentage",
@@ -277,6 +278,8 @@ const AddProductDialog = ({ open, setOpen, subCategories, brands }: Props) => {
       });
       setErrorMessage("");
       setCaracteristics([]);
+      setImages([]);
+      setOpen(false);
     } else {
       let error = addProductResponseContent.message;
       if (

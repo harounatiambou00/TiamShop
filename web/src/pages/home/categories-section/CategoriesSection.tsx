@@ -20,7 +20,10 @@ const CategoriesSection = () => {
   );
   const navigate = useNavigate();
   return (
-    <HomePageSection title="Nos rayons">
+    <HomePageSection
+      title="Nos rayons"
+      handleClickSeeMoreButton={() => navigate("/categories")}
+    >
       <Swiper
         id="app_homepage_categories_swiper"
         className="h-48"

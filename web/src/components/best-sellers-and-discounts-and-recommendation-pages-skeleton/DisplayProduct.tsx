@@ -1,51 +1,36 @@
 import React from "react";
-import { Product } from "../../../data/models/Product";
-import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { Button, IconButton, Skeleton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { TbArrowsLeftRight, TbHeartPlus } from "react-icons/tb";
-import { SubCategory } from "../../../data/models/SubCategory";
-import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
-import { RootState } from "../../../redux/store";
+
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { GiShoppingCart } from "react-icons/gi";
-import { AnimatedButton } from "../../../components/core";
+import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
+import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../redux/store";
+import { AnimatedButton } from "../core";
+import { type } from "os";
 
 type Props = {
-  product: Product;
-  subCategory: SubCategory;
+  productAndRelatedInfos: ProductAndRelatedInfo;
 };
 
-const DisplayProduct = ({ product, subCategory }: Props) => {
+const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
   const brand = useAppSelector(
     (state: RootState) => state.allBrands.brands
-  ).find((b) => b.brandId === product.brandId);
+  ).find((b) => b.brandId === productAndRelatedInfos.brandId);
+  const subCategory = useAppSelector(
+    (state: RootState) => state.subCategories.subCategories
+  ).find((b) => b.SubCategoryId === productAndRelatedInfos.subCategoryId);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [productAndRelatedInfos, setProductAndRelatedInfos] =
-    React.useState<ProductAndRelatedInfo | null>(null);
-  React.useEffect(() => {
-    const getProductAndRelatedInfos = async () => {
-      setIsLoading(true);
-      let url =
-        process.env.REACT_APP_API_URL +
-        "products/get-product-and-all-related-info/" +
-        product.productId;
-      let response = await fetch(url, {
-        method: "GET",
-      });
-      let content = await response.json();
-      if (content.success) {
-        setProductAndRelatedInfos(content.data);
-      } else console.log(content);
-      setIsLoading(false);
-    };
-    getProductAndRelatedInfos();
-  }, []);
+
   return (
     <div
       className="w-full flex sm:flex-col lg:flex-row justify-between cursor-pointer bg-white border-y-2 sm:py-4 lg:py-0"
-      onClick={() => navigate("/product-details/" + product.productId)}
+      onClick={() =>
+        navigate("/product-details/" + productAndRelatedInfos.productId)
+      }
     >
       <div className="sm:w-full lg:w-1/4">
         {!isLoading ? (
@@ -60,6 +45,13 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
               alt={productAndRelatedInfos?.images[0].imageName}
               className="sm:max-h-96 lg:max-h-80"
             />
+            {productAndRelatedInfos !== null &&
+              productAndRelatedInfos.productDiscountPercentage !== 0 && (
+                <div className="top-0 left-0 absolute bg-red-100 text-red-700 sm:text-4xl lg:text-2xl px-2">
+                  - {productAndRelatedInfos.productDiscountPercentage}%
+                </div>
+              )}
+
             <div className="sm:top-10 sm:right-10 lg:top-1 lg:right-1 flex flex-col z-50 absolute">
               <div className="flex flex-col items-center mb-2">
                 <IconButton
@@ -97,7 +89,7 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
           />
         ) : (
           <h1 className="font-raleway uppercase font-medium sm:text-2xl lg:text-base">
-            {product.productName}
+            {productAndRelatedInfos.productName}
           </h1>
         )}
         {isLoading ? (
@@ -109,7 +101,7 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
         ) : (
           <div className="flex items-end">
             <span className="sm:text-lg lg:text-sm font-normal text-gray-500">
-              {subCategory.SubCategoryTitle} - {brand && brand.BrandName}{" "}
+              {subCategory?.SubCategoryTitle} - {brand && brand.BrandName}{" "}
             </span>
             <span className="sm:text-xl lg:text-sm">
               {productAndRelatedInfos?.rating !== undefined && (
@@ -144,15 +136,16 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
           </div>
         ) : (
           <div className="mt-2">
-            {product.productPrice > 500000 && (
+            {productAndRelatedInfos.productPrice > 500000 && (
               <span className="bg-green-100 text-green-900 px-2 rounded-full drop-shadow-sm sm:text-xl lg:text-sm">
                 Livraison gratuite
               </span>
             )}
 
-            {product.productQuantity <= 20 && (
+            {productAndRelatedInfos.productQuantity <= 20 && (
               <span className="bg-red-100 text-red-700 px-2 rounded-full drop-shadow-sm sm:text-xl lg:text-sm ml-4">
-                Faites vite, il n'en reste plus que {product.productQuantity} !
+                Faites vite, il n'en reste plus que{" "}
+                {productAndRelatedInfos.productQuantity} !
               </span>
             )}
           </div>

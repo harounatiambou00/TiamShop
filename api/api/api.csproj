@@ -39,6 +39,7 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-35-ProductGrade_TABLE_CREATE.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-36-ProductGrade_SPs.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-37-RENAMING_AllGetProductGrades_SP.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-38-FIXING_THE_UpdateProductDiscount_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,6 +78,7 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-35-ProductGrade_TABLE_CREATE.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-36-ProductGrade_SPs.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-37-RENAMING_AllGetProductGrades_SP.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-38-FIXING_THE_UpdateProductDiscount_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>

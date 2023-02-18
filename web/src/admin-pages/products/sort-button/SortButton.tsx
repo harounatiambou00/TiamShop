@@ -1,10 +1,9 @@
-import React from "react";
-import { Product } from "../../../data/models/Product";
 import { Button } from "@mui/material";
 import { BsSortAlphaDown } from "react-icons/bs";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 
 type Props = {
-  displayedProducts: Product[];
+  displayedProducts: ProductAndRelatedInfo[];
 };
 
 const SortButton = ({ displayedProducts }: Props) => {

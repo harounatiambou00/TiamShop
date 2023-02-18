@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Product } from "../../data/models/Product";
+import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 
 export interface AllProductsSliceType {
-  allProducts: Product[];
+  allProducts: ProductAndRelatedInfo[];
 }
 
 const initialState: AllProductsSliceType = {

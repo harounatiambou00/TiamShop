@@ -83,8 +83,8 @@ namespace api.Services.ProductDiscountService
                     return new ServiceResponse<string?>()
                     {
                         Data = null,
-                        Success = affectedRows == 1,
-                        Message = affectedRows == 1 ? "PRODUCT_DISCOUNT_DELETED_SUCCESSFULLY" : "PRODUCT_DISCOUNT_NOT_FOUND"
+                        Success = affectedRows >= 1,
+                        Message = affectedRows >= 1 ? "PRODUCT_DISCOUNT_DELETED_SUCCESSFULLY" : "PRODUCT_DISCOUNT_NOT_FOUND"
                     };
 
                 }
@@ -186,8 +186,8 @@ namespace api.Services.ProductDiscountService
                         return new ServiceResponse<string?>()
                         {
                             Data = null,
-                            Success = affectedRows == 1,
-                            Message = affectedRows == 1 ? "PRODUCT_DISCOUNT_UPDATED_SUCCESSFULLY" : "SOMETHING_WENT_WRONG"
+                            Success = affectedRows >= 1,
+                            Message = affectedRows >= 1 ? "PRODUCT_DISCOUNT_UPDATED_SUCCESSFULLY" : "SOMETHING_WENT_WRONG"
                         };
                     }
                     else

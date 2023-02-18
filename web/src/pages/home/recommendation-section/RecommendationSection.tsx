@@ -9,10 +9,15 @@ import "swiper/css/pagination";
 import "./styles.css";
 // import required modules
 import { Navigation, Pagination } from "swiper";
+import { useNavigate } from "react-router-dom";
 
 const RecommendationSection = () => {
+  const navigate = useNavigate();
   return (
-    <HomePageSection title="Recommendations ( Unique comme vous )">
+    <HomePageSection
+      title="Recommendations ( Unique comme vous )"
+      handleClickSeeMoreButton={() => navigate("/recommendations")}
+    >
       <Swiper
         id="app_homepage_recommendations_swiper"
         className="h-96"

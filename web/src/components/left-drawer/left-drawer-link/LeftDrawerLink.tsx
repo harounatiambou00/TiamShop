@@ -101,7 +101,15 @@ const LeftDrawerLink = ({
   } else {
     return (
       <ListItem className="w-full flex flex-col items-start justify-between">
-        <ListItemButton className="w-full flex items-center justify-between">
+        <ListItemButton
+          className="w-full flex items-center justify-between"
+          onClick={() => {
+            name === "recommendations" && navigate("/recommendations");
+            name === "best-sellers" && navigate("/best-sellers");
+            name === "on-discount-products" &&
+              navigate("/on-discount-products");
+          }}
+        >
           {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText
             primary={title}

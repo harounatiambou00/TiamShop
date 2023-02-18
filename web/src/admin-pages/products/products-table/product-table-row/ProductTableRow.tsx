@@ -1,5 +1,4 @@
 import React from "react";
-import { Product } from "../../../../data/models/Product";
 import { Checkbox, IconButton, Skeleton } from "@mui/material";
 import { BsTrash } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
@@ -12,9 +11,10 @@ import { useAppSelector } from "../../../../hooks/redux-custom-hooks/useAppSelec
 import { RootState } from "../../../../redux/store";
 import { useAppDispatch } from "../../../../hooks/redux-custom-hooks/useAppDispatch";
 import { setAllProducts } from "../../../../redux/slices/allProductsSlice";
+import ProductAndRelatedInfo from "../../../../data/models/ProductAndRelatedInfo";
 
 type Props = {
-  product: Product;
+  product: ProductAndRelatedInfo;
 };
 
 const ProductTableRow = ({ product }: Props) => {
@@ -95,7 +95,7 @@ const ProductTableRow = ({ product }: Props) => {
             {product.productReference}
           </span>
           <span className="text-center text-xs font-amita font-semibold bg-red-100 text-red-900 drop-shadow-sm rounded-full px-2">
-            -20%
+            -{product.productDiscountPercentage}%
           </span>
         </div>
       </div>

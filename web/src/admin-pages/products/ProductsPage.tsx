@@ -9,6 +9,7 @@ import ProductsTable from "./products-table/ProductsTable";
 import AddProductDialog from "./add-product-dialog/AddProductDialog";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
+import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 
 const ProductsPage = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -20,9 +21,9 @@ const ProductsPage = () => {
   let subCategories = useAppSelector(
     (state: RootState) => state.subCategories.subCategories
   );
-  const [displayedProducts, setDisplayedProducts] = React.useState<Product[]>(
-    []
-  );
+  const [displayedProducts, setDisplayedProducts] = React.useState<
+    ProductAndRelatedInfo[]
+  >([]);
 
   React.useEffect(() => {
     setIsLoading(true);

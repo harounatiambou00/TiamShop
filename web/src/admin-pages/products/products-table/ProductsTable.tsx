@@ -3,9 +3,10 @@ import { Product } from "../../../data/models/Product";
 import { Paper } from "@mui/material";
 
 import ProductTableRow from "./product-table-row/ProductTableRow";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 
 type Props = {
-  displayedProducts: Product[];
+  displayedProducts: ProductAndRelatedInfo[];
 };
 
 const ProductsTable = ({ displayedProducts }: Props) => {

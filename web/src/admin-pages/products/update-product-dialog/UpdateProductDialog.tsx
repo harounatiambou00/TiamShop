@@ -8,7 +8,6 @@ import { BiArrowBack, BiSave } from "react-icons/bi";
 import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { useNavigate } from "react-router-dom";
 import ImagesSection from "./images-section/ImagesSection";
-import { Product } from "../../../data/models/Product";
 import Form from "./form/Form";
 import CaracteristicsSection from "./caracteristics-section/CaracteristicsSection";
 import moment from "moment";
@@ -19,7 +18,7 @@ import { ErrorType } from "./form/ErrorType";
 type Props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  product: Product;
+  product: ProductAndRelatedInfo;
 };
 
 const Transition = React.forwardRef(function Transition(

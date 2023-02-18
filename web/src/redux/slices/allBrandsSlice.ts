@@ -10,7 +10,7 @@ const initialState: AllBrandsType = {
 };
 
 export const allBrandsSlice = createSlice({
-  name: "allBrandSlie",
+  name: "allBrandSlice",
   initialState,
   reducers: {
     setAllBrands: (state, action: PayloadAction<AllBrandsType>) => {

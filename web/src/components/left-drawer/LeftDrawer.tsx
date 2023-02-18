@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 import { AiOutlineClose } from "react-icons/ai";
 import { FiTrendingUp } from "react-icons/fi";
-import { MdFiberNew } from "react-icons/md";
 import { BsStars } from "react-icons/bs";
 import { RiCustomerService2Fill } from "react-icons/ri";
 import { TbLogout } from "react-icons/tb";
+import { TbDiscount2 } from "react-icons/tb";
 import LeftDrawerLink from "./left-drawer-link/LeftDrawerLink";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
@@ -64,21 +64,21 @@ const LeftDrawer = (props: Props) => {
             </h1>
             <List disablePadding>
               <LeftDrawerLink
-                name="none"
+                name="best-sellers"
                 title="Les plus vendus"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
                 icon={<FiTrendingUp className="text-2xl text-primary" />}
               />
               <LeftDrawerLink
-                name="none"
-                title="Nouveautés"
+                name="on-discount-products"
+                title="Soldes"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}
-                icon={<MdFiberNew className="text-3xl text-primary" />}
+                icon={<TbDiscount2 className="text-3xl text-primary" />}
               />
               <LeftDrawerLink
-                name="none"
+                name="recommendations"
                 title="Recommandations"
                 opennedCategory={opennedCategory}
                 setOpennedCategory={setOpennedCategory}

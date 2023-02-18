@@ -9,12 +9,14 @@ import "./styles.css";
 import { Navigation, Pagination } from "swiper";
 import { Button } from "@mui/material";
 import { BsPlus } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   subCategory: SubCategory;
 };
 
 const SubCategorySection = ({ subCategory }: Props) => {
+  const navigate = useNavigate();
   return (
     <div className="my-5">
       <div className="flex justify-between items-center">
@@ -26,6 +28,9 @@ const SubCategorySection = ({ subCategory }: Props) => {
           color="primary"
           className="normal-case font-kanit font-light"
           endIcon={<BsPlus />}
+          onClick={() =>
+            navigate("/sub-category/" + subCategory.SubCategoryName)
+          }
         >
           Voir plus
         </Button>

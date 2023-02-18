@@ -1,4 +1,3 @@
-import React from "react";
 import HomePageSection from "../../../components/homepage-components/homepage-section/HomePageSection";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
@@ -11,13 +10,18 @@ import "./styles.css";
 // import required modules
 import { Navigation, Pagination } from "swiper";
 import { ProductCard } from "../../../components/core";
+import { useNavigate } from "react-router-dom";
 
 const BestSellersSection = () => {
   let products = useAppSelector(
     (state: RootState) => state.allProducts.allProducts
   );
+  const navigate = useNavigate();
   return (
-    <HomePageSection title="Les plus populaires cette semaine">
+    <HomePageSection
+      title="Les plus populaires cette semaine"
+      handleClickSeeMoreButton={() => navigate("/best-sellers")}
+    >
       <Swiper
         id="app_homepage_best_sellers_swiper"
         className="h-96"
@@ -34,11 +38,7 @@ const BestSellersSection = () => {
           return (
             <SwiperSlide key={i} className="drop-shadow-sm">
               {products[0] && (
-                <ProductCard
-                  product={products[0]}
-                  isNew={true}
-                  isTrend={true}
-                />
+                <ProductCard product={products[0]} isTrend={true} />
               )}
             </SwiperSlide>
           );

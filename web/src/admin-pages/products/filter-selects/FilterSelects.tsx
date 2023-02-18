@@ -1,13 +1,15 @@
 import { FormControl, MenuItem, Select } from "@mui/material";
 import React from "react";
-import { Product } from "../../../data/models/Product";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 
 type Props = {
-  products: Product[];
-  displayedProducts: Product[];
-  setDisplayedProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  products: ProductAndRelatedInfo[];
+  displayedProducts: ProductAndRelatedInfo[];
+  setDisplayedProducts: React.Dispatch<
+    React.SetStateAction<ProductAndRelatedInfo[]>
+  >;
 };
 
 type PriceRangeType =
