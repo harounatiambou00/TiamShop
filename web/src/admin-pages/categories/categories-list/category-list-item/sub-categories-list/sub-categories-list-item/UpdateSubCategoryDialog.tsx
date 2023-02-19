@@ -25,6 +25,8 @@ import { FiEdit } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import SuccessSnackbar from "../../../../../../components/core/suucess-snackbar/SuccessSnackbar";
 import ErrorSnackbar from "../../../../../../components/core/error-snackbar/ErrorSnackbar";
+import { useAppSelector } from "../../../../../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../../../../../redux/store";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -185,6 +187,10 @@ const UpdateSubCategoryDialog = ({
     }
     setSavingIsLoading(false);
   };
+
+  const products = useAppSelector(
+    (state: RootState) => state.allProducts.allProducts
+  ).filter((p) => p.subCategoryId === subCategory.SubCategoryId);
 
   return !isLoading && subCategoryImage ? (
     <Dialog
@@ -372,7 +378,7 @@ const UpdateSubCategoryDialog = ({
                 <TextField
                   disabled
                   label="Nombre de produits"
-                  value="100"
+                  value={products.length}
                   className="mb-5"
                   type="text"
                   sx={{

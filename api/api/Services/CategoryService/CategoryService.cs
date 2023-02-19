@@ -211,9 +211,54 @@ namespace api.Services.CategoryService
             }
         }
 
-        public Task<ServiceResponse<string?>> UpdateCategory(Category newCategory)
+        public async Task<ServiceResponse<string?>> UpdateCategory(Category newCategory)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string SQL = "EXEC dbo.UpdateCategory @CategoryId, @CategoryName, @CategoryTitle, @CategoryImageId, @CategoryRanking";
+                    var dictionary = new Dictionary<string, object?>
+                    {
+                        {"@CategoryId", newCategory.CategoryId},
+                        {"@CategoryName", newCategory.CategoryName},
+                        {"@CategoryTitle", newCategory.CategoryTitle},
+                        {"@CategoryImageId", newCategory.CategoryImageId},
+                        {"@CategoryRanking", newCategory.CategoryRanking},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = await connection.ExecuteAsync(SQL, parameters);
+
+                    if (affectedRows >= 1)
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "CATEGORY_UPDATED_SUCCESSFULLY"
+                        };
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "CATEGORY_UPDATE_FAILED"
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = ex.Message
+                    };
+                }
+            }
         }
     }
 }

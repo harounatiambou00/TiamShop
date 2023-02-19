@@ -1,70 +1,142 @@
-import { HiOutlineUsers } from "react-icons/hi";
-import { BiCategoryAlt, BiLogOut } from "react-icons/bi";
-import { TbTruckDelivery, TbBrandApple } from "react-icons/tb";
-import { AiOutlineGift, AiOutlineDashboard } from "react-icons/ai";
-
+import React from "react";
+import { AiOutlineDashboard } from "react-icons/ai";
+import { BsApple } from "react-icons/bs";
+import { FaLayerGroup, FaTruck, FaUsers } from "react-icons/fa";
+import { FiLogOut, FiPackage } from "react-icons/fi";
+import { GiHandTruck } from "react-icons/gi";
+import { HiTag } from "react-icons/hi";
+import { MdDashboard } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-import { Button } from "@mui/material";
-import { BsTags } from "react-icons/bs";
+type LinkNameType =
+  | "dashboard"
+  | "products"
+  | "brands"
+  | "categories"
+  | "deliveries"
+  | "orders"
+  | "clients";
+
+type LinkType = {
+  id: number;
+  name: LinkNameType;
+  title: string;
+  pagePath: string;
+  icon: React.ReactNode;
+};
+
+const links = [
+  {
+    id: 1,
+    name: "dashboard",
+    title: "Tableau de bord",
+    pagePath: "/admin",
+    icon: (
+      <div className="">
+        <MdDashboard className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 2,
+    name: "products",
+    title: "Produits",
+    pagePath: "/admin/products",
+    icon: (
+      <div className="">
+        <HiTag className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 3,
+    name: "clients",
+    title: "Clients",
+    pagePath: "/admin/clients",
+    icon: (
+      <div className="">
+        <FaUsers className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 4,
+    name: "categories",
+    title: "Catégories",
+    pagePath: "/admin/categories",
+    icon: (
+      <div className="">
+        <FaLayerGroup className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 5,
+    name: "brands",
+    title: "Marques",
+    pagePath: "/admin/brands",
+    icon: (
+      <div className="">
+        <BsApple className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 6,
+    name: "orders",
+    title: "Commandes",
+    pagePath: "/admin/orders",
+    icon: (
+      <div className="">
+        <FiPackage className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 5,
+    name: "deliveries",
+    title: "Livraisons",
+    pagePath: "/admin/deliveries",
+    icon: (
+      <div className="">
+        <FaTruck className="text-2xl" />
+      </div>
+    ),
+  },
+] as LinkType[];
 
 const Leftbar = () => {
   const navigate = useNavigate();
-
+  const [activeLink, setActiveLink] = React.useState<LinkNameType>("dashboard");
   return (
-    <div className="h-full w-60 bg-white flex flex-col drop-shadow-md justify-center">
-      <div className="flex flex-col mt-10 w-60 px-5">
-        <div
-          onClick={() => navigate("/admin")}
-          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
-        >
-          <AiOutlineDashboard className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Tableau de bord</span>
-        </div>
-        <div
-          onClick={() => navigate("/admin/clients")}
-          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
-        >
-          <HiOutlineUsers className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Les clients</span>
-        </div>
-        <div
-          onClick={() => navigate("/admin/categories")}
-          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
-        >
-          <BiCategoryAlt className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Les catégories</span>
-        </div>
-        <div
-          onClick={() => navigate("/admin/products")}
-          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
-        >
-          <BsTags className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Les produits</span>
-        </div>
-        <div className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md">
-          <TbTruckDelivery className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Les livraisons</span>
-        </div>
-        <div
-          onClick={() => navigate("/admin/brands")}
-          className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md"
-        >
-          <TbBrandApple className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Les marques</span>
-        </div>
-        <div className="cursor-pointer flex items-center h-10 w-full mb-5 px-2 hover:bg-gray-100 hover:rounded-md">
-          <AiOutlineGift className="text-primary text-2xl" />
-          <span className="text-gray-600 ml-3">Les commandes</span>
-        </div>
+    <div className="w-72 pt-20 h-screen relative bg-white">
+      <div className="w-full h-3/4 flex flex-col pt-5">
+        {links.map((link) => (
+          <div
+            key={link.id}
+            className={
+              activeLink === link.name
+                ? "px-4 py-3 flex items-center mb-2 bg-primary text-white"
+                : "px-4 py-3 flex items-center mb-2 text-primary hover:bg-gray-100 cursor-pointer"
+            }
+            onClick={() => {
+              setActiveLink(link.name);
+              navigate(link.pagePath);
+            }}
+          >
+            <div>{link.icon}</div>
+            <span className="font-raleway text-md font-medium ml-4">
+              {link.title}
+            </span>
+          </div>
+        ))}
       </div>
-      <Button
-        variant="contained"
-        className="bg-red-600 mx-5 mt-10"
-        startIcon={<BiLogOut />}
-      >
-        Se déconnecter
-      </Button>
+      <div className="bg-red-600 text-white border-2 border-red-600 py-2 font-raleway absolute bottom-0 w-full text-lg flex items-center justify-center cursor-pointer transition ease-in duration-200 hover:bg-white hover:border-2 hover:border-red-600 hover:text-red-600 ">
+        <span className="font-raleway uppercase font-medium">
+          Se déconnecter
+        </span>
+        <FiLogOut className="ml-5" />
+      </div>
     </div>
   );
 };
