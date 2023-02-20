@@ -28,10 +28,10 @@ const Header = () => {
           color="secondary"
         >
           <Avatar className="font-kanit bg-primary">
-            {authenticatedAdmin.FirstName[0]}
+            {authenticatedAdmin?.FirstName[0]}
           </Avatar>
         </Badge>
-        {authenticatedAdmin.FirstName}
+        {authenticatedAdmin?.FirstName}
       </div>
     </div>
   );

@@ -109,7 +109,7 @@ const Leftbar = () => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = React.useState<LinkNameType>("dashboard");
   return (
-    <div className="w-72 pt-20 h-screen relative bg-white">
+    <div className="w-60 pt-20 h-screen relative bg-white">
       <div className="w-full h-3/4 flex flex-col pt-5">
         {links.map((link) => (
           <div
