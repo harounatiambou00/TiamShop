@@ -61,9 +61,37 @@ namespace api.Services.CategoryService
             }
         }
 
-        public Task<ServiceResponse<string?>> DeleteCategory(int categoryId)
+        public async Task<ServiceResponse<string?>> DeleteCategory(int categoryId)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM dbo.tblCategories WHERE CategoryId = @CategoryId";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        {"@CategoryId", categoryId},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = await connection.ExecuteAsync(query, parameters);
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = affectedRows >= 1,
+                        Message = affectedRows >= 1 ? "CATEGORY_DELETED_SUCCESSFULLY" : "CATEGORY_NOT_FOUND"
+                    };
+                }
+                catch(Exception e)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message
+                    };
+                }
+            }
         }
 
         public async Task<ServiceResponse<List<Category>>> GetAllCategories()

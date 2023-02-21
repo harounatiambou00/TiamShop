@@ -63,9 +63,9 @@ const SubCategoriesList = ({ categoryId }: Props) => {
       modules={[Pagination]}
       className="mySwiper h-32 mt-4"
     >
-      {subCategories.map((subCategory) => {
+      {subCategories.map((subCategory, index) => {
         return (
-          <SwiperSlide key={subCategory.subCategoryId}>
+          <SwiperSlide key={index}>
             <SubCategoriesListItem
               subCategory={subCategory}
               refreshSubCategories={refreshSubCategories}

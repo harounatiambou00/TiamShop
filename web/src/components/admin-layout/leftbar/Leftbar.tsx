@@ -131,7 +131,7 @@ const Leftbar = () => {
           </div>
         ))}
       </div>
-      <div className="bg-red-600 text-white border-2 border-red-600 py-2 font-raleway absolute bottom-0 w-full text-lg flex items-center justify-center cursor-pointer transition ease-in duration-200 hover:bg-white hover:border-2 hover:border-red-600 hover:text-red-600 ">
+      <div className="bg-red-600 select-none text-white border-2 border-red-600 py-2 font-raleway absolute bottom-0 w-full text-lg flex items-center justify-center cursor-pointer transition ease-in duration-200 hover:bg-white hover:border-2 hover:border-red-600 hover:text-red-600 ">
         <span className="font-raleway uppercase font-medium">
           Se déconnecter
         </span>

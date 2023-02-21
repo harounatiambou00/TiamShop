@@ -9,12 +9,13 @@ type Props = {
 const CategoriesList = ({ categories, refreshCategories }: Props) => {
   return (
     <div className="mt-5">
-      {categories.map((category) => {
+      {categories.map((category, index) => {
         return (
           <CategoryListItem
             category={category}
             key={category.CategoryId}
             refreshCategories={refreshCategories}
+            index={index}
           />
         );
       })}

@@ -53,7 +53,7 @@ const AdminCategoriesPage = () => {
           <CircularProgress />
         </div>
       ) : (
-        <div>
+        <div className="mt-10">
           <CategoriesList
             categories={categories}
             refreshCategories={refreshCategories}

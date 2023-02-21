@@ -18,7 +18,7 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import React from "react";
 import { SubCategory } from "../../../../../../data/models/SubCategory";
-import { BiArrowBack, BiEdit, BiSave } from "react-icons/bi";
+import { BiArrowBack, BiSave } from "react-icons/bi";
 import { CustomImage } from "../../../../../../data/models/Image";
 import { LoadingButton } from "@mui/lab";
 import { FiEdit } from "react-icons/fi";
@@ -367,6 +367,7 @@ const UpdateSubCategoryDialog = ({
                       <MenuItem
                         value={category.CategoryId}
                         className="font-kanit"
+                        key={category.CategoryId}
                       >
                         {category.CategoryTitle}
                       </MenuItem>

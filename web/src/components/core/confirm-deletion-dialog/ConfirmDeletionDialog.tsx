@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import React from "react";
-import { BsTrash } from "react-icons/bs";
+import { AiOutlineDelete } from "react-icons/ai";
 
 type Props = {
   open: boolean;
@@ -67,7 +67,7 @@ const ConfirmDeletionDialog = ({
           loading={deletionInProgress}
           color="error"
           variant="outlined"
-          startIcon={<BsTrash />}
+          startIcon={<AiOutlineDelete />}
           loadingPosition="start"
         >
           Confirmer

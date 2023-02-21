@@ -144,7 +144,7 @@ namespace api.Controllers
                     Secure = true,
                     SameSite = SameSiteMode.None,
                     HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
-                    Expires = DateTimeOffset.Now.AddDays(1)
+                    Expires = DateTimeOffset.Now.AddDays(1),
                 });
             }
 
