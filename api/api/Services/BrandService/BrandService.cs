@@ -63,9 +63,37 @@ namespace api.Services.BrandService
             }
         }
 
-        public Task<ServiceResponse<string?>> DeleteBrand(int brandId)
+        public async Task<ServiceResponse<string?>> DeleteBrand(int brandId)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "EXEC dbo.DeleteBrand @BrandId";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        {"@BrandId", brandId},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = await connection.ExecuteAsync(query, parameters);
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = affectedRows >= 1,
+                        Message = affectedRows < 1 ? "BRAND_NOT_FOUND" : "BRAND_DELETED_SUCCESSFULLY"
+                    };
+                }
+                catch(Exception e)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message
+                    };
+                }
+            }
         }
 
         public async Task<ServiceResponse<List<Brand>>> GetAllBrands()
@@ -202,25 +230,25 @@ namespace api.Services.BrandService
                 try
                 {
                     connection.Open();
-                    string SQL = "EXEC dbo.UpdateBrand @BrandId, @BrandName, @PartnershipDate, @BrandWebsiteLink, @BrandImaageId";
+                    string SQL = "EXEC dbo.UpdateBrand @BrandId, @BrandName, @PartnershipDate, @BrandWebsiteLink, @BrandImageId";
                     var dictionary = new Dictionary<string, object?>
                     {
                         {"@BrandId", newBrand.BrandId},
                         {"@BrandName", newBrand.BrandName},
                         {"@PartnershipDate", newBrand.PartnershipDate},
                         {"@BrandWebsiteLink", newBrand.BrandWebsiteLink},
-                        {"@BrandImaageId", newBrand.BrandImageId},
+                        {"@BrandImageId", newBrand.BrandImageId},
                     };
                     var parameters = new DynamicParameters(dictionary);
                     var affectedRows = await connection.ExecuteAsync(SQL, parameters);
 
-                    if (affectedRows == 1)
+                    if (affectedRows >= 1)
                     {
                         return new ServiceResponse<string?>
                         {
                             Data = null,
                             Success = true,
-                            Message = "BRAND_UPDATED"
+                            Message = "BRAND_UPDATED_SUCCESSFULLY"
                         };
                     }
                     else
@@ -233,13 +261,13 @@ namespace api.Services.BrandService
                         };
                     }
                 }
-                catch
+                catch(Exception e)
                 {
                     return new ServiceResponse<string?>
                     {
                         Data = null,
                         Success = false,
-                        Message = "BRAND_NOT_FOUND"
+                        Message = e.Message
                     };
                 }
             }

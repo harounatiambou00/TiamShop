@@ -77,10 +77,11 @@ const Header = (props: Props) => {
                 <SwiperSlide
                   key={category.CategoryId}
                   className="bg-transparent"
+                  onClick={() => navigate("/category/" + category.CategoryName)}
                 >
                   <Button
                     size="small"
-                    className="text-gray-200 text-xs font-medium font-raleway normal-case hover:text-primary"
+                    className="text-white text-xs font-medium font-raleway normal-case hover:text-primary"
                   >
                     {category.CategoryTitle}
                   </Button>

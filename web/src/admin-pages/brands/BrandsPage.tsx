@@ -20,7 +20,7 @@ const BrandsPage = () => {
         ...currentBrands,
         {
           ...{},
-          BrandId: i.brandId,
+          brandId: i.brandId,
           BrandName: i.brandName,
           PartnershipDate:
             i.partnershipDate != null
@@ -38,6 +38,11 @@ const BrandsPage = () => {
     setIsLoading(false);
   };
 
+  const refreshBrands = async () => {
+    setBrands([]);
+    await getBrands();
+  };
+
   React.useEffect(() => {
     getBrands();
   }, []);
@@ -48,7 +53,6 @@ const BrandsPage = () => {
   return (
     <Page
       title="Les marques"
-      subtitle="La liste de toutes les marques incluant leurs noms, email, numéro de téléphone ..."
       buttonTitle="Ajouter"
       buttonAction={() => setOpenAddBrandModal(true)}
     >
@@ -57,8 +61,8 @@ const BrandsPage = () => {
           <CircularProgress />
         </div>
       ) : (
-        <div>
-          <BrandsList brands={brands} />
+        <div className="pb-10">
+          <BrandsList brands={brands} refreshBrands={refreshBrands} />
           <AddBrandDialog
             open={openAddBrandModal}
             setOpen={setOpenAddBrandModal}

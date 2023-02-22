@@ -27,7 +27,6 @@ const ErrorSnackbar = ({ open, setOpen, text }: Props) => {
       }
     >
       <Alert
-        variant="outlined"
         severity="error"
         onClose={() => setOpen(false)}
         className="font-kanit"

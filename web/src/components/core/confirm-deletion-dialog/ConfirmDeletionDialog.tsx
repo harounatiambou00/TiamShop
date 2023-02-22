@@ -57,6 +57,7 @@ const ConfirmDeletionDialog = ({
         <Button
           onClick={() => setOpen(false)}
           className="font-kanit normal-case font-light"
+          size="small"
         >
           Annuler
         </Button>
@@ -69,6 +70,8 @@ const ConfirmDeletionDialog = ({
           variant="outlined"
           startIcon={<AiOutlineDelete />}
           loadingPosition="start"
+          className="font-kanit font-light"
+          size="small"
         >
           Confirmer
         </LoadingButton>

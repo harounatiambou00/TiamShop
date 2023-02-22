@@ -36,11 +36,19 @@ const ProductDetailsBreadcumb = ({ product }: Props) => {
         <AiOutlineHome className="mr-2" />
         Acceuil
       </span>
-      <span className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer">
+      <span
+        className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer"
+        onClick={() => navigate("/category/" + productCategory?.CategoryName)}
+      >
         <MdKeyboardArrowRight className="mx-2" />
         {productCategory?.CategoryTitle}
       </span>
-      <span className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer">
+      <span
+        className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer"
+        onClick={() =>
+          navigate("/sub-category/" + productSubCategory?.SubCategoryName)
+        }
+      >
         <MdKeyboardArrowRight className="mx-2" />
         {productSubCategory?.SubCategoryTitle}
       </span>

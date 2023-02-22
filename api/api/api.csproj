@@ -40,6 +40,8 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-36-ProductGrade_SPs.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-37-RENAMING_AllGetProductGrades_SP.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-38-FIXING_THE_UpdateProductDiscount_SP.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-39-UpdateBrand_AND_DeleteBrand_SPs.sql" />
+    <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-40-FIXING_THE_UpdateBrand_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,6 +81,8 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-36-ProductGrade_SPs.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-37-RENAMING_AllGetProductGrades_SP.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-38-FIXING_THE_UpdateProductDiscount_SP.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-39-UpdateBrand_AND_DeleteBrand_SPs.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-40-FIXING_THE_UpdateBrand_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>

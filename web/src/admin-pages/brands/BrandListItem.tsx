@@ -1,29 +1,29 @@
 import React from "react";
 import { Brand } from "../../data/models/Brand";
 import {
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  CardActions,
   Skeleton,
   IconButton,
+  ImageListItem,
+  ImageListItemBar,
 } from "@mui/material";
 import { CustomImage } from "../../data/models/Image";
-import { BiTrash } from "react-icons/bi";
-import { FiEdit } from "react-icons/fi";
+import { AiOutlineDelete } from "react-icons/ai";
+import { MdEdit } from "react-icons/md";
+import UpdateBrandDialog from "./update-brand-dialog/UpdateBrandDialog";
+import ConfirmDeletionDialog from "../../components/core/confirm-deletion-dialog/ConfirmDeletionDialog";
+import SuccessSnackbar from "../../components/core/suucess-snackbar/SuccessSnackbar";
+import ErrorSnackbar from "../../components/core/error-snackbar/ErrorSnackbar";
 
 type Props = {
   brand: Brand;
+  refreshBrands: () => void;
 };
 
-const BrandListItem = (props: Props) => {
+const BrandListItem = ({ brand, refreshBrands }: Props) => {
   const [brandImage, setBrandImage] = React.useState<CustomImage | null>(null);
 
   const getBrandImage = async () => {
-    let url =
-      process.env.REACT_APP_API_URL + "images/" + props.brand.BrandImageId;
+    let url = process.env.REACT_APP_API_URL + "images/" + brand.BrandImageId;
     let response = await fetch(url);
     let content = await response.json();
     if (content.success) {
@@ -45,61 +45,101 @@ const BrandListItem = (props: Props) => {
     getBrandImage();
   }, []);
 
-  return (
-    <Card className="p-0">
-      <CardActionArea
-        href={props.brand.BrandWebsiteLink}
-        target="blank"
-        className="h-10/12 flex flex-col items-center justify-between"
-      >
-        {brandImage ? (
-          <div>
-            <CardMedia
-              component="img"
-              alt={brandImage.imageName}
-              sx={{
-                "& .MuiCardMedia-img": {
-                  height: "100px",
-                  width: "100px",
-                },
-              }}
-              image={
-                "data:" +
-                brandImage.imageExtension +
-                ";base64," +
-                brandImage.imageBytes
-              }
-            />
-          </div>
-        ) : (
-          <Skeleton variant="rectangular" height={140} />
-        )}
-        <CardContent>
-          <h1 className="text-lg font-raleway font-medium text-center">
-            {props.brand.BrandName}
-          </h1>
-          {props.brand.PartnershipDate && (
-            <div className="text-center mt-1">
-              <span className="text-sm text-green-900 bg-green-200 px-2 rounded-2xl drop-shadow-md">
-                Partenaire
-              </span>
-            </div>
-          )}
-        </CardContent>
-      </CardActionArea>
-      <CardActions className="w-full h-1/4 p-0 m-0">
-        <div className="w-1/2 h-full text-end">
-          <IconButton color="error">
-            <BiTrash />
+  const [openUpdateBrandDialog, setOpenUpdateBrandDialog] =
+    React.useState<boolean>(false);
+
+  const [openConfirmDeletionDialog, setOpenConfirmDeletionDialog] =
+    React.useState<boolean>(false);
+
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] =
+    React.useState<boolean>(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] =
+    React.useState<boolean>(false);
+  const handleDeleteBrand = async () => {
+    let url = process.env.REACT_APP_API_URL + "brands/" + brand.brandId;
+    let response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    let content = await response.json();
+    if (content.success) {
+      setOpenSuccessSnackbar(true);
+      refreshBrands();
+    } else {
+      setOpenErrorSnackbar(true);
+      console.log(content);
+    }
+  };
+  return brandImage !== null ? (
+    <ImageListItem className="bg-white px-2 pt-2 drop-shadow-md">
+      <img
+        alt={brand.BrandName}
+        src={
+          "data:" +
+          brandImage.imageExtension +
+          ";base64," +
+          brandImage.imageBytes
+        }
+        loading="lazy"
+      />
+      <ImageListItemBar
+        className="font-kanit"
+        title={brand.BrandName}
+        subtitle={brand.PartnershipDate !== null ? "Partenaire" : ""}
+        position="below"
+        actionIcon={
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() => setOpenConfirmDeletionDialog(true)}
+          >
+            <AiOutlineDelete />
           </IconButton>
-        </div>
-        <div className="w-1/2 h-full text-start">
-          <IconButton color="primary">
-            <FiEdit />
+        }
+      />
+      <ImageListItemBar
+        className="bg-transparent"
+        position="top"
+        actionIcon={
+          <IconButton
+            size="small"
+            color="primary"
+            className="bg-white"
+            onClick={() => setOpenUpdateBrandDialog(true)}
+          >
+            <MdEdit />
           </IconButton>
-        </div>
-      </CardActions>
-    </Card>
+        }
+      />
+      <UpdateBrandDialog
+        open={openUpdateBrandDialog}
+        setOpen={setOpenUpdateBrandDialog}
+        brand={brand}
+        refreshBrands={refreshBrands}
+      />
+      <ConfirmDeletionDialog
+        open={openConfirmDeletionDialog}
+        setOpen={setOpenConfirmDeletionDialog}
+        title={"Suppression de la marque '" + brand.BrandName + "'"}
+        text="Cette action est irréversible, une fois que vous appuyez sur
+            CONFIRMER la marque sera supprimé definitivement. Et de ce fait
+            tout ce qui est lié à cette dernière sera aussi supprimer, son image,
+            ses produits, etc ..."
+        deletionAction={handleDeleteBrand}
+      />
+      <SuccessSnackbar
+        open={openSuccessSnackbar}
+        setOpen={setOpenSuccessSnackbar}
+        text="La catégorie a été supprimée avec succès."
+      />
+      <ErrorSnackbar
+        open={openErrorSnackbar}
+        setOpen={setOpenErrorSnackbar}
+        text="Erreur"
+      />
+    </ImageListItem>
+  ) : (
+    <Skeleton />
   );
 };
 
