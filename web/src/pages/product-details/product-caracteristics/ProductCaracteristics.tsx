@@ -22,7 +22,7 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
       <div className="grid-cols-2 gap-5 items-start mt-8 sm:hidden lg:grid">
         <Table>
           <TableBody>
-            {firstTabCaracteristics.map((caracteristic) => {
+            {firstTabCaracteristics.map((caracteristic, index) => {
               return (
                 <TableRow
                   className={
@@ -30,6 +30,7 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
                       ? "bg-transparent"
                       : "bg-gray-100"
                   }
+                  key={index}
                 >
                   <TableCell className="font-raleway font-medium">
                     {caracteristic.productCaracteristicKey}
@@ -44,7 +45,7 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
         </Table>
         <Table>
           <TableBody>
-            {secondTabCaracteristics.map((caracteristic) => {
+            {secondTabCaracteristics.map((caracteristic, index) => {
               return (
                 <TableRow
                   className={
@@ -52,6 +53,7 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
                       ? "bg-transparent"
                       : "bg-gray-100"
                   }
+                  key={index}
                 >
                   <TableCell className="font-raleway font-medium">
                     {caracteristic.productCaracteristicKey}
@@ -69,7 +71,7 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
       <div className="grid grid-cols-1 gap-5 items-start mt-8 sm:grid lg:hidden">
         <Table>
           <TableBody>
-            {caracteristics.map((caracteristic) => {
+            {caracteristics.map((caracteristic, index) => {
               return (
                 <TableRow
                   className={
@@ -77,6 +79,7 @@ const ProductCaracteristics = ({ caracteristics }: Props) => {
                       ? "bg-transparent"
                       : "bg-gray-100"
                   }
+                  key={index}
                 >
                   <TableCell className="font-raleway font-medium text-xl">
                     {caracteristic.productCaracteristicKey}

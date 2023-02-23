@@ -1,6 +1,6 @@
 import React from "react";
 import { BiTrendingUp } from "react-icons/bi";
-import { FaMoneyBill, FaUsers } from "react-icons/fa";
+import { FaMoneyBill, FaTruck, FaUsers } from "react-icons/fa";
 import { FiPackage } from "react-icons/fi";
 import { GiMoneyStack } from "react-icons/gi";
 
@@ -57,7 +57,7 @@ const TiamshopInNumbersSection = () => {
       </div>
       <div className=" h-40 bg-white rounded-md flex flex-col justify-center px-4 py-2 drop-shadow-md">
         <div className="flex items-center text-primary">
-          <GiMoneyStack className="text-4xl" />
+          <FaTruck className="text-4xl" />
           <p className="ml-2 text-xl font-bold font-raleway">Livraisons</p>
         </div>
         <div className="text-2xl font-amita font-bold text-primary mt-2">

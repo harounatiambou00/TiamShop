@@ -5,7 +5,6 @@ import {
   Avatar,
   Table,
   TableContainer,
-  Paper,
   TableHead,
   TableRow,
   TableCell,
@@ -15,6 +14,7 @@ import {
 
 import { BsTrash } from "react-icons/bs";
 import DeletionAlert from "./DeletionAlert";
+import { AiOutlineDelete } from "react-icons/ai";
 
 type Props = {
   clients: Client[];
@@ -60,8 +60,8 @@ const ClientsTable = (props: Props) => {
 
   return (
     <div>
-      <TableContainer component={Paper} className="mt-5 font-kanit">
-        <Table className="w-full font-kanit">
+      <TableContainer className="mt-5 font-kanit">
+        <Table className="w-full font-kanit" size="small">
           <TableHead>
             <TableRow>
               <TableCell className="font-kanit"></TableCell>
@@ -69,7 +69,6 @@ const ClientsTable = (props: Props) => {
               <TableCell className=" font-kanit">PRENOM</TableCell>
               <TableCell className=" font-kanit">EMAIL</TableCell>
               <TableCell className=" font-kanit">TELEPHONE</TableCell>
-              <TableCell className=" font-kanit">ADRESSE</TableCell>
               <TableCell className=" font-kanit">AGE</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -79,7 +78,7 @@ const ClientsTable = (props: Props) => {
               return (
                 <TableRow className="font-kanit" key={client.userId}>
                   <TableCell className="font-kanit font-light">
-                    <Avatar className="bg-gray-200 font-kanit">
+                    <Avatar className="bg-gray-300 text-primary font-kanit">
                       {client.LastName[0]}
                       {client.FirstName[0]}
                     </Avatar>
@@ -91,13 +90,24 @@ const ClientsTable = (props: Props) => {
                     {client.FirstName}
                   </TableCell>
                   <TableCell className="font-kanit font-light">
-                    {client.Email}
+                    {client.Email}{" "}
+                    {client.VerifiedAt !== null &&
+                    client.VerifiedAt !== undefined ? (
+                      <span className="ml-3 px-1 text-sm bg-green-100 text-green-700 rounded-full">
+                        verifié
+                      </span>
+                    ) : (
+                      <span className="ml-3 px-1 text-sm bg-red-100 text-red-700 rounded-full">
+                        Pas vérifié
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell className="font-kanit font-light">
-                    {client.PhoneNumber}
-                  </TableCell>
-                  <TableCell className="font-kanit font-light">
-                    {client.CompleteAddress}
+                    {client.PhoneNumber.slice(0, 2) +
+                      "-" +
+                      client.PhoneNumber.slice(2, 5) +
+                      "-" +
+                      client.PhoneNumber.slice(5, 8)}
                   </TableCell>
                   <TableCell className="font-kanit font-light">
                     {client.BirthDate != null &&
@@ -110,10 +120,11 @@ const ClientsTable = (props: Props) => {
                   </TableCell>
                   <TableCell>
                     <IconButton
+                      size="small"
                       color="error"
                       onClick={() => handleDelete(client.userId)}
                     >
-                      <BsTrash className="text-red-500" />
+                      <AiOutlineDelete className="text-red-500" />
                     </IconButton>
                   </TableCell>
                 </TableRow>

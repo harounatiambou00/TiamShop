@@ -13,7 +13,7 @@ const Clients = () => {
     let response = await fetch(url);
     let content = await response.json();
     let data = content.data;
-
+    console.log(content);
     for (let i of data) {
       setClients((currentClients) => [
         ...currentClients,
@@ -24,6 +24,14 @@ const Clients = () => {
           LastName: i.lastName,
           Email: i.email,
           PhoneNumber: i.phoneNumber,
+          VerifiedAt:
+            i.verifiedAt != null
+              ? new Date(
+                  parseInt(i.verifiedAt.slice(0, 4)),
+                  parseInt(i.verifiedAt.slice(5, 7)) - 1,
+                  parseInt(i.verifiedAt.slice(8, 10))
+                )
+              : null,
           CompleteAddress: i.completeAddress,
           BirthDate:
             //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match

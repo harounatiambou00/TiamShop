@@ -79,7 +79,7 @@ const SubCategoriesListItem = ({
     React.useState<boolean>(false);
 
   return subCategoryImage ? (
-    <ImageListItem className="h-full w-full cursor-pointer image_list_item">
+    <ImageListItem className="h-full w-full cursor-pointer image_list_item my-5">
       <img
         alt={subCategory.SubCategoryTitle}
         src={
@@ -88,10 +88,13 @@ const SubCategoriesListItem = ({
           ";base64," +
           subCategoryImage.imageBytes
         }
-        className="h-32 text-center rounded-lg drop-shadow-lg"
       />
       <ImageListItemBar
-        title={subCategory.SubCategoryTitle}
+        title={
+          <span className="font-raleway text-xs font-semibold tracking-widest">
+            {subCategory.SubCategoryTitle}
+          </span>
+        }
         className="font-kanit image_list_item_bar"
         actionIcon={
           <div className="image_list_item_bar_actions">

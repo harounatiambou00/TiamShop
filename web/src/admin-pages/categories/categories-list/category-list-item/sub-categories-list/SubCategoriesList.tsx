@@ -3,12 +3,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
 import "swiper/css";
-import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
 import "./styles.css";
 
 // import required modules
-import { Pagination } from "swiper";
+import { Scrollbar } from "swiper";
 import SubCategoriesListItem from "./sub-categories-list-item/SubCategoriesListItem";
 
 type Props = {
@@ -57,11 +57,11 @@ const SubCategoriesList = ({ categoryId }: Props) => {
     <Swiper
       slidesPerView={4}
       spaceBetween={20}
-      pagination={{
-        clickable: true,
+      scrollbar={{
+        hide: true,
       }}
-      modules={[Pagination]}
-      className="mySwiper h-32 mt-4"
+      modules={[Scrollbar]}
+      className="mySwiper h-40 mt-4"
     >
       {subCategories.map((subCategory, index) => {
         return (

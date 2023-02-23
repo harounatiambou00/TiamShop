@@ -11,6 +11,7 @@
         public string CompleteAddress { get; set; } = string.Empty;
 
         public DateTime? BirthDate { get; set; }
+        public DateTime? VerifiedAt { get; set; } = null;
 
         //Only for admins
         public string? JobTitle { get; set; } = null;

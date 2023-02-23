@@ -5,6 +5,7 @@ export type Client = {
   Email: string;
   PhoneNumber: string;
   CompleteAddress: string;
+  VerifiedAt?: Date | null;
   BirthDate: Date;
   NeighborhoodId: number | string;
 };

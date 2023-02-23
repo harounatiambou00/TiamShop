@@ -32,20 +32,20 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
 
   return (
     <Card className="w-full h-full">
+      <div className="fixed top-1 right-1 flex flex-col z-50">
+        <IconButton size="small" color="primary">
+          <AiOutlineHeart />
+        </IconButton>
+        <IconButton size="small" color="primary">
+          <TbArrowsLeftRight />
+        </IconButton>
+      </div>
       <CardActionArea
-        className="h-10/12"
+        className="h-10/12 z-40"
         onClick={() =>
           product && navigate("/product-details/" + product.productId)
         }
       >
-        <div className="fixed top-1 right-1 flex flex-col">
-          <IconButton size="small" color="primary">
-            <AiOutlineHeart />
-          </IconButton>
-          <IconButton size="small" color="primary">
-            <TbArrowsLeftRight />
-          </IconButton>
-        </div>
         {product &&
           product.productDiscountPercentage !== null &&
           product.productDiscountPercentage !== 0 && (

@@ -366,8 +366,10 @@ namespace api.Services.UserService
                                 Email = user.Email,
                                 PhoneNumber = user.PhoneNumber,
                                 CompleteAddress = user.CompleteAddress,
+                                VerifiedAt = user.VerifiedAt,
                                 BirthDate = user.BirthDate,
                                 JobTitle = user.JobTitle,
+
                                 JobDescription = user.JobDescription,
                                 NeighborhoodId = neighborhoodId
                             }
