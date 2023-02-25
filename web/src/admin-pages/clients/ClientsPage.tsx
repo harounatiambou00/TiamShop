@@ -55,7 +55,6 @@ const Clients = () => {
     <Page
       title="Les clients"
       subtitle="La liste de tout les clients incluant leurs noms, email, numéro de téléphone ..."
-      buttonTitle="Ajouter"
     >
       {clients.length > 0 && <ClientsTable clients={clients} />}
     </Page>

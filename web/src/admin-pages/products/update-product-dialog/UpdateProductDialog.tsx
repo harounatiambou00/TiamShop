@@ -436,8 +436,10 @@ const UpdateProductDialog = ({ open, setOpen, product }: Props) => {
         "productQuantity",
         values.productQuantity.toString()
       );
-      productUpdateFormData.append("waranty", values.waranty);
-      productUpdateFormData.append("color", values.color);
+      values.waranty !== "" &&
+        productUpdateFormData.append("Waranty", values.waranty);
+      values.color !== "" &&
+        productUpdateFormData.append("Color", values.color);
       if (values.productDiscountPercentage !== undefined) {
         productUpdateFormData.append(
           "productDiscountPercentage",

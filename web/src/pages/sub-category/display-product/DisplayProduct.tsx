@@ -217,9 +217,14 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
                   <small className="font-normal sm:text-lg lg:text-xs text-gray-500 font-kanit mr-10 w-1/2">
                     {i.productCaracteristicKey}
                   </small>
-                  <small className="font-normal sm:text-lg lg:text-xs font-kanit mr-10 w-1/2">
-                    {i.productCaracteristicValue}
-                  </small>
+                  <span className="font-normal sm:text-lg lg:text-xs font-kanit mr-10 w-1/2">
+                    {i.productCaracteristicValue.length > 100
+                      ? i.productCaracteristicValue.slice(0, 100)
+                      : i.productCaracteristicValue}
+                    {i.productCaracteristicValue.length > 100 && (
+                      <span className="text-sm">...</span>
+                    )}
+                  </span>
                 </div>
               ))}
             </div>
@@ -232,9 +237,14 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
                   <small className="font-normal sm:text-lg lg:text-xs text-gray-500 font-kanit mr-10 w-1/2">
                     {i.productCaracteristicKey}
                   </small>
-                  <small className="font-normal sm:text-lg lg:text-xs font-kanit mr-10 w-1/2">
-                    {i.productCaracteristicValue}
-                  </small>
+                  <span className="font-normal sm:text-lg lg:text-xs font-kanit mr-10 w-1/2">
+                    {i.productCaracteristicValue.length > 100
+                      ? i.productCaracteristicValue.slice(0, 100)
+                      : i.productCaracteristicValue}
+                    {i.productCaracteristicValue.length > 100 && (
+                      <span className="text-sm">...</span>
+                    )}
+                  </span>
                 </div>
               ))}
             </div>

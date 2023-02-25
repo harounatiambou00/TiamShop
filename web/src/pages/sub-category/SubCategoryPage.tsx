@@ -58,6 +58,14 @@ const SubCategoryPage = () => {
     }
   }, [subCategoryName]);
 
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setCurrentPage(value);
+  };
+
   const handleChangeSortByValue = (value: string) => {
     if (value === "DESC_PRICES") {
       setProductsToBeDisplayed(
@@ -199,13 +207,15 @@ const SubCategoryPage = () => {
       </div>
       <div className="w-full mt-5">
         {productsToBeDisplayed.length !== 0 ? (
-          productsToBeDisplayed.map((p) => (
-            <DisplayProduct
-              key={p.productId}
-              product={p}
-              subCategory={subCategory}
-            />
-          ))
+          productsToBeDisplayed
+            .slice(currentPage * 10 - 10, currentPage * 10)
+            .map((p) => (
+              <DisplayProduct
+                key={p.productId}
+                product={p}
+                subCategory={subCategory}
+              />
+            ))
         ) : (
           <div className="w-full h-20 flex justify-center items-center">
             <Alert severity="error" className="h-full font-kanit">
@@ -216,15 +226,29 @@ const SubCategoryPage = () => {
           </div>
         )}
       </div>
-      <div className="mt-7 flex items-center justify-center w-full">
+
+      <div className="mt-7 flex flex-col items-center justify-center w-full">
+        <h1 className="font-kanit mb-2">
+          Vous avez vu {currentPage * 10} sur {productsToBeDisplayed.length}{" "}
+          articles.
+        </h1>
         {productsToBeDisplayed.length !== 0 && (
           <Pagination
-            count={6}
+            count={
+              productsToBeDisplayed.length / 10 < 0
+                ? 1
+                : productsToBeDisplayed.length % 10 === 0
+                ? Math.floor(productsToBeDisplayed.length / 10)
+                : Math.floor(productsToBeDisplayed.length / 10) + 1
+            }
             variant="outlined"
             shape="rounded"
-            size="large"
+            className="font-kanit"
             showFirstButton
             showLastButton
+            color="secondary"
+            page={currentPage}
+            onChange={handleChangePage}
           />
         )}
       </div>

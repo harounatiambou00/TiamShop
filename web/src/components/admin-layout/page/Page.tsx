@@ -4,7 +4,7 @@ import { MdAddCircleOutline } from "react-icons/md";
 type Props = {
   title: string;
   subtitle?: string;
-  buttonTitle: string;
+  buttonTitle?: string;
   buttonAction?:
     | ((event: React.MouseEvent<HTMLButtonElement>) => void)
     | (() => void);
@@ -21,14 +21,16 @@ const Page = (props: Props) => {
           </h1>
           <span className="text-sm text-gray-500">{props.subtitle}</span>
         </div>
-        <Fab
-          variant="extended"
-          className="fixed bottom-10 right-10 text-primary font-raleway "
-          onClick={props.buttonAction && props.buttonAction}
-        >
-          <MdAddCircleOutline className="text-2xl mr-3 text-primary" />
-          {props.buttonTitle}
-        </Fab>
+        {props.buttonTitle && (
+          <Fab
+            variant="extended"
+            className="fixed bottom-10 right-10 text-primary font-raleway "
+            onClick={props.buttonAction && props.buttonAction}
+          >
+            <MdAddCircleOutline className="text-2xl mr-3 text-primary" />
+            {props.buttonTitle}
+          </Fab>
+        )}
       </div>
       {props.children}
     </div>
