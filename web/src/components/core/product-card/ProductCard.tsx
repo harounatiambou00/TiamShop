@@ -7,10 +7,10 @@ import {
   CardContent,
   CardMedia,
   IconButton,
-  Skeleton,
+  Rating,
 } from "@mui/material";
 import { GiShoppingCart } from "react-icons/gi";
-import { AiFillStar, AiOutlineHeart, AiOutlineStar } from "react-icons/ai";
+import { AiOutlineHeart } from "react-icons/ai";
 import { TbArrowsLeftRight } from "react-icons/tb";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
@@ -25,23 +25,22 @@ type Props = {
 };
 
 const ProductCard = ({ product, isTrend, isNew }: Props) => {
-  const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
   let brands = useAppSelector((state: RootState) => state.allBrands.brands);
   const brand = brands.find((b) => b.brandId === product.brandId);
 
   return (
-    <Card className="w-full h-full">
-      <div className="fixed top-1 right-1 flex flex-col z-50">
+    <Card className="w-full relative flex flex-col justify-between">
+      <div className="absolute sm:top-4 sm:right-2 lg:top-1 lg:right-1 flex flex-col z-50">
         <IconButton size="small" color="primary">
-          <AiOutlineHeart />
+          <AiOutlineHeart className="sm:text-4xl lg:text-xl" />
         </IconButton>
         <IconButton size="small" color="primary">
-          <TbArrowsLeftRight />
+          <TbArrowsLeftRight className="sm:text-4xl lg:text-xl" />
         </IconButton>
       </div>
       <CardActionArea
-        className="h-10/12 z-40"
+        className="z-40 pt-5"
         onClick={() =>
           product && navigate("/product-details/" + product.productId)
         }
@@ -49,100 +48,76 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
         {product &&
           product.productDiscountPercentage !== null &&
           product.productDiscountPercentage !== 0 && (
-            <div className="fixed top-0 left-0 bg-red-400 px-2 drop-shadow-sm text-primary font-normal font-raleway">
-              -{product.productDiscountPercentage}%
+            <div className="absolute top-0 left-0 bg-red-400 sm:px-4 lg:px-2 drop-shadow-sm text-primary sm:text-2xl lg:text-base font-normal font-raleway">
+              Economisez {product.productDiscountPercentage}%
             </div>
           )}
-        {isLoading || product === null ? (
-          <Skeleton
-            className="h-1/2 w-full"
-            variant="rectangular"
-            animation="wave"
-          />
-        ) : (
-          <CardMedia
-            component="img"
-            className="h-1/2 px-16"
-            image={
-              "data:" +
-              product.images[0].imageExtension +
-              ";base64," +
-              product.images[0].imageBytes
-            }
-            alt={product.productName}
-          />
-        )}
-        {isLoading || !product || brand === undefined ? (
-          <CardContent className="flex flex-col items-center">
-            <Skeleton variant="text" className="w-10/12 h-10" />
-            <Skeleton variant="text" className="w-1/2" />
-            <Skeleton variant="text" className="w-1/4" />
-            <div className="w-full flex justify-between px-2 items-center">
-              <Skeleton variant="text" className="w-1/4" />
-              <Skeleton variant="text" className="w-1/4" />
-            </div>
-          </CardContent>
-        ) : (
-          <CardContent className="flex flex-col items-center">
-            <h1 className="font-raleway text-base w-full px-1">
-              {product.productName}
-            </h1>
-            <div className="flex items-center justify-between w-full px-2">
-              <p>
-                {product.productPrice -
-                  product.productDiscountPercentage *
-                    (product.productPrice / 100)}{" "}
-                FCFA
-              </p>
-              {brand !== undefined && <small>{brand.BrandName}</small>}
-            </div>
-            <div className="flex items-center justify-center">
-              {isTrend !== undefined && isTrend === true && (
-                <div className="px-2 py-1 bg-teal-100 text-teal-800 w-fit rounded-xl drop-shadow-sm mr-4">
-                  <FiTrendingUp />
-                </div>
-              )}
-              {isNew !== undefined && isNew === true && (
-                <div className="px-2 py-1 bg-red-100 text-red-800 w-fit rounded-xl drop-shadow-sm text-xs">
-                  Nouveau
-                </div>
-              )}
-            </div>
-            <div className="w-full flex justify-between px-2 items-center">
-              <small className="text-center">
-                {[1, 2, 3, 4, 5].map((i) =>
-                  i <= product.rating ? (
-                    <AiFillStar className="text-yellow-500 inline" key={i} />
-                  ) : (
-                    <AiOutlineStar className="inline" key={i} />
-                  )
-                )}
-                <span className="block">{product.numberOfVotes} votes</span>
-              </small>
-              <small className="text-center text-gray-500">1000 ventes</small>
-            </div>
-          </CardContent>
-        )}
+        <CardMedia
+          component="img"
+          className="w-full px-16"
+          image={
+            "data:" +
+            product.images[0].imageExtension +
+            ";base64," +
+            product.images[0].imageBytes
+          }
+          alt={product.productName}
+        />
+        <CardContent className="flex flex-col items-center sm:mt-5 lg:mt-4">
+          <h1 className="font-raleway font-medium sm:text-2xl lg:text-base w-full sm:px-3 lg:px-1 text-center">
+            {product.productName}
+          </h1>
+          <div className="flex items-center justify-between sm:text-2xl lg:text-base w-full sm:px-3 lg:px-1 sm:mt-2 lg:mt-1">
+            <p>
+              {product.productPrice -
+                product.productDiscountPercentage *
+                  (product.productPrice / 100)}{" "}
+              FCFA
+            </p>
+            {brand !== undefined && <small>{brand.BrandName}</small>}
+          </div>
+          <div className="flex items-center justify-center">
+            {isTrend !== undefined && isTrend === true && (
+              <div className="px-2 py-1 bg-teal-100 text-teal-800 w-fit rounded-xl drop-shadow-sm mr-4">
+                <FiTrendingUp />
+              </div>
+            )}
+            {isNew !== undefined && isNew === true && (
+              <div className="px-2 py-1 bg-red-100 text-red-800 w-fit rounded-xl drop-shadow-sm text-xs">
+                Nouveau
+              </div>
+            )}
+          </div>
+          <div className="w-full flex justify-between sm:px-3 lg:px-1 items-center sm:mt-1 lg:mt-0">
+            <small className="text-center">
+              <Rating
+                className="sm:text-3xl lg:text-base"
+                size="small"
+                value={product.rating}
+                readOnly
+              />
+              <span className="block sm:text-xl lg:text-sm">
+                {product.numberOfVotes} votes
+              </span>
+            </small>
+            <small className="text-center text-gray-500 sm:text-xl lg:text-sm">
+              1000 ventes
+            </small>
+          </div>
+        </CardContent>
       </CardActionArea>
-      {isLoading ? (
-        <div className="flex justify-between w-full items-center">
-          <Skeleton variant="rectangular" className="h-8 w-10/12" />
-          <Skeleton variant="circular" className="h-8 w-8" />
-        </div>
-      ) : (
-        <CardActions className="w-full px-2">
-          <Button
-            className="w-full bg-orange-300 font-raleway font-semibold text-primary"
-            variant="contained"
-            color="secondary"
-          >
-            Acheter
-          </Button>
-          <IconButton color="primary">
-            <GiShoppingCart />
-          </IconButton>
-        </CardActions>
-      )}
+      <CardActions className="w-full flex items-center justify-between sm:px-5 lg:px-2 sm:pb-8 lg:pb-4">
+        <Button
+          className="sm:w-10/12 lg:w-10/12 bg-orange-300 font-raleway font-semibold text-primary sm:text-3xl lg:text-base"
+          variant="contained"
+          color="secondary"
+        >
+          Acheter
+        </Button>
+        <IconButton color="primary">
+          <GiShoppingCart className="sm:text-5xl lg:text-2xl" />
+        </IconButton>
+      </CardActions>
     </Card>
   );
 };

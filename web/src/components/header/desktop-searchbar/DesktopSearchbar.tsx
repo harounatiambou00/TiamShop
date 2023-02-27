@@ -3,60 +3,40 @@ import React from "react";
 import { BsSearch } from "react-icons/bs";
 import DesktopSearchbarSuggestionPopover from "./suggestion-popover/DesktopSearchbarSuggestionPopover";
 import { MenuItem, Select } from "@mui/material";
+import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../../redux/store";
+import { Category } from "../../../data/models/Category";
+import { useNavigate } from "react-router-dom";
 
 const DesktopSearchbar = () => {
+  const navigate = useNavigate();
+  let categories = useAppSelector(
+    (state: RootState) => state.categories.categories
+  ) as Category[];
+
   const [openDesktopSearchbarPopover, setOpenDesktopSearchbarPopover] =
     React.useState<boolean>(false);
-
   const [searchCriteria, setSearchCriteria] = React.useState<string>("");
-
-  const handleChangeSearchCriteria = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchCriteria(event.target.value);
-    if (event.target.value !== "") {
-      setOpenDesktopSearchbarPopover(true);
-    } else {
-      setOpenDesktopSearchbarPopover(false);
+  const [category, setCategory] = React.useState<string>("all");
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchCriteria !== "") {
+      let url =
+        "/search?criteria=" +
+        searchCriteria +
+        "&sort=correspondance" +
+        "&category=" +
+        category +
+        "&rating=all";
+      navigate(url);
     }
   };
-
-  const handleClickOutside = (event: React.FocusEvent<HTMLInputElement>) => {
-    setOpenDesktopSearchbarPopover(false);
-  };
-
-  const [categories, setCategories] = React.useState<any[]>([]);
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
-  const getCategories = async () => {
-    setIsLoading(true);
-    const url = process.env.REACT_APP_API_URL + "categories";
-    let response = await fetch(url);
-    let content = await response.json();
-    let data = content.data;
-
-    for (let i of data) {
-      setCategories((currentCategories) => [
-        ...currentCategories,
-        {
-          ...{},
-          CategoryId: i.categoryId,
-          CategoryName: i.categoryName,
-          CategoryTitle: i.categoryTitle,
-          CategoryImageId: i.categoryImageId,
-          CategoryRanking: i.categoryRanking,
-        },
-      ]);
-    }
-    setIsLoading(false);
-  };
-
-  React.useEffect(() => {
-    getCategories();
-  }, []);
 
   return (
-    <div className="h-7/12 w-large-screens-searchbar-width ml-20">
+    <form
+      onSubmit={handleSubmit}
+      className="h-7/12 w-large-screens-searchbar-width ml-20"
+    >
       <div
         id="desktop-searchbar"
         aria-describedby="desktop-searchbar-suggestion-popover"
@@ -79,16 +59,24 @@ const DesktopSearchbar = () => {
                 borderRadius: 0,
               },
             }}
-            defaultValue={0}
+            value={category}
+            onChange={(e) => {
+              let value = e.target.value;
+              if (
+                categories.find((c) => c.CategoryName === value) !== undefined
+              )
+                setCategory(value);
+              else setCategory("all");
+            }}
           >
-            <MenuItem value={0} className="font-kanit font-light">
+            <MenuItem value="all" className="font-kanit font-light">
               Toutes les catégories
             </MenuItem>
-            {categories.map((category) => {
+            {categories.map((category, index) => {
               return (
                 <MenuItem
-                  key={category.CategoryId}
-                  value={category.CategoryId}
+                  key={index}
+                  value={category.CategoryName}
                   className="font-light font-kanit"
                 >
                   {category.CategoryTitle}
@@ -102,13 +90,23 @@ const DesktopSearchbar = () => {
           placeholder="Rechercher un produit par son nom, sa catégorie, sa marque ..."
           className="outline-none w-8/12 pl-3 font-normal text-gray-600"
           value={searchCriteria}
-          onChange={handleChangeSearchCriteria}
-          onBlur={handleClickOutside}
+          onChange={(e) => {
+            setSearchCriteria(e.target.value);
+            if (e.target.value !== "") {
+              setOpenDesktopSearchbarPopover(true);
+            } else {
+              setOpenDesktopSearchbarPopover(false);
+            }
+          }}
+          onBlur={() => setOpenDesktopSearchbarPopover(false)}
           onFocus={() =>
             searchCriteria !== "" && setOpenDesktopSearchbarPopover(true)
           }
         />
-        <button className="w-1/12 h-full flex items-center justify-center bg-primary rounded-r-md">
+        <button
+          type="submit"
+          className="w-1/12 h-full flex items-center justify-center bg-primary rounded-r-md"
+        >
           <BsSearch className="text-2xl text-gray-50" />
         </button>
       </div>
@@ -116,7 +114,7 @@ const DesktopSearchbar = () => {
         open={openDesktopSearchbarPopover}
         setOpen={setOpenDesktopSearchbarPopover}
       />
-    </div>
+    </form>
   );
 };
 
