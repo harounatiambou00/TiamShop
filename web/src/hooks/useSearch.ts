@@ -177,7 +177,7 @@ export default function useSearch() {
     setIsLoading(true);
     let url = process.env.REACT_APP_API_URL + "products/search-product";
     let request = {
-      criteria: values.criteria,
+      criteria: values.criteria.trim(),
       sortBy: values.sortBy,
       rating: values.rating,
     } as {

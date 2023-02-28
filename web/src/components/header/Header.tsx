@@ -12,8 +12,6 @@ import Navlinks from "./navlinks/Navlinks";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper";
 import { FiMenu } from "react-icons/fi";
 
 interface Props {
@@ -57,37 +55,26 @@ const Header = (props: Props) => {
               />
             </div>
             {/** large sceen searchbar, will be displayed only on large screens otherwise it'll be hidden  */}
-            <DesktopSearchbar />
+            <div className="z-50 h-7/12">
+              <DesktopSearchbar />
+            </div>
             <Navlinks />
           </div>
           {/** Desktop categories links */}
-          <div className="sm:hidden lg:flex lg:h-1/3 lg:w-full items-center justify-between lg:px-2">
+          <div className="sm:hidden lg:flex lg:h-1/3 lg:w-full items-center justify-between lg:px-2 z-40">
             <IconButton onClick={() => props.setOpenLeftDrawer(true)}>
               <FiMenu />
             </IconButton>
-            <Swiper
-              id="app_header_categories_links_swiper"
-              slidesPerView={8}
-              spaceBetween={0}
-              navigation={true}
-              modules={[Navigation]}
-              className="bg-transparent"
-            >
-              {categories.map((category) => (
-                <SwiperSlide
-                  key={category.CategoryId}
-                  className="bg-transparent"
-                  onClick={() => navigate("/category/" + category.CategoryName)}
-                >
-                  <Button
-                    size="small"
-                    className="text-white text-xs font-medium font-raleway normal-case hover:text-primary"
-                  >
-                    {category.CategoryTitle}
-                  </Button>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            {categories.slice(0, 8).map((category) => (
+              <Button
+                size="small"
+                className="text-white text-xs font-medium font-raleway normal-case hover:text-primary"
+                onClick={() => navigate("/category/" + category.CategoryName)}
+                key={category.CategoryId}
+              >
+                {category.CategoryTitle}
+              </Button>
+            ))}
           </div>
           {/** Mobile sceen searchbar, will be displayed only on small screens otherwise it'll be hidden  */}
           <MobileSearchbar />

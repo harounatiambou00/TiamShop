@@ -159,31 +159,21 @@ const SearchResultsPage: React.FC = () => {
                   <span className="bg-gray-100 rounded-md px-3 sm:py-2 lg:py-1 flex items-center">
                     <FormControlLabel
                       control={
-                        <Switch
-                          value={values.onlyAvailableProducts}
-                          onChange={(e) => {
-                            if (e.target.checked)
-                              navigate(
-                                getUrl({
-                                  ...values,
-                                  onlyAvailableProducts: true,
-                                })
-                              );
-                            else {
-                              navigate(
-                                getUrl({
-                                  ...values,
-                                  onlyAvailableProducts: false,
-                                })
-                              );
-                            }
-                          }}
-                        />
+                        <Switch checked={values.onlyAvailableProducts} />
                       }
                       label={
                         <span className="font-kanit font-normal sm:text-xl lg:text-sm">
                           Afficher uniquement les articles en stock
                         </span>
+                      }
+                      onClick={() =>
+                        navigate(
+                          getUrl({
+                            ...values,
+                            onlyAvailableProducts:
+                              !values.onlyAvailableProducts,
+                          })
+                        )
                       }
                     />
                   </span>

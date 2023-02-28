@@ -35,7 +35,7 @@ const DesktopSearchbar = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="h-7/12 w-large-screens-searchbar-width ml-20"
+      className="h-full w-large-screens-searchbar-width ml-20"
     >
       <div
         id="desktop-searchbar"
@@ -50,8 +50,8 @@ const DesktopSearchbar = () => {
           <Select
             className={
               openDesktopSearchbarPopover
-                ? "h-full w-full rounded-tl-md font-light font-kanit"
-                : "h-full w-full rounded-l-md font-light font-kanit"
+                ? "h-full w-full rounded-tl-md font-normal font-kanit bg-amber-200"
+                : "h-full w-full rounded-l-md font-normal font-kanit bg-amber-200"
             }
             sx={{
               "& 	.MuiOutlinedInput-notchedOutline": {
@@ -68,6 +68,7 @@ const DesktopSearchbar = () => {
                 setCategory(value);
               else setCategory("all");
             }}
+            MenuProps={{ disableScrollLock: true }}
           >
             <MenuItem value="all" className="font-kanit font-light">
               Toutes les catégories
@@ -113,6 +114,8 @@ const DesktopSearchbar = () => {
       <DesktopSearchbarSuggestionPopover
         open={openDesktopSearchbarPopover}
         setOpen={setOpenDesktopSearchbarPopover}
+        criteria={searchCriteria}
+        category={category}
       />
     </form>
   );
