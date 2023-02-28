@@ -1,6 +1,7 @@
 import { SearchValuesType } from "../data/SearchValuesType";
 import { Brand } from "../data/models/Brand";
 import { Category } from "../data/models/Category";
+import ProductAndRelatedInfo from "../data/models/ProductAndRelatedInfo";
 
 export default function useSearch() {
   const getUrl: (values: SearchValuesType) => string = (
@@ -8,17 +9,17 @@ export default function useSearch() {
   ) => {
     let url = "/search?criteria=" + values.criteria;
     url += "&sort=" + values.sortBy;
-    if (values.category) url += "&category=" + values.category;
+    if (values.onlyAvailableProducts) url += "&onlyAvailableProducts=true";
+    if (values.category !== null) url += "&category=" + values.category;
     if (values.brandId !== null) url += "&brandId=" + values.brandId;
     if (values.minPrice !== null) url += "&minPrice=" + values.minPrice;
     if (values.maxPrice !== null) url += "&maxPrice=" + values.maxPrice;
-    if (values.discount) url += "&discount=" + values.discount;
+    if (values.discount !== null) url += "&discount=" + values.discount;
     url += "&rating=" + values.rating;
     return url;
   };
 
   const setValuesFormSearchParams = (
-    values: SearchValuesType,
     setValues: React.Dispatch<React.SetStateAction<SearchValuesType>>,
     searchParams: URLSearchParams,
     categories: Category[],
@@ -52,6 +53,15 @@ export default function useSearch() {
           sortBy: "correspondance",
         };
     });
+
+    let onlyAvailableProducts = searchParams.get("onlyAvailableProducts");
+    setValues((v) => ({
+      ...v,
+      onlyAvailableProducts:
+        onlyAvailableProducts === null || onlyAvailableProducts === "false"
+          ? false
+          : true,
+    }));
 
     let categoryName = searchParams.get("category");
     let category: Category | undefined = undefined;
@@ -159,5 +169,52 @@ export default function useSearch() {
     });
   };
 
-  return [getUrl, setValuesFormSearchParams] as const;
+  const getMatchedProducts = async (
+    values: SearchValuesType,
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    setProducts: React.Dispatch<React.SetStateAction<ProductAndRelatedInfo[]>>
+  ) => {
+    setIsLoading(true);
+    let url = process.env.REACT_APP_API_URL + "products/search-product";
+    let request = {
+      criteria: values.criteria,
+      sortBy: values.sortBy,
+      rating: values.rating,
+    } as {
+      criteria: string;
+      onlyAvailableProducts?: boolean;
+      sortBy?: string;
+      category?: string;
+      rating?: string;
+      brandId?: number;
+      minPrice?: number;
+      maxPrice?: number;
+      discount?: string;
+    };
+
+    if (values.onlyAvailableProducts !== false)
+      request.onlyAvailableProducts = true;
+    if (values.category !== null) request.category = values.category;
+    if (values.minPrice !== null) request.minPrice = values.minPrice;
+    if (values.maxPrice !== null) request.maxPrice = values.maxPrice;
+    if (values.brandId !== null) request.brandId = values.brandId;
+    if (values.discount !== null) request.discount = values.discount;
+    let response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    });
+    let content = await response.json();
+    if (content.success) {
+      setProducts(content.data as ProductAndRelatedInfo[]);
+    } else {
+      setProducts([] as ProductAndRelatedInfo[]);
+    }
+    setIsLoading(false);
+  };
+
+  return [getUrl, setValuesFormSearchParams, getMatchedProducts] as const;
 }

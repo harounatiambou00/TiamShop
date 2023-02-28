@@ -28,6 +28,7 @@ export type SearchValuesSortByType =
 
 export type SearchValuesType = {
   criteria: string;
+  onlyAvailableProducts: boolean;
   minPrice: number | null;
   maxPrice: number | null;
   category: string | null;

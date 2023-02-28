@@ -27,6 +27,8 @@ import { Category } from "../../../data/models/Category";
 import { Brand } from "../../../data/models/Brand";
 import { BiCheckbox, BiCheckboxSquare } from "react-icons/bi";
 import { HiOutlineFilter } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import useSearch from "../../../hooks/useSearch";
 
 type Props = {
   values: SearchValuesType;
@@ -100,6 +102,10 @@ const ratings = [
     name: "one_star",
     value: 1,
   },
+  {
+    name: "all",
+    value: 0,
+  },
 ] as RatingType[];
 
 const FiltersSection = ({ values, setValues }: Props) => {
@@ -111,6 +117,11 @@ const FiltersSection = ({ values, setValues }: Props) => {
   ) as Brand[];
   const [brandsToBeDisplayed, setBrandsToBeDisplayed] =
     React.useState<Brand[]>(allBrands);
+  React.useEffect(() => {
+    setBrandsToBeDisplayed(allBrands);
+  }, [allBrands]);
+  const navigate = useNavigate();
+  const [getUrl] = useSearch();
   return (
     <div className=" drop-shadow-sm sm:border-0 lg:border-r py-2  border-gray-300 h-fit">
       <div className="text-2xl sm:hidden lg:block mb-3 font-normal text-primary">
@@ -132,8 +143,20 @@ const FiltersSection = ({ values, setValues }: Props) => {
         </AccordionSummary>
         <AccordionDetails className="">
           {categories.map((c, index) => (
-            <div key={index} className="pl-2">
-              <UnderlinedLink text={c.CategoryTitle + " (50)"} />
+            <div
+              key={index}
+              className={
+                values.category === c.CategoryName
+                  ? "pl-2 border border-primary my-1"
+                  : "pl-2"
+              }
+            >
+              <UnderlinedLink
+                text={c.CategoryTitle}
+                action={() =>
+                  navigate(getUrl({ ...values, category: c.CategoryName }))
+                }
+              />
             </div>
           ))}
         </AccordionDetails>
@@ -151,7 +174,7 @@ const FiltersSection = ({ values, setValues }: Props) => {
           <div className="flex items-center w-full">
             <div className="w-1/2 sm:pr-5 lg:pr-1">
               <label className="sm:text-3xl lg:text-sm font-normal">
-                Minimum
+                Minimum (FCFA)
               </label>
               <OutlinedInput
                 fullWidth
@@ -161,13 +184,33 @@ const FiltersSection = ({ values, setValues }: Props) => {
                     lg: 40,
                   },
                 }}
-                className="sm:mt-3 lg:mt-0"
+                className="sm:mt-3 lg:mt-0 font-kanit font-light sm:text-3xl lg:text-base"
                 size="small"
+                type="number"
+                value={values.minPrice ? values.minPrice : ""}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "") {
+                    setValues({ ...values, minPrice: null });
+                  } else {
+                    if (value.startsWith("0")) return;
+                    if (isNaN(Number(value))) return;
+                    if (isNaN(Number(value)) && Number(value) < 0) return;
+                    else {
+                      setValues({ ...values, minPrice: Number(value) });
+                    }
+                  }
+                }}
+                error={
+                  values.minPrice !== null &&
+                  values.maxPrice !== null &&
+                  values.minPrice > values.maxPrice
+                }
               />
             </div>
             <div className="w-1/2 sm:pl-5 lg:pl-1">
               <label className="sm:text-3xl lg:text-sm font-normal">
-                Maximum
+                Maximum (FCFA)
               </label>
               <OutlinedInput
                 fullWidth
@@ -177,16 +220,56 @@ const FiltersSection = ({ values, setValues }: Props) => {
                     lg: 40,
                   },
                 }}
-                className="sm:mt-3 lg:mt-0"
+                className="sm:mt-3 lg:mt-0 font-kanit font-light sm:text-3xl lg:text-base"
                 size="small"
+                value={values.maxPrice ? values.maxPrice : ""}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "") {
+                    setValues({ ...values, maxPrice: null });
+                  } else {
+                    if (value.startsWith("0")) return;
+                    if (isNaN(Number(value))) return;
+                    if (isNaN(Number(value)) && Number(value) < 0) return;
+                    else {
+                      setValues({ ...values, maxPrice: Number(value) });
+                    }
+                  }
+                }}
+                error={
+                  values.minPrice !== null &&
+                  values.maxPrice !== null &&
+                  values.minPrice > values.maxPrice
+                }
               />
             </div>
           </div>
+          <span className="sm:text-xl lg:text-xs mt-2 text-red-600 text-center">
+            {values.minPrice !== null &&
+              values.maxPrice !== null &&
+              values.minPrice > values.maxPrice &&
+              "Le minmum doit impérativement etre inférieur au maximum."}
+          </span>
           <Button
             fullWidth
             variant="outlined"
             className="mt-4 font-raleway font-medium sm:h-20 lg:h-auto sm:text-3xl lg:text-base"
             color="secondary"
+            onClick={() => {
+              if (
+                values.minPrice !== null &&
+                values.maxPrice !== null &&
+                values.minPrice > values.maxPrice
+              )
+                return;
+              else navigate(getUrl(values));
+            }}
+            disabled={
+              (values.minPrice !== null &&
+                values.maxPrice !== null &&
+                values.minPrice > values.maxPrice) ||
+              (values.minPrice === null && values.maxPrice === null)
+            }
           >
             Appliquer la fourchette de prix
           </Button>
@@ -205,6 +288,11 @@ const FiltersSection = ({ values, setValues }: Props) => {
           <RadioGroup className="pl-3">
             {discounts.map((d, index) => (
               <FormControlLabel
+                onClick={() => {
+                  if (d.name !== values.discount)
+                    navigate(getUrl({ ...values, discount: d.name }));
+                  else navigate(getUrl({ ...values, discount: null }));
+                }}
                 key={index}
                 control={
                   <Radio
@@ -212,7 +300,7 @@ const FiltersSection = ({ values, setValues }: Props) => {
                     checkedIcon={
                       <BiCheckboxSquare className="sm:text-5xl lg:text-2xl" />
                     }
-                    checked
+                    checked={values.discount === d.name}
                   />
                 }
                 label={
@@ -260,6 +348,11 @@ const FiltersSection = ({ values, setValues }: Props) => {
             {brandsToBeDisplayed.map((b, index) => (
               <FormControlLabel
                 key={index}
+                onClick={() => {
+                  if (values.brandId === b.brandId)
+                    navigate(getUrl({ ...values, brandId: null }));
+                  else navigate(getUrl({ ...values, brandId: b.brandId }));
+                }}
                 control={
                   <Checkbox
                     size="small"
@@ -267,6 +360,7 @@ const FiltersSection = ({ values, setValues }: Props) => {
                     checkedIcon={
                       <BiCheckboxSquare className="sm:text-5xl lg:text-2xl" />
                     }
+                    checked={values.brandId === b.brandId}
                   />
                 }
                 label={
@@ -287,20 +381,29 @@ const FiltersSection = ({ values, setValues }: Props) => {
             <MdKeyboardArrowDown className="sm:text-4xl lg:text-lg text-primary" />
           }
         >
-          Notes de la clientèle
+          Note minimale
         </AccordionSummary>
         <AccordionDetails>
           <div className="flex flex-col">
             {ratings.map((rating) => (
-              <Button key={rating.value} className="my-1 px-1 w-fit">
+              <Button
+                key={rating.value}
+                className={
+                  values.rating === rating.name
+                    ? "my-1 px-1 w-fit border"
+                    : "my-1 px-1 w-fit"
+                }
+                variant={values.rating === rating.name ? "outlined" : "text"}
+                disableRipple={values.rating === rating.name}
+                onClick={() =>
+                  navigate(getUrl({ ...values, rating: rating.name }))
+                }
+              >
                 <Rating
                   value={rating.value}
                   readOnly
                   className="sm:text-5xl lg:text-xl"
                 />{" "}
-                <span className="font-raleway ml-2 sm:text-3xl lg:text-base">
-                  (30)
-                </span>
               </Button>
             ))}
           </div>

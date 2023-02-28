@@ -3,6 +3,7 @@ using api.DTOs.ProductDiscountDTOs;
 using api.DTOs.ProductDTOs;
 using api.Models;
 using api.Services.BrandService;
+using api.Services.CategoryService;
 using api.Services.ProductCaracteristicService;
 using api.Services.ProductDiscountService;
 using api.Services.ProductImageService;
@@ -10,6 +11,7 @@ using api.Services.SubCategoryService;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Reflection.PortableExecutable;
+using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 using Image = api.Models.Image;
 
@@ -19,11 +21,17 @@ namespace api.Services.ProductService
     {
         private readonly string _connectionString;
         private readonly IImageService _imageService;
+        private readonly ISubCategoryService _subCategoryService;
+        private readonly ICategoryService _categoryService;
+        private readonly IBrandService _brandService;
 
-        public ProductService(IConfiguration config, IImageService imageService)
+        public ProductService(IConfiguration config, IImageService imageService, ISubCategoryService subCategoryService, ICategoryService categoryService, IBrandService brandService)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
             _imageService = imageService;
+            _subCategoryService = subCategoryService;
+            _categoryService = categoryService;
+            _brandService = brandService;
         }
 
         public async Task<ServiceResponse<Product?>> AddProduct(AddProductDTO newProduct)
@@ -531,6 +539,185 @@ namespace api.Services.ProductService
         }
 
         public Task<ServiceResponse<List<Product>>> GetTheTwentyNewestProducts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>> SearchForAProduct(List<GetProductAndOtherRelatedInformationDTO> allProducts, SearchProductDTO filters)
+        {
+            List<GetProductAndOtherRelatedInformationDTO> response = new List<GetProductAndOtherRelatedInformationDTO>();
+            //  Checking criteria
+            foreach(GetProductAndOtherRelatedInformationDTO p in allProducts.ToArray())
+            {
+                if(p.ProductName.ToLower().Contains(filters.Criteria.Trim().ToLower())) response.Add(p);
+            }
+
+            //Checking availablility
+            if (filters.OnlyAvailableProducts != null && filters.OnlyAvailableProducts == true)
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response)
+                {
+                    if (p.ProductQuantity <= 0) response.Remove(p);
+                }
+            }
+
+            //Checking category
+            if (filters.Category != "all")
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    var getSubCategoryResponse = await _subCategoryService.GetSubCategoryById(p.SubCategoryId);
+                    if(getSubCategoryResponse.Success && getSubCategoryResponse.Data != null)
+                    {
+                        var getCategoryResponse = await _categoryService.GetCategoryById(getSubCategoryResponse.Data.CategoryId);
+                        if(getCategoryResponse.Success && getCategoryResponse.Data != null)
+                        {
+                            var category = getCategoryResponse.Data;
+                            if (filters.Category.ToLower() != category.CategoryName.ToLower()) response.Remove(p);
+                        }
+                    }
+                }
+            }
+
+            //Checking brand
+            if (filters.BrandId != null)
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if(p.BrandId != filters.BrandId) response.Remove(p);
+                }
+            }
+
+            //Checking minimum price
+            if (filters.MinPrice != null)
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.ProductPrice < filters.MinPrice) response.Remove(p);
+                }
+            }
+
+            //Checking maximum price
+            if (filters.MaxPrice != null)
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.ProductPrice > filters.MaxPrice) response.Remove(p);
+                }
+            }
+
+            //Checking ratings
+            if (filters.Rating == "one_star")
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.Rating < 1) response.Remove(p);
+                }
+            }
+            if (filters.Rating == "two_stars")
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.Rating < 2) response.Remove(p);
+                }
+            }
+            if (filters.Rating == "three_stars")
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.Rating < 3) response.Remove(p);
+                }
+            }
+            if (filters.Rating == "four_stars")
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.Rating < 4) response.Remove(p);
+                }
+            }
+            if (filters.Rating == "five_stars")
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if (p.Rating < 5) response.Remove(p);
+                }
+            }
+
+
+            //Checking discounts
+            if(filters.Discount != null)
+            {
+                foreach(GetProductAndOtherRelatedInformationDTO p in response.ToArray())
+                {
+                    if(filters.Discount == "all_discounts_and_only_with_discount" && p.ProductDiscountPercentage == 0) response.Remove(p);
+                    else if (filters.Discount == "less_than_20_percent" && p.ProductDiscountPercentage > 20) response.Remove(p);
+                    else if (filters.Discount == "at_least_20_percent" && p.ProductDiscountPercentage < 20) response.Remove(p);
+                    else if (filters.Discount == "at_least_30_percent" && p.ProductDiscountPercentage < 30) response.Remove(p);
+                    else if (filters.Discount == "at_least_40_percent" && p.ProductDiscountPercentage < 40) response.Remove(p);
+                    else if (filters.Discount == "at_least_50_percent" && p.ProductDiscountPercentage < 50) response.Remove(p);
+                    else if (filters.Discount == "at_least_60_percent" && p.ProductDiscountPercentage < 60) response.Remove(p);
+                    else if (filters.Discount == "at_least_70_percent" && p.ProductDiscountPercentage < 70) response.Remove(p);
+                }
+            }
+
+            //Sorting
+            if (filters.SortBy == "correspondance")
+            {
+                response.Sort((p1, p2) =>
+                {
+                    int numberOfOccurencesOfCriteriaInP1 = Regex.Matches(p1.ProductDescription.ToLower(), filters.Criteria.ToLower()).Count;
+                    int numberOfOccurencesOfCriteriaInP2 = Regex.Matches(p2.ProductDescription.ToLower(), filters.Criteria.ToLower()).Count;
+                    if (numberOfOccurencesOfCriteriaInP1 < numberOfOccurencesOfCriteriaInP2) return 1;
+                    else if (numberOfOccurencesOfCriteriaInP1 > numberOfOccurencesOfCriteriaInP2) return -1;
+                    else return 0;
+                });
+            }
+            else if (filters.SortBy == "asc_prices") response.Sort((p1, p2) =>
+            {
+                if (p1.ProductPrice < p2.ProductPrice) return -1;
+                else if (p1.ProductPrice > p2.ProductPrice) return 1;
+                else return 0;
+            });
+            else if (filters.SortBy == "desc_prices") response.Sort((p1, p2) =>
+            {
+                if (p1.ProductPrice > p2.ProductPrice) return -1;
+                else if (p1.ProductPrice < p2.ProductPrice) return 1;
+                else return 0;
+            });
+            else if (filters.SortBy == "asc_ratings") response.Sort((p1, p2) =>
+            {
+                if (p1.Rating < p2.Rating) return -1;
+                else if (p1.Rating > p2.Rating) return 1;
+                else return 0;
+            });
+            else if (filters.SortBy == "desc_ratings") response.Sort((p1, p2) =>
+            {
+                if (p1.Rating > p2.Rating) return -1;
+                else if (p1.Rating < p2.Rating) return 1;
+                else return 0;
+            });
+            else if (filters.SortBy == "asc_sales")
+            {
+                /*
+                 * TODO: Filters response by asc sales
+                 * **/
+            }
+            else if (filters.SortBy == "desc_sales")
+            {
+                /*
+                 * TODO: Filters response by asc sales
+                 * **/
+            }
+
+            return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+            {
+                Data = response,
+                Success = true,
+                Message = "" + response.Count + "_PRODUCTS_FOUND"
+            };
+        }
+
+        public Task<ServiceResponse<Category?>> GetProductCategory(Guid productId)
         {
             throw new NotImplementedException();
         }

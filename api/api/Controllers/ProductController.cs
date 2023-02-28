@@ -471,5 +471,25 @@ namespace api.Controllers
                 };
             }
         }
+
+        [HttpPost("search-product")]
+        public async Task<ActionResult<ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>>> SearchProduct(SearchProductDTO request)
+        {
+            var getAllProductsResponse = await GetAllProductsAndTheirRelatedInformation();
+            if(getAllProductsResponse.Value != null && getAllProductsResponse.Value.Success && getAllProductsResponse.Value.Data != null)
+            {
+                var allProducts = getAllProductsResponse.Value.Data.ToList();
+                return await _productService.SearchForAProduct(allProducts, request);
+            }
+            else
+            {
+                return new ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>()
+                {
+                    Success = false,
+                    Data = new List<GetProductAndOtherRelatedInformationDTO>(),
+                    Message = "SOMETHING_WENT_WRONG_WHILE_GETTING_ALL_PRODUCTS"
+                };
+            }
+        }
     }
 }
