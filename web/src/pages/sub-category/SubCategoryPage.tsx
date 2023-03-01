@@ -11,6 +11,7 @@ import {
   Pagination,
   Select,
   SelectChangeEvent,
+  Skeleton,
 } from "@mui/material";
 import SubCategoryPageBreadcumb from "./sub-category-page-breadcumb/SubCategoryPageBreadcumb";
 import { Product } from "../../data/models/Product";
@@ -110,6 +111,16 @@ const SubCategoryPage = () => {
     }
   };
 
+  const [numberOfPages, setNumberOfPages] = React.useState<number>(1);
+  React.useEffect(() => {
+    setNumberOfPages(
+      productsToBeDisplayed.length / 10 < 0
+        ? 1
+        : productsToBeDisplayed.length % 10 === 0
+        ? Math.floor(productsToBeDisplayed.length / 10)
+        : Math.floor(productsToBeDisplayed.length / 10) + 1
+    );
+  }, [productsToBeDisplayed]);
   return subCategory === undefined ? (
     <div className="w-full h-screen flex items-center justify-center">
       <CircularProgress />
@@ -205,6 +216,26 @@ const SubCategoryPage = () => {
           </div>
         </div>
       </div>
+      <div className="mt-7 w-full flex items-center justify-between">
+        <span className="text-gray-500 pl-2 font-normal sm:text-xl lg:text-sm text-center">
+          {productsToBeDisplayed.length} resultats <br /> Vous avez vu{" "}
+          {currentPage === numberOfPages
+            ? productsToBeDisplayed.length
+            : currentPage * 10}{" "}
+          articles sur {productsToBeDisplayed.length}
+        </span>
+
+        <Pagination
+          page={currentPage}
+          onChange={handleChangePage}
+          count={numberOfPages}
+          shape="rounded"
+          color="secondary"
+          variant="outlined"
+          showFirstButton
+          showLastButton
+        />
+      </div>
       <div className="w-full mt-5">
         {productsToBeDisplayed.length !== 0 ? (
           productsToBeDisplayed
@@ -227,30 +258,25 @@ const SubCategoryPage = () => {
         )}
       </div>
 
-      <div className="mt-7 flex flex-col items-center justify-center w-full">
-        <h1 className="font-kanit mb-2">
-          Vous avez vu {currentPage * 10} sur {productsToBeDisplayed.length}{" "}
-          articles.
-        </h1>
-        {productsToBeDisplayed.length !== 0 && (
-          <Pagination
-            count={
-              productsToBeDisplayed.length / 10 < 0
-                ? 1
-                : productsToBeDisplayed.length % 10 === 0
-                ? Math.floor(productsToBeDisplayed.length / 10)
-                : Math.floor(productsToBeDisplayed.length / 10) + 1
-            }
-            variant="outlined"
-            shape="rounded"
-            className="font-kanit"
-            showFirstButton
-            showLastButton
-            color="secondary"
-            page={currentPage}
-            onChange={handleChangePage}
-          />
-        )}
+      <div className="mt-14 w-full flex flex-col items-center justify-center">
+        <span className="text-gray-500 pl-2 font-normal sm:text-xl lg:text-sm text-center">
+          {productsToBeDisplayed.length} resultats <br /> Vous avez vu{" "}
+          {currentPage === numberOfPages
+            ? productsToBeDisplayed.length
+            : currentPage * 10}{" "}
+          articles sur {productsToBeDisplayed.length}
+        </span>
+
+        <Pagination
+          page={currentPage}
+          onChange={handleChangePage}
+          count={numberOfPages}
+          shape="rounded"
+          color="secondary"
+          variant="outlined"
+          showFirstButton
+          showLastButton
+        />
       </div>
     </div>
   );
