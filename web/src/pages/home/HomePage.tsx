@@ -23,10 +23,10 @@ const HomePage: React.FC = () => {
         <PartnersSection />
         <NewProductsSection />
       </div>
+      <OurStrenghsSection />
       <div className="w-full mt-10 flex items-center justify-center">
         <AboutTiamtechSection />
       </div>
-      <OurStrenghsSection />
     </div>
   );
 };

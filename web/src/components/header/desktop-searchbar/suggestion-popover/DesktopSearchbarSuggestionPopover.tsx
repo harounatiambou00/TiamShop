@@ -57,7 +57,10 @@ const DesktopSearchbarSuggestionPopover = ({
               <div
                 key={p.productId}
                 className="z-50 w-full py-2 px-3 mb-3 hover:bg-gray-100 hover:drop-shadow-sm cursor-pointer rounded-md"
-                onClick={() => navigate("/product-details/" + p.productId)}
+                onClick={() => {
+                  navigate("/product-details/" + p.productId);
+                  setOpen(false);
+                }}
               >
                 <div className="w-full flex items-center">
                   <img

@@ -5,10 +5,10 @@ import { BsArrowReturnRight } from "react-icons/bs";
 const AboutTiamtechSection = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full mt-10">
-      <h1 className="uppercase text-xl font-raleway font-medium mb-4">
+      <h1 className="w-full uppercase font-raleway font-semibold text-center mb-4 sm:text-4xl lg:text-2xl">
         Qui sommes-nous ?
       </h1>
-      <div className="w-9/12 h-80 bg-orange-50 drop-shadow-lg pl-2 pr-10 py-2 flex justify-between items-center">
+      <div className="sm:w-11/12 lg:w-9/12 bg-orange-50 drop-shadow-lg pl-2 pr-10 sm:py-7 lg:py-2 flex justify-between items-center">
         <div className="w-3/12 flex items-center justify-center">
           <img
             alt="tiamtech.png"
@@ -20,7 +20,7 @@ const AboutTiamtechSection = () => {
         </div>
         <div className="w-9/12">
           <h1 className="font-amita text-4xl">TIAMTECH Co.</h1>
-          <p className="font-kanit font-light first-letter:font-amita first-letter:text-xl text-black">
+          <p className="font-kanit font-light sm:text-2xl lg:text-base first-letter:font-amita first-letter:text-xl text-black text-center">
             Est une start-up basée au Niger qui fournit des services tels que le
             développement de sites web et d'applications mobiles. Nous aidons
             les petites et moyennes entreprises à augmenter leur visibilité en
@@ -37,7 +37,7 @@ const AboutTiamtechSection = () => {
               variant="outlined"
               color="primary"
               size="large"
-              className="font-kanit font-light mt-2"
+              className="font-kanit font-light sm:mt-4 lg:mt-2 sm:text-2xl lg:text-base"
               endIcon={<BsArrowReturnRight />}
               href="https://radiant-bunny-7569fa.netlify.app/"
               target="_blank"

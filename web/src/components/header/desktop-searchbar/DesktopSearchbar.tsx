@@ -29,6 +29,7 @@ const DesktopSearchbar = () => {
         category +
         "&rating=all";
       navigate(url);
+      setOpenDesktopSearchbarPopover(false);
     }
   };
 

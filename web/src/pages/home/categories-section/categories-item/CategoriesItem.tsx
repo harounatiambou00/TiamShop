@@ -37,7 +37,7 @@ const CategoriesItem = ({ category }: Props) => {
   }, []);
   return categoryImage ? (
     <div className="flex flex-col items-center justify-between">
-      <div className="h-1/2 w-1/2">
+      <div className="h-3/4 w-3/4">
         <img
           alt={category.CategoryTitle}
           src={
@@ -49,10 +49,16 @@ const CategoriesItem = ({ category }: Props) => {
           className="h-full w-full"
         />
       </div>
-      <h1 className="px-5 font-normal pt-2">{category.CategoryTitle}</h1>
+      <h1 className="px-5 font-normal pt-2 sm:text-2xl lg:text-base">
+        {category.CategoryTitle}
+      </h1>
     </div>
   ) : (
-    <Skeleton className="w-full h-full" />
+    <Skeleton
+      variant="rectangular"
+      className="w-full h-full rounded-md"
+      animation="wave"
+    />
   );
 };
 

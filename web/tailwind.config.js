@@ -59,6 +59,7 @@ module.exports = {
         "12/12": "100%",
         "header-sm-height": "18rem",
         "header-lg-height": "8rem",
+        112: "28rem",
         128: "32rem",
       },
       width: {

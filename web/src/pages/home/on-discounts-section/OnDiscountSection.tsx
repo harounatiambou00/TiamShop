@@ -2,18 +2,9 @@ import React from "react";
 import HomePageSection from "../../../components/homepage-components/homepage-section/HomePageSection";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
-import { Swiper, SwiperSlide } from "swiper/react";
-
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
-import "./styles.css";
-
-// import required modules
-import { Navigation, Pagination } from "swiper";
 import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
-import { ProductCard } from "../../../components/core";
 import { useNavigate } from "react-router-dom";
+import HomepageProductsSwiper from "../../../components/homepage-components/homepage-sections-products-swiper/HomepageProductsSwiper";
 
 const OnDiscountSection = () => {
   let allProducts = useAppSelector(
@@ -46,26 +37,7 @@ const OnDiscountSection = () => {
       title="En solde"
       handleClickSeeMoreButton={() => navigate("/on-discount-products")}
     >
-      <Swiper
-        id="app_homepage_categories_swiper"
-        className="h-96"
-        draggable={true}
-        slidesPerView={4}
-        spaceBetween={15}
-        navigation={true}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Navigation, Pagination]}
-      >
-        {productsToBeDisplayed.map((p) => {
-          return (
-            <SwiperSlide key={p.productId} className="drop-shadow-sm">
-              <ProductCard product={p} />
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+      <HomepageProductsSwiper products={productsToBeDisplayed.slice(0, 10)} />
     </HomePageSection>
   );
 };

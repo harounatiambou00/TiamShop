@@ -34,7 +34,7 @@ const BrandsItem = ({ brand }: Props) => {
   }, []);
 
   return brandImage ? (
-    <div>
+    <div className="h-full w-full flex items-center justify-center">
       <img
         alt={brand.BrandName}
         src={
@@ -43,7 +43,7 @@ const BrandsItem = ({ brand }: Props) => {
           ";base64," +
           brandImage.imageBytes
         }
-        className="h-24"
+        className="h-auto w-auto"
       />
     </div>
   ) : (

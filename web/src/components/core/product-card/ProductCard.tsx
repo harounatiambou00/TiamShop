@@ -30,7 +30,7 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
   const brand = brands.find((b) => b.brandId === product.brandId);
 
   return (
-    <Card className="w-full relative flex flex-col justify-between">
+    <Card className="w-full min-h-full relative flex flex-col justify-between">
       <div className="absolute sm:top-4 sm:right-2 lg:top-1 lg:right-1 flex flex-col z-50">
         <IconButton size="small" color="primary">
           <AiOutlineHeart className="sm:text-4xl lg:text-xl" />
