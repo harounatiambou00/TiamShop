@@ -64,10 +64,23 @@ import { setAllBrands } from "./redux/slices/allBrandsSlice";
 import { CustomImage } from "./data/models/Image";
 import { setImages } from "./redux/slices/imagesSlice";
 import ProductAndRelatedInfo from "./data/models/ProductAndRelatedInfo";
+import ShoppingCart from "./data/models/ShoppingCart";
+import { setShoppingCart } from "./redux/slices/shoppingCartSlice";
 
 function App() {
   const dispatch = useAppDispatch();
-
+  /***
+   * Creating the cart if it doesn't exist else, we get the items from local storage
+   */
+  let shoppingCartFromLocalStorage = localStorage.getItem("shoppingCart");
+  if (!shoppingCartFromLocalStorage) {
+    localStorage.setItem(
+      "shoppingCart",
+      JSON.stringify({ items: [] } as ShoppingCart)
+    );
+  } else {
+    dispatch(setShoppingCart(JSON.parse(shoppingCartFromLocalStorage)));
+  }
   //Get The authenticated client
   React.useEffect(() => {
     const getAuthenticatedClient = async () => {
@@ -142,7 +155,6 @@ function App() {
             },
           ];
         }
-        console.log(products);
         dispatch(setAllProducts({ allProducts: products }));
       } else {
         dispatch(setAllProducts({ allProducts: [] }));
@@ -301,7 +313,7 @@ function App() {
             element={<SubCategoryPage />}
           />
           {/*On this page a client will see his cart, update it, or make an order */}
-          <Route path="cart/:cartId" element={<CartPage />} />
+          <Route path="cart" element={<CartPage />} />
 
           {/*On this page a visitor can see all the products matching his research and filter them */}
           <Route path="search" element={<SearchResultsPage />} />

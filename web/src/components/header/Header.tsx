@@ -34,7 +34,7 @@ const Header = (props: Props) => {
     <ElevationScroll {...props}>
       <AppBar
         id="app-header"
-        className="sm:h-header-sm-height lg:h-header-lg-height p-0 m-0 text-gray-100"
+        className="sm:h-header-sm-height lg:h-header-lg-height p-0 m-0 text-gray-100 bg-background"
       >
         <Toolbar className="h-full w-full flex flex-col sm:p-5 lg:py-1 lg:px-0">
           {/** */}
@@ -45,7 +45,7 @@ const Header = (props: Props) => {
                 onClick={() => props.setOpenLeftDrawer(true)}
                 className="sm:block lg:hidden items-center justify-center h-20 w-20"
               >
-                <BiMenuAltLeft className="text-6xl text-primary" />
+                <BiMenuAltLeft className="text-6xl text-primary hover:text-amber-500" />
               </IconButton>
               <img
                 src={"/" + process.env.PUBLIC_URL + "assets/images/logo.png"}
@@ -55,7 +55,7 @@ const Header = (props: Props) => {
               />
             </div>
             {/** large sceen searchbar, will be displayed only on large screens otherwise it'll be hidden  */}
-            <div className="z-50 h-7/12">
+            <div className="sm:z-10 lg:z-50 sm:hidden lg:block lg:h-7/12">
               <DesktopSearchbar />
             </div>
             <Navlinks />
@@ -63,12 +63,12 @@ const Header = (props: Props) => {
           {/** Desktop categories links */}
           <div className="sm:hidden lg:flex lg:h-1/3 lg:w-full items-center justify-between lg:px-2 z-40">
             <IconButton onClick={() => props.setOpenLeftDrawer(true)}>
-              <FiMenu />
+              <FiMenu className="text-primary hover:text-amber-500" />
             </IconButton>
             {categories.slice(0, 8).map((category) => (
               <Button
                 size="small"
-                className="text-white text-xs font-medium font-raleway normal-case hover:text-primary"
+                className="text-xs font-medium font-raleway normal-case hover:text-amber-600"
                 onClick={() => navigate("/category/" + category.CategoryName)}
                 key={category.CategoryId}
               >

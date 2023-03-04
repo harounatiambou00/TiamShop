@@ -311,7 +311,7 @@ const DisplayProduct = ({ product, subCategory }: Props) => {
             <Button
               variant="contained"
               startIcon={<GiShoppingCart className="sm:text-6xl lg:text-4xl" />}
-              className="sm:h-20 lg:h-12 sm:text-2xl lg:text-base bg-secondary font-raleway w-full"
+              className="sm:h-20 lg:h-12 sm:text-2xl lg:text-base bg-amber-300 text-primary font-raleway w-full"
             >
               Ajouter au panier
             </Button>

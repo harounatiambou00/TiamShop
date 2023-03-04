@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Button,
   Card,
   CardActionArea,
@@ -8,6 +9,7 @@ import {
   CardMedia,
   IconButton,
   Rating,
+  Snackbar,
 } from "@mui/material";
 import { GiShoppingCart } from "react-icons/gi";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -17,6 +19,9 @@ import { RootState } from "../../../redux/store";
 import { useNavigate } from "react-router-dom";
 import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { FiTrendingUp } from "react-icons/fi";
+import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
+import { addItemToShoppingCart } from "../../../redux/slices/shoppingCartSlice";
+import SuccessSnackbar from "../suucess-snackbar/SuccessSnackbar";
 
 type Props = {
   product: ProductAndRelatedInfo;
@@ -28,7 +33,9 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
   const navigate = useNavigate();
   let brands = useAppSelector((state: RootState) => state.allBrands.brands);
   const brand = brands.find((b) => b.brandId === product.brandId);
-
+  const dispatch = useAppDispatch();
+  const [openProductAddedToCartSnackbar, setOpenPoductAddedToCartSnackbar] =
+    React.useState<boolean>(false);
   return (
     <Card className="w-full min-h-full relative flex flex-col justify-between">
       <div className="absolute sm:top-4 sm:right-2 lg:top-1 lg:right-1 flex flex-col z-50">
@@ -108,16 +115,35 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
       </CardActionArea>
       <CardActions className="w-full flex items-center justify-between sm:px-5 lg:px-2 sm:pb-8 lg:pb-4">
         <Button
-          className="sm:w-10/12 lg:w-10/12 bg-orange-300 font-raleway font-semibold text-primary sm:text-3xl lg:text-base"
+          className="sm:w-10/12 lg:w-10/12 bg-amber-300 font-raleway font-semibold text-primary sm:text-3xl lg:text-base"
           variant="contained"
           color="secondary"
         >
           Acheter
         </Button>
-        <IconButton color="primary">
+        <IconButton
+          color="primary"
+          onClick={() => {
+            dispatch(
+              addItemToShoppingCart({
+                productId: product.productId,
+                setOpenSuccessSnackbar: setOpenPoductAddedToCartSnackbar,
+              })
+            );
+          }}
+        >
           <GiShoppingCart className="sm:text-5xl lg:text-2xl" />
         </IconButton>
       </CardActions>
+      <SuccessSnackbar
+        open={openProductAddedToCartSnackbar}
+        setOpen={setOpenPoductAddedToCartSnackbar}
+        text={
+          "Vous avez ajouté l'article '" +
+          product.productName +
+          "' à votre panier."
+        }
+      />
     </Card>
   );
 };

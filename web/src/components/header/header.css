@@ -1,10 +1,10 @@
 #app-header {
-  background: rgb(214, 125, 62);
+  /*background: rgb(214, 125, 62);
   background: linear-gradient(
     90deg,
     rgba(214, 125, 62, 1) 70%,
     rgba(255, 174, 109, 1) 100%
-  );
+  );*/
 }
 
 #app_header_categories_links_swiper {

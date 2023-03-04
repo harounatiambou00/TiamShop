@@ -7,6 +7,7 @@ import { allProductSlice } from "./slices/allProductsSlice";
 import { currentProductSlice } from "./slices/currentProductSlice";
 import { allBrandsSlice } from "./slices/allBrandsSlice";
 import { imagesSlice } from "./slices/imagesSlice";
+import { shoppingCartSlice } from "./slices/shoppingCartSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     currentProduct: currentProductSlice.reducer,
     allBrands: allBrandsSlice.reducer,
     images: imagesSlice.reducer,
+    shoppingCart: shoppingCartSlice.reducer,
   },
 });
 
