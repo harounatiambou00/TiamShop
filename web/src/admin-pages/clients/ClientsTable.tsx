@@ -12,7 +12,6 @@ import {
   IconButton,
 } from "@mui/material";
 
-import { BsTrash } from "react-icons/bs";
 import DeletionAlert from "./DeletionAlert";
 import { AiOutlineDelete } from "react-icons/ai";
 

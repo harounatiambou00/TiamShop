@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using api.DTOs.UserDTOs.Deliverers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -96,6 +97,66 @@ namespace api.Controllers
             };
         }
 
+        [HttpPost("sign-in-deliverer-with-email")]
+        public async Task<ActionResult<ServiceResponse<string?>>> LoginDeliverertWithEmail(LoginDelivererWithEmail request)
+        {
+            //We will try to log the deliverer
+            var login = await _userService.LoginDelivererWithEmail(request);
+
+            //if the deliverer is logged succesfully, we create a cookie that contains the token of the login
+            if (login.Success && login.Data != null)
+            {
+                Response.Cookies.Append("delivererLoginJwt", login.Data, new CookieOptions
+                {
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
+                    Expires = request.RemenberMe ? DateTimeOffset.Now.AddYears(1) : DateTimeOffset.Now.AddMinutes(30)
+                });
+            }
+
+            /*
+             * Finally we will return a service response to inform if the login was successful or not(if not why)
+             * We return a Service Response with a null data because we don't want the frontend to access the token.
+            */
+            return new ServiceResponse<string?>
+            {
+                Data = null,
+                Success = login.Success,
+                Message = login.Message,
+            };
+        }
+
+        [HttpPost("sign-in-deliverer-with-phone-number")]
+        public async Task<ActionResult<ServiceResponse<string?>>> LoginDelivererWithPhoneNumber(LoginDelivererWihPhoneNumber request)
+        {
+            // We will try to log the deliverer
+            var login = await _userService.LoginDelivererWithPhoneNumber(request);
+
+            //if the deliverer is logged succesfully, we create a cookie that contains the token of the login
+            if (login.Success && login.Data != null)
+            {
+                Response.Cookies.Append("delivererLoginJwt", login.Data, new CookieOptions
+                {
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    HttpOnly = true, //This means that the frontend can only get it but cannot access/modify it. 
+                    Expires = request.RemenberMe ? DateTimeOffset.Now.AddYears(1) : DateTimeOffset.Now.AddMinutes(30)
+                });
+            }
+
+            /*
+             * Finally we will return a service response to inform if the login was successful or not(if not why)
+             * We return a Service Response with a null data because we don't want the frontend to access the token.
+            */
+            return new ServiceResponse<string?>
+            {
+                Data = null,
+                Success = login.Success,
+                Message = login.Message,
+            };
+        }
+
         [HttpGet("get-logged-client")]
         public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> GetLoggedClient()
         {
@@ -106,6 +167,39 @@ namespace api.Controllers
                 var validatedClientLoginJwt = _jwtService.Verify(clientLoginJwtFromCookies);
 
                 int userId = int.Parse(validatedClientLoginJwt.Issuer);
+
+                var serviceResponse = await _userService.GetUserById(userId);
+
+                if (serviceResponse.Data == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "INVALID_TOKEN";
+                }
+
+                return serviceResponse;
+            }
+            catch (Exception _)
+            {
+                return new ServiceResponse<GetUserDTO?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "INVALID_TOKEN"
+                };
+            }
+
+        }
+
+        [HttpGet("get-logged-deliverer")]
+        public async Task<ActionResult<ServiceResponse<GetUserDTO?>>> GetLoggedDeliverer()
+        {
+            try
+            {
+                var delivererLoginJwtFromCookies = Request.Cookies["delivererLoginJwt"];
+
+                var validatedDelivererLoginJwt = _jwtService.Verify(delivererLoginJwtFromCookies);
+
+                int userId = int.Parse(validatedDelivererLoginJwt.Issuer);
 
                 var serviceResponse = await _userService.GetUserById(userId);
 
@@ -258,7 +352,41 @@ namespace api.Controllers
         {
             if (Request.Cookies["clientLoginJwt"] != null)
             {
-                Response.Cookies.Delete("clientLoginJwt");
+                Response.Cookies.Delete("clientLoginJwt", new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    Secure = true,
+                });
+                return (new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = true,
+                    Message = "CLIENT_LOGGED_OUT_SUCCESSFULLY"
+                });
+            }
+            else
+            {
+                return (new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "LOG_OUT_FAILED"
+                });
+            }
+        }
+
+        [HttpPost("delivererlogout")]
+        public ActionResult<ServiceResponse<string?>> LogoutDeliverer()
+        {
+            if (Request.Cookies["delivererLoginJwt"] != null)
+            {
+                Response.Cookies.Delete("delivererLoginJwt", new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    Secure = true,
+                });
                 return (new ServiceResponse<string?>
                 {
                     Data = null,
@@ -282,7 +410,12 @@ namespace api.Controllers
         {
             if (Request.Cookies["adminLoginJwt"] != null)
             {
-                Response.Cookies.Delete("adminLoginJwt");
+                Response.Cookies.Delete("adminLoginJwt", new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    Secure = true,
+                });
                 return (new ServiceResponse<string?>
                 {
                     Data = null,

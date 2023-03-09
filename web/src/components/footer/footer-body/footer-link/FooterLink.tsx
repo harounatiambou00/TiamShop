@@ -29,7 +29,7 @@ const FooterLink = ({ href, to, text, icon }: Props) => {
     );
   } else if (to) {
     return (
-      <div className="flex items-center footer__link text-gray-50 opacity-80 hover:text-primary hover:underline sm:mb-4 lg:mb-1">
+      <div className="flex items-center footer__link text-gray-50 opacity-80 hover:text-amber-400 hover:underline sm:mb-4 lg:mb-1">
         {icon ? (
           icon
         ) : (
@@ -51,7 +51,7 @@ const FooterLink = ({ href, to, text, icon }: Props) => {
         ) : (
           <MdKeyboardArrowRight className="sm:text-3xl lg:text-xl font-medium" />
         )}
-        <span className="sm:text-2xl lg:text-sm block ">{text}</span>
+        <span className="sm:text-3xl lg:text-sm block ">{text}</span>
       </div>
     );
   }

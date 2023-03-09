@@ -47,7 +47,7 @@ namespace api.Services.EmailService
                 return new ServiceResponse<string?>
                 {
                     Data = null,
-                    Success = true,
+                    Success = false,
                     Message = response.Content
                 };
             }

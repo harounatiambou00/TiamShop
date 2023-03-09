@@ -1,4 +1,5 @@
-﻿using api.Models;
+﻿using api.DTOs.UserDTOs.Deliverers;
+using api.Models;
 using api.Services.ProductGradeService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ namespace api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IProductGradeService _productGradeService;
+        private readonly IEmailService _emailService;
 
-        public UserController(IUserService userService, IProductGradeService productGradeService)
+        public UserController(IUserService userService, IProductGradeService productGradeService, IEmailService emailService)
         {
             _userService = userService;
             _productGradeService = productGradeService;
+            _emailService = emailService;
         }
 
         [HttpGet("get-all-users")]
@@ -28,6 +31,12 @@ namespace api.Controllers
         public async Task<ServiceResponse<List<GetUserDTO>>> GetAllClients()
         {
             return await _userService.GetAllClients();
+        }
+
+        [HttpGet("get-all-deliverers")]
+        public async Task<ServiceResponse<List<GetUserDTO>>> GetAllDeliverers()
+        {
+            return await _userService.GetAllDeliverers();
         }
 
         [HttpGet("get-all-admins")]
@@ -64,6 +73,43 @@ namespace api.Controllers
         public async Task<ActionResult<ServiceResponse<string?>>> CreateAdmin(CreateAdminDTO request)
         {
             return await _userService.CreateAdmin(request);
+        }
+
+        [HttpPost("create-deliverer")]
+        public async Task<ActionResult<ServiceResponse<string?>>> CreateDeliverer(CreateDelivererDTO request)
+        {
+            var getAdminResponse = await _userService.GetAdminByGuid(request.AdminGuid);
+            if (getAdminResponse.Success && getAdminResponse.Data != null)
+            {
+                var admin = getAdminResponse.Data;
+                var createDelivererResponse = await _userService.CreateDeliverer(request);
+                if (createDelivererResponse.Success && createDelivererResponse.Data != null)
+                {
+                    var emailBody = "L'administrateur,\"#ADMIN_COMPLETE_NAME#\" vient de vous créer un compte livreur. Votre mot de mot de passe est le suivant : <strong>\"#PASSWORD#\"</strong><br /> Vous pouvez l'utiliser pour vous connecter et le modifier plus tard.";
+                    emailBody = emailBody.Replace("#ADMIN_COMPLETE_NAME#", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(admin.FirstName + " " + admin.LastName));
+                    emailBody = emailBody.Replace("#PASSWORD#", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(createDelivererResponse.Data));
+                    var emailResponse = await _emailService.SendEmail(request.Email, "Tiamshop, création d'un compte livreur", emailBody);
+                    if(!emailResponse.Success)
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "DELIVERER_CREATED_SUCCESSFULLY_BUT_SOMETHING_WENT_WRONG_WHILE_SENDING_THE_EMAIL"
+                        };
+                }
+                return createDelivererResponse;
+
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "ADMIN_NOT_FOUND"
+                };
+            }
+          
         }
 
         [HttpPut("update-user")]

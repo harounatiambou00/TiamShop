@@ -71,7 +71,7 @@ const ProductTableRow = ({ product }: Props) => {
     React.useState<boolean>(false);
 
   return principalImage ? (
-    <div className="pt-5 w-full grid grid-cols-24 gap-0 items-center border-b-2 pb-2 cursor-pointer hover:bg-gray-100">
+    <div className="pt-5 w-full grid grid-cols-24 gap-0 items-center border-b-2 pb-2 cursor-pointer bg-transparent hover:bg-gray-100">
       <div className="flex items-center justify-center col-span-2">
         <Checkbox size="small" />
       </div>

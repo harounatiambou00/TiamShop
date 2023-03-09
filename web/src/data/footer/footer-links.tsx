@@ -60,19 +60,19 @@ export const footerLinks = [
     links: [
       {
         icon: (
-          <IoLocationOutline className="sm:text-3xl lg:text-xl text-gray-50 mr-2 opacity-70" />
+          <IoLocationOutline className="sm:text-4xl lg:text-xl text-gray-50 mr-2 opacity-70" />
         ),
         text: "90 Ave Mohamed V, Monastir 5000, Tunisia",
       } as FooterLinkType,
       {
         icon: (
-          <FiPhoneCall className="sm:text-3xl lg:text-xl text-gray-50 mr-2 opacity-70" />
+          <FiPhoneCall className="sm:text-4xl lg:text-xl text-gray-50 mr-2 opacity-70" />
         ),
         text: "+216 52-178-506",
       } as FooterLinkType,
       {
         icon: (
-          <MdEmail className="sm:text-3xl lg:text-xl text-gray-50 mr-2 opacity-70" />
+          <MdEmail className="sm:text-4xl lg:text-xl text-gray-50 mr-2 opacity-70" />
         ),
         text: (
           <span>

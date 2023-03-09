@@ -7,7 +7,7 @@ import { GiMoneyStack } from "react-icons/gi";
 const TiamshopInNumbersSection = () => {
   return (
     <div className="w-full grid grid-cols-4 mt-5 gap-5">
-      <div className=" h-40 bg-secondary rounded-md flex flex-col justify-center px-4 py-2 drop-shadow-md">
+      <div className=" h-40 bg-amber-400 rounded-md flex flex-col justify-center px-4 py-2 drop-shadow-md">
         <div className="flex items-center text-primary">
           <GiMoneyStack className="text-4xl" />
           <p className="ml-2 text-xl font-bold font-raleway">Revenus total</p>

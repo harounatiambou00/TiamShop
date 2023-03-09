@@ -47,7 +47,7 @@ const ConfirmDeletionDialog = ({
       </DialogTitle>
       <DialogContent>
         <DialogContentText
-          className="font-kanit"
+          className="font-kanit font-light"
           id="confirm-deletion-alert-dialog-description"
         >
           {text}

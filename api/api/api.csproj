@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SQLScripts\Sprint 4\Sprint4-01-TABLES_CREATION.sql" />
+    <None Remove="SQLScripts\Sprint 4\Sprint4-02-DELIVERIES_TABLE_STORED_PROCEDURES.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-Entities-02-MAKING_THE_IMAGENAME_FIELD_UNIQUE.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-01-ImagesStoredProcedures.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-02-CREATING_GETIMAGEBYIMAGENAME_StoredProcedure.sql" />
@@ -45,6 +47,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="SQLScripts\Sprint 4\Sprint4-01-TABLES_CREATION.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint 4\Sprint4-02-DELIVERIES_TABLE_STORED_PROCEDURES.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-34-ALTERNING_THE_UpdateProductCaracteristic_SP.sql" />
   </ItemGroup>
 

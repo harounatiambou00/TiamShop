@@ -10,10 +10,12 @@ namespace api.Controllers
     public class NeighborhoodController : ControllerBase
     {
         private readonly string _connectionString;
+        private readonly INeighborhoodService _neighborhoodService;
 
-        public NeighborhoodController(IConfiguration config)
+        public NeighborhoodController(IConfiguration config, INeighborhoodService neighborhoodService)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
+            _neighborhoodService = neighborhoodService;
         }
 
         // GET: api/<NeighborhoodController>
@@ -53,9 +55,9 @@ namespace api.Controllers
 
         // GET api/<NeighborhoodController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<ServiceResponse<Neighborhood?>>> Get(int id)
         {
-            return "value";
+            return await _neighborhoodService.GetNeighborhoodById(id);
         }
 
         // POST api/<NeighborhoodController>

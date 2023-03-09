@@ -11,8 +11,8 @@ type Props = {
 
 const ProductsTable = ({ displayedProducts }: Props) => {
   return (
-    <Paper elevation={2} className="w-full mt-10 flex flex-col">
-      <div className="w-full grid grid-cols-24 gap-0 items-center bg-primary text-white h-14 rounded-t-md drop-shadow-sm">
+    <Paper elevation={2} className="w-full mt-10 flex flex-col bg-transparent">
+      <div className="w-full grid grid-cols-24 gap-0 items-center h-14 rounded-t-md drop-shadow-sm">
         <div className="flex items-center justify-center col-span-2"></div>
         <div className="col-span-2 max-h-16"></div>
 

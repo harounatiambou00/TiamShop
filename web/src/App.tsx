@@ -48,6 +48,9 @@ import {
   BrandsPage,
   AdminCategoryPage,
   ProductsPage,
+  AdminOrdersPage,
+  DeliverersPage,
+  AdminDeliveriesPage,
 } from "./admin-pages";
 
 import "./App.css";
@@ -66,6 +69,8 @@ import { setImages } from "./redux/slices/imagesSlice";
 import ProductAndRelatedInfo from "./data/models/ProductAndRelatedInfo";
 import ShoppingCart from "./data/models/ShoppingCart";
 import { setShoppingCart } from "./redux/slices/shoppingCartSlice";
+import { DelivererSignInPage } from "./deliverer-pages";
+import DelivererDashboard from "./deliverer-pages/dashboard/DelivererDashboard";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -354,11 +359,16 @@ function App() {
             <Route path="brands" element={<BrandsPage />} />
             <Route path="categories" element={<AdminCategoryPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="orders" element={<AdminOrdersPage />} />
+            <Route path="deliveries" element={<AdminDeliveriesPage />} />
+            <Route path="deliverers" element={<DeliverersPage />} />
           </Route>
         </Route>
         {/*On this page an admin can login*/}
         <Route path="admin-sign-in" element={<AdminSignInPage />} />
 
+        <Route path="deliverer-sign-in" element={<DelivererSignInPage />} />
+        <Route path="deliverer-dashboard" element={<DelivererDashboard />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </div>

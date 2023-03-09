@@ -43,6 +43,9 @@ const AccountButtonPopover = ({ open, setOpen }: Props) => {
     let response = await fetch(url, {
       method: "POST",
       credentials: "include",
+      headers: {
+        "Content-Type": "text/plain",
+      },
     });
 
     let content = await response.json();

@@ -1,7 +1,6 @@
 import React from "react";
-import { footerLinks } from "../../../data/footer/footer-links";
 import FooterLink from "./footer-link/FooterLink";
-import { BiLinkAlt } from "react-icons/bi";
+import { footerLinks } from "../../../data/footer/footer-links";
 
 const FooterBody = () => {
   return (

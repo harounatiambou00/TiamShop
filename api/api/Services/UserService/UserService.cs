@@ -1,4 +1,7 @@
-﻿using Dapper;
+﻿using api.DTOs.UserDTOs.Deliverers;
+using api.Helpers;
+using Azure;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Security.Cryptography;
@@ -11,27 +14,31 @@ namespace api.Services.UserService
         private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
         private readonly INeighborhoodService _neighborhoodService;
+        private readonly IUserTypeService _userTypeService;
 
-        public UserService(IConfiguration config, IJwtService jwtService, IEmailService emailService, INeighborhoodService neighborhoodService)
+        public UserService(IConfiguration config, IJwtService jwtService, IEmailService emailService, INeighborhoodService neighborhoodService, IUserTypeService userTypeService)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
             _jwtService = jwtService;
             _emailService = emailService;
             _neighborhoodService = neighborhoodService;
+            _userTypeService = userTypeService;
         }
 
         public async Task<ServiceResponse<string?>> CreateAdmin(CreateAdminDTO request)
         {
-
-            using (var connection = new SqlConnection(_connectionString))
+            var getUserTypeResponse = await _userTypeService.GetUserTypeByName("ADMINISTRATOR");
+            try
             {
-                connection.Open();
-                string query = "INSERT INTO dbo.tblUsers " +
-                    "VALUES(@UserGuid, @FirstName, @LastName, @Email, @PhoneNumber, @CompleteAddress, @BirthDate, @CreatedAt, @VerificationToken, @VerifiedAt, @HashedPassword, @PasswordSalt, @ResetPasswordToken, @ResetPasswordTokenExpiresAt, @JobTitle, @JobDescription, @UserTypeId, @NeighborhoodId)";
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string query = "INSERT INTO dbo.tblUsers " +
+                        "VALUES(@UserGuid, @FirstName, @LastName, @Email, @PhoneNumber, @CompleteAddress, @BirthDate, @CreatedAt, @VerificationToken, @VerifiedAt, @HashedPassword, @PasswordSalt, @ResetPasswordToken, @ResetPasswordTokenExpiresAt, @JobTitle, @JobDescription, @UserTypeId, @NeighborhoodId)";
 
-                User user = new User(request.Email, request.PhoneNumber, request.Password, request.FirstName, request.LastName, request.CompleteAddress, request.BirthDate, request.JobTitle, request.JobDescription);
+                    User user = new User(request.Email, request.PhoneNumber, request.Password, request.FirstName, request.LastName, request.CompleteAddress, request.BirthDate, request.JobTitle, request.JobDescription);
 
-                var dictionary = new Dictionary<string, object>
+                    var dictionary = new Dictionary<string, object>
                 {
                     {"@UserGuid", user.UserGuid},
                     {"@FirstName", user.FirstName},
@@ -49,52 +56,65 @@ namespace api.Services.UserService
                     {"@ResetPasswordTokenExpiresAt", user.ResetPasswordTokenExpiresAt},
                     {"@JobTitle", user.JobTitle},
                     {"@JobDescription", user.JobDescription},
-                    {"@UserTypeId", 2},
+                    {"@UserTypeId", getUserTypeResponse.Data.UserTypeId},
                     {"@NeighborhoodId", request.NeighborhoodId},
                 };
-                var parameters = new DynamicParameters(dictionary);
-                var affectedRows = connection.Execute(query, parameters);
-                if(affectedRows == 1)
-                {
-                    return new ServiceResponse<string?>
+                    var parameters = new DynamicParameters(dictionary);
+                    var affectedRows = connection.Execute(query, parameters);
+                    if (affectedRows == 1)
                     {
-                        Data = null,
-                        Success = true, 
-                        Message = "ADMIN_CREATED_SUCCESSFULLY"
-                    };
-                }
-                else
-                {
-                    return new ServiceResponse<string?>
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "ADMIN_CREATED_SUCCESSFULLY"
+                        };
+                    }
+                    else
                     {
-                        Data = null,
-                        Success = false,
-                        Message = "ADMIN_CREATION_FAILED"
-                    };
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "ADMIN_CREATION_FAILED"
+                        };
+                    }
                 }
+            }
+            catch(Exception e)
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = e.Message
+                };
             }
         }
 
         public async Task<ServiceResponse<string?>> CreateClient(SignUpClientDTO request)
         {
-            if (request.Email != null && request.Password != null && request.PhoneNumber != null)
+            try
             {
-                var clientEmailExists = await GetUserByEmail(request.Email);
-                if (!clientEmailExists.Success)
+                var getUserTypeResponse = await _userTypeService.GetUserTypeByName("CLIENT");
+                if (request.Email != null && request.Password != null && request.PhoneNumber != null)
                 {
-                    var clientPhoneNumberExists = await GetUserByPhoneNumber(request.PhoneNumber);
-                    if (!clientPhoneNumberExists.Success)
+                    var clientEmailExists = await GetUserByEmail(request.Email);
+                    if (!clientEmailExists.Success)
                     {
-                        if (request.Password.Length >= 8)
+                        var clientPhoneNumberExists = await GetUserByPhoneNumber(request.PhoneNumber);
+                        if (!clientPhoneNumberExists.Success)
                         {
-                            using(var connection = new SqlConnection(_connectionString))
+                            if (request.Password.Length >= 8)
                             {
-                                string sql = "INSERT INTO dbo.tblUsers (FirstName, LastName, Email, PhoneNumber, CompleteAddress, BirthDate, CreatedAt, VerificationToken, VerifiedAt, HashedPassword, PasswordSalt, UserTypeId, NeighborhoodId) " +
-                                "VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @CompleteAddress, @BirthDate, @CreatedAt, @VerificationToken, @VerifiedAt, @HashedPassword, @PasswordSalt, @UserTypeId, @NeighborhoodId) ";
+                                using (var connection = new SqlConnection(_connectionString))
+                                {
+                                    string sql = "INSERT INTO dbo.tblUsers (FirstName, LastName, Email, PhoneNumber, CompleteAddress, BirthDate, CreatedAt, VerificationToken, VerifiedAt, HashedPassword, PasswordSalt, UserTypeId, NeighborhoodId) " +
+                                    "VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @CompleteAddress, @BirthDate, @CreatedAt, @VerificationToken, @VerifiedAt, @HashedPassword, @PasswordSalt, @UserTypeId, @NeighborhoodId) ";
 
-                                User user = new User(request.Email, request.PhoneNumber, request.Password, request.FirstName, request.LastName, request.CompleteAddress, request.BirthDate);
+                                    User user = new User(request.Email, request.PhoneNumber, request.Password, request.FirstName, request.LastName, request.CompleteAddress, request.BirthDate);
 
-                                var dictionary = new Dictionary<string, object>
+                                    var dictionary = new Dictionary<string, object>
                                 {
                                     {"@FirstName", user.FirstName},
                                     {"@LastName", user.LastName},
@@ -107,29 +127,39 @@ namespace api.Services.UserService
                                     {"@VerifiedAt", user.VerifiedAt},
                                     {"@HashedPassword", user.HashedPassword},
                                     {"@PasswordSalt", user.PasswordSalt},
-                                    {"@UserTypeId", 1},
+                                    {"@UserTypeId", getUserTypeResponse.Data.UserTypeId},
                                     {"@NeighborhoodId", request.NeighborhoodId},
                                 };
-                                var parameters = new DynamicParameters(dictionary);
-                                var affectedRows = connection.Execute(sql, parameters);
-                                if (affectedRows == 1)
-                                {
-                                    return new ServiceResponse<string?>
+                                    var parameters = new DynamicParameters(dictionary);
+                                    var affectedRows = connection.Execute(sql, parameters);
+                                    if (affectedRows == 1)
                                     {
-                                        Data = user.VerificationToken,
-                                        Success = true,
-                                        Message = "CLIENT_CREATED_SUCCESSFULLY"
-                                    };
-                                }
-                                else
-                                {
-                                    return new ServiceResponse<string?>
+                                        return new ServiceResponse<string?>
+                                        {
+                                            Data = user.VerificationToken,
+                                            Success = true,
+                                            Message = "CLIENT_CREATED_SUCCESSFULLY"
+                                        };
+                                    }
+                                    else
                                     {
-                                        Data = null,
-                                        Success = false,
-                                        Message = "CLIENT_CREATION_FAILED"
-                                    };
+                                        return new ServiceResponse<string?>
+                                        {
+                                            Data = null,
+                                            Success = false,
+                                            Message = "CLIENT_CREATION_FAILED"
+                                        };
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
+                                };
                             }
                         }
                         else
@@ -138,7 +168,7 @@ namespace api.Services.UserService
                             {
                                 Data = null,
                                 Success = false,
-                                Message = "THE_PASSWORD_MUST_BE_AT_LEAST_8_CHARACTERS"
+                                Message = "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN"
                             };
                         }
                     }
@@ -148,7 +178,7 @@ namespace api.Services.UserService
                         {
                             Data = null,
                             Success = false,
-                            Message = "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN"
+                            Message = "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN"
                         };
                     }
                 }
@@ -158,17 +188,138 @@ namespace api.Services.UserService
                     {
                         Data = null,
                         Success = false,
-                        Message = "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN"
+                        Message = "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
                     };
                 }
             }
-            else
+            catch(Exception e)
             {
                 return new ServiceResponse<string?>
                 {
                     Data = null,
                     Success = false,
-                    Message = "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
+                    Message = e.Message
+                };
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> CreateDeliverer(CreateDelivererDTO request)
+        {
+            try
+            {
+                var getAdminResponse = await GetAdminByGuid(request.AdminGuid);
+                var getUserTypeResponse = await _userTypeService.GetUserTypeByName("DELIVERY_MAN");
+                if (getAdminResponse.Success)
+                {
+                    if (request.Email != null && request.PhoneNumber != null)
+                    {
+                        var clientEmailExists = await GetUserByEmail(request.Email);
+                        if (!clientEmailExists.Success)
+                        {
+                            var clientPhoneNumberExists = await GetUserByPhoneNumber(request.PhoneNumber);
+                            if (!clientPhoneNumberExists.Success)
+                            {
+                                var getNeighborhoodResponse = await _neighborhoodService.GetNeighborhoodById(request.NeighborhoodId);
+                                if(getNeighborhoodResponse.Success && getNeighborhoodResponse.Data != null)
+                                {
+                                    using (var connection = new SqlConnection(_connectionString))
+                                    {
+                                        string sql = "INSERT INTO dbo.tblUsers (FirstName, LastName, Email, PhoneNumber, CompleteAddress, BirthDate, CreatedAt, VerificationToken, VerifiedAt, HashedPassword, PasswordSalt, UserTypeId, NeighborhoodId) " +
+                                        "VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @CompleteAddress, @BirthDate, @CreatedAt, @VerificationToken, @VerifiedAt, @HashedPassword, @PasswordSalt, @UserTypeId, @NeighborhoodId) ";
+                                        string generatedPassword = GenerateRandomString.Generate(8);
+                                        User user = new User(request.Email, request.PhoneNumber, generatedPassword, request.FirstName, request.LastName, request.CompleteAddress, request.BirthDate);
+
+                                        var dictionary = new Dictionary<string, object>
+                                        {
+                                            {"@FirstName", user.FirstName},
+                                            {"@LastName", user.LastName},
+                                            {"@Email", user.Email},
+                                            {"@PhoneNumber", user.PhoneNumber},
+                                            {"@CompleteAddress", user.CompleteAddress},
+                                            {"@BirthDate", user.BirthDate},
+                                            {"@CreatedAt", user.CreatedAt},
+                                            {"@VerificationToken", null},
+                                            {"@VerifiedAt", DateTime.Now},
+                                            {"@HashedPassword", user.HashedPassword},
+                                            {"@PasswordSalt", user.PasswordSalt},
+                                            {"@UserTypeId", getUserTypeResponse.Data.UserTypeId},
+                                            {"@NeighborhoodId", request.NeighborhoodId},
+                                        };
+                                        var parameters = new DynamicParameters(dictionary);
+                                        var affectedRows = connection.Execute(sql, parameters);
+                                        if (affectedRows == 1)
+                                        {
+                                            return new ServiceResponse<string?>
+                                            {
+                                                Data = generatedPassword,
+                                                Success = true,
+                                                Message = "DELIVERER_CREATED_SUCCESSFULLY"
+                                            };
+                                        }
+                                        else
+                                        {
+                                            return new ServiceResponse<string?>
+                                            {
+                                                Data = null,
+                                                Success = false,
+                                                Message = "DELIVERER_CREATION_FAILED"
+                                            };
+                                        }
+                                    }
+                                }
+                                else return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "NEIGHBORHOOD_NOT_FOUND"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "THIS_PHONE_NUMBER_IS_ALREADY_TAKEN"
+                                };
+                            }
+                        }
+                        else
+                        {
+                            return new ServiceResponse<string?>
+                            {
+                                Data = null,
+                                Success = false,
+                                Message = "THIS_EMAIL_ADDRESS_IS_ALREADY_TAKEN"
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ServiceResponse<string?>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "REQUIRED_FIELDS_ARE_NOT_COMPLETLY_FILLED"
+                        };
+                    }
+                }else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "ADMIN_NOT_FOUND"
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = e.Message
                 };
             }
         }
@@ -292,7 +443,7 @@ namespace api.Services.UserService
             {
                 connection.Open();
 
-                string query = "SELECT * FROM dbo.tblUsers WHERE UserTypeId = 2";
+                string query = "SELECT * FROM dbo.tblUsers WHERE UserTypeId = (SELECT (UserTypeId) FROM dbo.tblUserTypes WHERE UserTypeName = 'ADMINISTRATOR ')";
 
                 var users = connection.Query<User>(query);
                 users = users.ToList();
@@ -341,7 +492,7 @@ namespace api.Services.UserService
             {
                 connection.Open();
 
-                string query = "SELECT * FROM dbo.tblUsers WHERE UserTypeId = 1";
+                string query = "SELECT * FROM dbo.tblUsers WHERE UserTypeId = (SELECT (UserTypeId) FROM dbo.tblUserTypes WHERE UserTypeName = 'CLIENT')";
 
                 var users = connection.Query<User>(query);
                 users = users.ToList();
@@ -351,6 +502,57 @@ namespace api.Services.UserService
                 {
                     string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
                         var getNeighborhoodDictionary = new Dictionary<string, object>
+                        {
+                            { "@UserId", user.UserId }
+                        };
+                    var getNeighborhoodParameters = new DynamicParameters(getNeighborhoodDictionary);
+                    var neighborhoodId = connection.ExecuteScalar<int>(getNeighborhoodIdSql, getNeighborhoodParameters);
+                    data.Add(
+                            new GetUserDTO
+                            {
+                                UserId = user.UserId,
+                                UserGuid = user.UserGuid,
+                                FirstName = user.FirstName,
+                                LastName = user.LastName,
+                                Email = user.Email,
+                                PhoneNumber = user.PhoneNumber,
+                                CompleteAddress = user.CompleteAddress,
+                                VerifiedAt = user.VerifiedAt,
+                                BirthDate = user.BirthDate,
+                                JobTitle = user.JobTitle,
+
+                                JobDescription = user.JobDescription,
+                                NeighborhoodId = neighborhoodId
+                            }
+                        );
+                }
+                var response = new ServiceResponse<List<GetUserDTO>>
+                {
+                    Data = data,
+                    Success = true,
+                    Message = ""
+                };
+
+                return response;
+            }
+        }
+
+        public async Task<ServiceResponse<List<GetUserDTO>>> GetAllDeliverers()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM dbo.tblUsers WHERE UserTypeId = (SELECT (UserTypeId) FROM dbo.tblUserTypes WHERE UserTypeName = 'DELIVERY_MAN')";
+
+                var users = connection.Query<User>(query);
+                users = users.ToList();
+
+                List<GetUserDTO> data = new List<GetUserDTO>();
+                foreach (var user in users)
+                {
+                    string getNeighborhoodIdSql = "SELECT NeighborhoodId from dbo.tblUsers WHERE UserId = @UserId";
+                    var getNeighborhoodDictionary = new Dictionary<string, object>
                         {
                             { "@UserId", user.UserId }
                         };
@@ -843,6 +1045,151 @@ namespace api.Services.UserService
                     Data = null,
                     Success = false,
                     Message = "CLIENT_NOT_FOUND"
+                };
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> LoginDelivererWithEmail(LoginDelivererWithEmail request)
+        {
+            var response = await GetUserByEmail(request.Email);
+            var getAllDeliverersResponse = await GetAllDeliverers();
+            if(getAllDeliverersResponse.Success && getAllDeliverersResponse.Data != null)
+            {
+                if(getAllDeliverersResponse.Data.Where(x => x.Email == request.Email).Count() == 0)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "DELIVERER_NOT_FOUND"
+                    };
+                }
+            }
+            if (response != null && response.Success && response.Data != null)
+            {
+                var user = response.Data;
+
+                if (user.Email == request.Email)
+                    {
+                        using (var connection = new SqlConnection(_connectionString))
+                        {
+                            connection.Open();
+                            string getPasswordSQL = "SELECT HashedPassword FROM dbo.tblUsers WHERE Email = @Email";
+                            var dictionary = new Dictionary<string, object>
+                            {
+                                { "@Email", request.Email }
+                            };
+                            var parameters = new DynamicParameters(dictionary);
+                            var hashedPassword = connection.ExecuteScalar(getPasswordSQL, parameters);
+                            if (BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword.ToString()))
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = _jwtService.GenerateToken(user.UserId, request.RemenberMe),
+                                    Success = true,
+                                    Message = "TOKEN_GENERATED_SUCCESSFULLY"
+                                };
+                            }
+                            else
+                            {
+                                return new ServiceResponse<string?>
+                                {
+                                    Data = null,
+                                    Success = false,
+                                    Message = "INCORRECT_PASSWORD"
+                                };
+                            }
+                        }
+                    }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "INCORRECT_EMAIL"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "DELIVERER_NOT_FOUND"
+                };
+            }
+        }
+
+        public async Task<ServiceResponse<string?>> LoginDelivererWithPhoneNumber(LoginDelivererWihPhoneNumber request)
+        {
+            var response = await GetUserByPhoneNumber(request.PhoneNumber);
+            var getAllDeliverersResponse = await GetAllDeliverers();
+            if (getAllDeliverersResponse.Success && getAllDeliverersResponse.Data != null)
+            {
+                if (getAllDeliverersResponse.Data.Where(x => x.PhoneNumber == request.PhoneNumber).Count() == 0)
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "DELIVERER_NOT_FOUND"
+                    };
+                }
+            }
+            if (response != null && response.Success && response.Data != null)
+            {
+                var user = response.Data;
+                if (user.PhoneNumber == request.PhoneNumber)
+                {
+                    using (var connection = new SqlConnection(_connectionString))
+                    {
+                        connection.Open();
+                        string getPasswordSQL = "SELECT HashedPassword FROM dbo.tblUsers WHERE PhoneNumber = @PhoneNumber";
+                        var dictionary = new Dictionary<string, object>
+                            {
+                                { "@PhoneNumber", request.PhoneNumber }
+                            };
+                        var parameters = new DynamicParameters(dictionary);
+                        var hashedPassword = connection.ExecuteScalar(getPasswordSQL, parameters);
+                        if (BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword.ToString()))
+                        {
+                            return new ServiceResponse<string?>
+                            {
+                                Data = _jwtService.GenerateToken(user.UserId, true),
+                                Success = true,
+                                Message = "TOKEN_GENERATED_SUCCESSFULLY"
+                            };
+                        }
+                        else
+                        {
+                            return new ServiceResponse<string?>
+                            {
+                                Data = null,
+                                Success = false,
+                                Message = "INCORRECT_PASSWORD"
+                            };
+                        }
+                    }
+                }
+                else
+                {
+                    return new ServiceResponse<string?>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "INCORRECT_PHONE_NUMBER"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse<string?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "DELIVERER_NOT_FOUND"
                 };
             }
         }

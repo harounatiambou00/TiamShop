@@ -1,12 +1,13 @@
 import React from "react";
-import { AiOutlineDashboard } from "react-icons/ai";
 import { BsApple } from "react-icons/bs";
-import { FaLayerGroup, FaTruck, FaUsers } from "react-icons/fa";
+import { FaLayerGroup, FaRegIdCard, FaTruck, FaUsers } from "react-icons/fa";
 import { FiLogOut, FiPackage } from "react-icons/fi";
-import { GiHandTruck } from "react-icons/gi";
 import { HiTag } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
+import { setAuthenticatedAdmin } from "../../../redux/slices/authenticatedAdminSlice";
+import { LoadingButton } from "@mui/lab";
 
 type LinkNameType =
   | "dashboard"
@@ -93,7 +94,18 @@ const links = [
     ),
   },
   {
-    id: 5,
+    id: 7,
+    name: "deliverers",
+    title: "Livreurs",
+    pagePath: "/admin/deliverers",
+    icon: (
+      <div className="">
+        <FaRegIdCard className="text-2xl" />
+      </div>
+    ),
+  },
+  {
+    id: 8,
     name: "deliveries",
     title: "Livraisons",
     pagePath: "/admin/deliveries",
@@ -108,8 +120,28 @@ const links = [
 const Leftbar = () => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = React.useState<LinkNameType>("dashboard");
+  const dispatch = useAppDispatch();
+  const [logoutIsLoading, setLogoutIsLoading] = React.useState<boolean>(false);
+  const logout = async () => {
+    setLogoutIsLoading(true);
+    let url = process.env.REACT_APP_API_URL + "auth/admins/logout";
+    let response = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "text/plain",
+      },
+    });
+
+    let content = await response.json();
+    if (content && content.success) {
+      dispatch(setAuthenticatedAdmin({ admin: null }));
+      navigate("/admin-sign-in");
+    }
+    setLogoutIsLoading(false);
+  };
   return (
-    <div className="w-60 pt-20 h-screen relative bg-white">
+    <div className="w-72 pt-20 h-screen relative bg-white">
       <div className="w-full h-3/4 flex flex-col pt-5">
         {links.map((link) => (
           <div
@@ -131,12 +163,22 @@ const Leftbar = () => {
           </div>
         ))}
       </div>
-      <div className="bg-red-600 select-none text-white border-2 border-red-600 py-2 font-raleway absolute bottom-0 w-full text-lg flex items-center justify-center cursor-pointer transition ease-in duration-200 hover:bg-white hover:border-2 hover:border-red-600 hover:text-red-600 ">
-        <span className="font-raleway uppercase font-medium">
-          Se déconnecter
-        </span>
-        <FiLogOut className="ml-5" />
-      </div>
+      <LoadingButton
+        className={
+          logoutIsLoading
+            ? "absolute bottom-0 font-kanit font-light bg-gray-200 rounded-none text-primary"
+            : "absolute bottom-0 font-kanit font-light bg-red-600 rounded-none text-white"
+        }
+        disableElevation
+        fullWidth
+        loading={logoutIsLoading}
+        endIcon={<FiLogOut className="" />}
+        loadingPosition="end"
+        variant="contained"
+        onClick={logout}
+      >
+        Se déconnecter
+      </LoadingButton>
     </div>
   );
 };
