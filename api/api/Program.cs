@@ -28,6 +28,8 @@ using api.Services.ProductImageService;
 using api.Services.ProductDiscountService;
 using api.Services.ProductGradeService;
 using api.Services.DeliveryService;
+using api.Services.OrderService;
+using api.Services.OrderLineService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +76,8 @@ builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IProductDiscountService, ProductDiscountService>();
 builder.Services.AddScoped<IProductGradeService, ProductGradeService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderLineService, OrderLineService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

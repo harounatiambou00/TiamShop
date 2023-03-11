@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="SQLScripts\Sprint 4\Sprint4-01-TABLES_CREATION.sql" />
-    <None Remove="SQLScripts\Sprint 4\Sprint4-02-DELIVERIES_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-01-TABLES_CREATION.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-02-DELIVERIES_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-03-ORDERS_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-04-ADDING_CompleteAdress_FIELD_TO_Orders_TABLE.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-05-ALLOWING-NULL-FOR-SOME-SPs-PARAMS.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-Entities-02-MAKING_THE_IMAGENAME_FIELD_UNIQUE.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-01-ImagesStoredProcedures.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProcedures-02-CREATING_GETIMAGEBYIMAGENAME_StoredProcedure.sql" />
@@ -44,11 +47,18 @@
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-38-FIXING_THE_UpdateProductDiscount_SP.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-39-UpdateBrand_AND_DeleteBrand_SPs.sql" />
     <None Remove="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-40-FIXING_THE_UpdateBrand_SP.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-06-OrderLines_TABLE_STORED_PROCEDURES.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-07-UPDATING_THE_CreateOrder_SP_SO_THAT_IT_WILL_RETURN_THE_ID_OF_THE_CREATED_ORDER.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-08-UPDATING_THE_CreateOrder_SP_SO_THAT_IT_WILL_RETURN_THE_ID_OF_THE_CREATED_ORDER.sql" />
+    <None Remove="SQLScripts\Sprint4\Sprint4-09-FIXING_THE_UpdateOrder_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="SQLScripts\Sprint 4\Sprint4-01-TABLES_CREATION.sql" />
-    <EmbeddedResource Include="SQLScripts\Sprint 4\Sprint4-02-DELIVERIES_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-01-TABLES_CREATION.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-02-DELIVERIES_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-03-ORDERS_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-04-ADDING_CompleteAdress_FIELD_TO_Orders_TABLE.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-05-ALLOWING-NULL-FOR-SOME-SPs-PARAMS.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-34-ALTERNING_THE_UpdateProductCaracteristic_SP.sql" />
   </ItemGroup>
 
@@ -87,6 +97,10 @@
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-38-FIXING_THE_UpdateProductDiscount_SP.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-39-UpdateBrand_AND_DeleteBrand_SPs.sql" />
     <EmbeddedResource Include="SQLScripts\Sprint2\Sprint2-StoredProceduresAndEntities-40-FIXING_THE_UpdateBrand_SP.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-06-OrderLines_TABLE_STORED_PROCEDURES.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-07-UPDATING_THE_CreateOrder_SP_SO_THAT_IT_WILL_RETURN_THE_ID_OF_THE_CREATED_ORDER.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-08-UPDATING_THE_CreateOrder_SP_SO_THAT_IT_WILL_RETURN_THE_ID_OF_THE_CREATED_ORDER.sql" />
+    <EmbeddedResource Include="SQLScripts\Sprint4\Sprint4-09-FIXING_THE_UpdateOrder_SP.sql" />
   </ItemGroup>
 
   <ItemGroup>

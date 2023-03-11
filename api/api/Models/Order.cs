@@ -2,17 +2,17 @@
 {
     public class Order
     {
-        public long OrderId { get; }
-        private string OrderReference = string.Empty;
-        private DateTime OrderDate = DateTime.Now;
-        public string OrderFirstName { get; set; } = string.Empty;
+        public long OrderId { get; set; }
+        public string OrderReference { get; set; } = string.Empty;
+        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public string OrdererFirstName { get; set; } = string.Empty;
         public string OrdererLastName { get; set; } = string.Empty;
         public string OrdererEmail { get; set; } = string.Empty;
         public string OrdererPhoneNumber { get; set; } = string.Empty;
         public string OrdererCompleteAddress { get; set; } = string.Empty;
         public DateTime? ValidatedAt { get; set; } = null;
         public DateTime? RejectedAt { get; set; } = null;
-        public DateTime? DeliveredAtAt { get; set; } = null;
+        public DateTime? DeliveredAt { get; set; } = null;
 
         public int? ClientId { get; set; } = null;
         public int? AdminWhoValidatedItId { get; set; } = null;
@@ -51,21 +51,23 @@
             {
                 reference += email.Substring(0, 2);
             }
-            return reference;
+
+            reference += DateTime.Now.Year.ToString().Substring(2) + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
+            return reference.Substring(0, 12);
         }
 
-        public Order(long orderId, string orderFirstName, string ordererLastName, string ordererEmail, string ordererPhoneNumber, string ordererCompleteAddress, int neighborhoodId)
+        public Order(long orderId, string ordererFirstName, string ordererLastName, string ordererEmail, string ordererPhoneNumber, string ordererCompleteAddress, int neighborhoodId)
         {
             OrderId = orderId;
-            OrderReference = generateReference(orderFirstName, ordererLastName, ordererEmail);
-            OrderFirstName = orderFirstName;
+            OrderReference = generateReference(ordererFirstName, ordererLastName, ordererEmail);
+            OrdererFirstName = ordererFirstName;
             OrdererLastName = ordererLastName;
             OrdererEmail = ordererEmail;
             OrdererPhoneNumber = ordererPhoneNumber;
             OrdererCompleteAddress = ordererCompleteAddress;
             ValidatedAt = null;
             RejectedAt = null;
-            DeliveredAtAt = null;
+            DeliveredAt = null;
             ClientId = null;
             AdminWhoValidatedItId = null;
             AdminWhoRejectedItId = null;
@@ -77,14 +79,14 @@
         {
             OrderId = orderId;
             OrderReference = generateReference(client.FirstName, client.LastName, client.Email);
-            OrderFirstName = client.FirstName;
+            OrdererFirstName = client.FirstName;
             OrdererLastName = client.LastName;
             OrdererEmail = client.Email;
             OrdererPhoneNumber = client.PhoneNumber;
             OrdererCompleteAddress = client.CompleteAddress;
             ValidatedAt = null;
             RejectedAt = null;
-            DeliveredAtAt = null;
+            DeliveredAt = null;
             ClientId = null;
             AdminWhoValidatedItId = null;
             AdminWhoRejectedItId = null;
