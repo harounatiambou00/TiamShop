@@ -12,6 +12,8 @@ import { useAppDispatch } from "../../hooks/redux-custom-hooks/useAppDispatch";
 import { setShoppingCart } from "../../redux/slices/shoppingCartSlice";
 import { BiCheckbox, BiCheckboxSquare, BiCommentError } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import CreateOrderLineDTO from "../../data/models/CreateOrderLineDTO";
+import { setOrderToBeMade } from "../../redux/slices/orderToBeMadeSlice";
 
 const CartPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -147,10 +149,37 @@ const CartPage: React.FC = () => {
               </div>
               <Button
                 variant="contained"
-                className="bg-amber-400 mt-10 text-primary sm:text-3xl lg:text-lg font-kanit font-normal"
+                className={
+                  selectedCartItems.items.length === 0
+                    ? "bg-gray-200 mt-10 text-gray-400 sm:text-3xl lg:text-lg font-kanit font-normal"
+                    : "bg-amber-400 mt-10 text-primary sm:text-3xl lg:text-lg font-kanit font-normal"
+                }
                 endIcon={
                   <BsCartCheck className="ml-5 sm:text-4xl lg:text-xl" />
                 }
+                disabled={selectedCartItems.items.length === 0}
+                onClick={() => {
+                  dispatch(
+                    setOrderToBeMade({
+                      ordererFirstName: "",
+                      ordererLastName: "",
+                      ordererEmail: "",
+                      ordererPhoneNumber: "",
+                      ordererCompleteAddress: "",
+                      clientId: null,
+                      neighborhoodId: 0,
+                      lines: selectedCartItems.items.map(
+                        (i, index) =>
+                          ({
+                            quantity: i.quantity,
+                            productId: i.productId,
+                            orderId: 0,
+                          } as CreateOrderLineDTO)
+                      ),
+                    })
+                  );
+                  navigate("/finalize-order");
+                }}
               >
                 Finaliser la commande
               </Button>

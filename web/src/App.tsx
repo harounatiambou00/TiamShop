@@ -11,7 +11,6 @@ import {
   ContactUsPage,
   DeliveryInformationPage,
   Error404,
-  GiveOrderInfoPage,
   HomePage,
   OrderPage,
   OrderCongratulationsPage,
@@ -34,6 +33,7 @@ import {
   BestSellersPage,
   OnDiscountProductsPage,
   RecommendationsPage,
+  FinalizeOrderPage,
 } from "./pages";
 
 //layouts
@@ -328,7 +328,7 @@ function App() {
           {/*On this page we will vc an order */}
           <Route path="order-congrats" element={<OrderCongratulationsPage />} />
           {/*On this page a client will can finalize his order process */}
-          <Route path="finalize-order" element={<GiveOrderInfoPage />} />
+          <Route path="finalize-order" element={<FinalizeOrderPage />} />
           <Route path="best-sellers" element={<BestSellersPage />} />
           <Route
             path="on-discount-products"

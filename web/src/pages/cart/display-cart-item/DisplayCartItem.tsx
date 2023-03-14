@@ -236,7 +236,7 @@ const DisplayCartItem = ({
               <div className="w-fit flex items-center">
                 <input
                   type="number"
-                  className="bg-white outline-none border-2 border-primary sm:w-24 sm:h-16 lg:w-14 lg:h-10 pl-1 rounded-l-md sm:text-3xl lg:text-xl font-normal text-center"
+                  className="bg-white outline-none border-2 border-primary sm:w-24 sm:h-16 lg:w-14 lg:h-10 rounded-l-md sm:text-3xl lg:text-xl font-normal text-center"
                   value={cartItem.quantity}
                   onChange={(e) => {}}
                 />

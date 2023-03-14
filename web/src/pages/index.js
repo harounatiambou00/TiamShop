@@ -6,7 +6,7 @@ export { default as CompareProductsPage } from "./compare-products/CompareProduc
 export { default as ContactUsPage } from "./contact-us/ContactUsPage";
 export { default as DeliveryInformationPage } from "./delivery-information/DeliveryInformationPage";
 export { default as Error404 } from "./error-404/Error404";
-export { default as GiveOrderInfoPage } from "./give-order-info/GiveOrderInfoPage";
+export { default as FinalizeOrderPage } from "./finalize-order/FinalizeOrderPage";
 export { default as HomePage } from "./home/HomePage";
 export { default as OrderPage } from "./order/OrderPage";
 export { default as OrderCongratulationsPage } from "./order-congratulations/OrderCongratulationsPage";
