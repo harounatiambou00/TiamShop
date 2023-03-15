@@ -9,7 +9,11 @@ import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch
 import { setOrderToBeMade } from "../../../redux/slices/orderToBeMadeSlice";
 import CreateOrderLineDTO from "../../../data/models/CreateOrderLineDTO";
 
-const OrderSummary = () => {
+type Props = {
+  readOnly: boolean;
+};
+
+const OrderSummary = ({ readOnly }: Props) => {
   const dispatch = useAppDispatch();
   const order = useAppSelector((state: RootState) => state.orderToBeMade);
   const [products, setProducts] = React.useState<ProductAndRelatedInfo[]>([]);
@@ -161,43 +165,11 @@ const OrderSummary = () => {
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col items-end justify-between h-full">
-                      {order.lines.length > 1 && (
-                        <IconButton
-                          className="w-fit h-fit"
-                          color="error"
-                          onClick={() => {
-                            let newOrder = {
-                              ordererFirstName: order.ordererFirstName,
-                              ordererLastName: order.ordererLastName,
-                              ordererEmail: order.ordererEmail,
-                              ordererPhoneNumber: order.ordererPhoneNumber,
-                              ordererCompleteAddress:
-                                order.ordererCompleteAddress,
-                              clientId: order.clientId,
-                              neighborhoodId: order.neighborhoodId,
-                              lines: order.lines.filter(
-                                (l) => l.productId !== line.productId
-                              ),
-                            };
-                            dispatch(setOrderToBeMade(newOrder));
-                          }}
-                        >
-                          <AiOutlineDelete className="sm:text-4xl lg:text-base mb-5" />
-                        </IconButton>
-                      )}
-                      <div className="w-fit flex items-center">
-                        <input
-                          type="number"
-                          className="bg-white outline-none border-2 border-primary sm:w-24 sm:h-16 lg:w-8 lg:h-8 rounded-l-md sm:text-3xl lg:text-sm font-normal text-center"
-                          value={line.quantity}
-                          onChange={(e) => {}}
-                          disabled
-                          readOnly
-                        />
-                        <div className="bg-white lg:h-8 sm:h-16 border-y-2 border-r-2 border-primary rounded-r-md  flex items-center justify-between">
+                    {!readOnly && (
+                      <div className="flex flex-col items-end justify-between h-full">
+                        {order.lines.length > 1 && (
                           <IconButton
-                            size="small"
+                            className="w-fit h-fit"
                             color="error"
                             onClick={() => {
                               let newOrder = {
@@ -209,64 +181,101 @@ const OrderSummary = () => {
                                   order.ordererCompleteAddress,
                                 clientId: order.clientId,
                                 neighborhoodId: order.neighborhoodId,
-                                lines: order.lines.map((l) => {
-                                  if (l.productId === line.productId) {
-                                    if (l.quantity > 1) {
-                                      return {
-                                        orderId: 0,
-                                        quantity: l.quantity - 1,
-                                        productId: l.productId,
-                                      } as CreateOrderLineDTO;
-                                    }
-                                  }
-                                  return l;
-                                }),
+                                lines: order.lines.filter(
+                                  (l) => l.productId !== line.productId
+                                ),
                               };
                               dispatch(setOrderToBeMade(newOrder));
                             }}
-                            disabled={line.quantity <= 1}
                           >
-                            <AiOutlineMinus className="sm:text-3xl lg:text-xs" />
+                            <AiOutlineDelete className="sm:text-4xl lg:text-base mb-5" />
                           </IconButton>
-                          <IconButton
-                            size="small"
-                            color="primary"
-                            className="sm:ml-5 lg:ml-0"
-                            onClick={() => {
-                              let newOrder = {
-                                ordererFirstName: order.ordererFirstName,
-                                ordererLastName: order.ordererLastName,
-                                ordererEmail: order.ordererEmail,
-                                ordererPhoneNumber: order.ordererPhoneNumber,
-                                ordererCompleteAddress:
-                                  order.ordererCompleteAddress,
-                                clientId: order.clientId,
-                                neighborhoodId: order.neighborhoodId,
-                                lines: order.lines.map((l) => {
-                                  if (l.productId === line.productId) {
-                                    if (
-                                      product !== undefined &&
-                                      l.quantity + 1 <= product.productQuantity
-                                    ) {
-                                      return {
-                                        orderId: 0,
-                                        quantity: l.quantity + 1,
-                                        productId: l.productId,
-                                      } as CreateOrderLineDTO;
+                        )}
+                        <div className="w-fit flex items-center">
+                          <input
+                            type="number"
+                            className="bg-white outline-none border-2 border-primary sm:w-24 sm:h-16 lg:w-8 lg:h-8 rounded-l-md sm:text-3xl lg:text-sm font-normal text-center"
+                            value={line.quantity}
+                            onChange={(e) => {}}
+                            disabled
+                            readOnly
+                          />
+                          <div className="bg-white lg:h-8 sm:h-16 border-y-2 border-r-2 border-primary rounded-r-md  flex items-center justify-between">
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => {
+                                let newOrder = {
+                                  ordererFirstName: order.ordererFirstName,
+                                  ordererLastName: order.ordererLastName,
+                                  ordererEmail: order.ordererEmail,
+                                  ordererPhoneNumber: order.ordererPhoneNumber,
+                                  ordererCompleteAddress:
+                                    order.ordererCompleteAddress,
+                                  clientId: order.clientId,
+                                  neighborhoodId: order.neighborhoodId,
+                                  lines: order.lines.map((l) => {
+                                    if (l.productId === line.productId) {
+                                      if (l.quantity > 1) {
+                                        return {
+                                          orderId: 0,
+                                          quantity: l.quantity - 1,
+                                          productId: l.productId,
+                                        } as CreateOrderLineDTO;
+                                      }
                                     }
-                                  }
-                                  return l;
-                                }),
-                              };
-                              dispatch(setOrderToBeMade(newOrder));
-                            }}
-                            disabled={line.quantity >= product.productQuantity}
-                          >
-                            <AiOutlinePlus className="sm:text-3xl lg:text-xs" />
-                          </IconButton>
+                                    return l;
+                                  }),
+                                };
+                                dispatch(setOrderToBeMade(newOrder));
+                              }}
+                              disabled={line.quantity <= 1}
+                            >
+                              <AiOutlineMinus className="sm:text-3xl lg:text-xs" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              className="sm:ml-5 lg:ml-0"
+                              onClick={() => {
+                                let newOrder = {
+                                  ordererFirstName: order.ordererFirstName,
+                                  ordererLastName: order.ordererLastName,
+                                  ordererEmail: order.ordererEmail,
+                                  ordererPhoneNumber: order.ordererPhoneNumber,
+                                  ordererCompleteAddress:
+                                    order.ordererCompleteAddress,
+                                  clientId: order.clientId,
+                                  neighborhoodId: order.neighborhoodId,
+                                  lines: order.lines.map((l) => {
+                                    if (l.productId === line.productId) {
+                                      if (
+                                        product !== undefined &&
+                                        l.quantity + 1 <=
+                                          product.productQuantity
+                                      ) {
+                                        return {
+                                          orderId: 0,
+                                          quantity: l.quantity + 1,
+                                          productId: l.productId,
+                                        } as CreateOrderLineDTO;
+                                      }
+                                    }
+                                    return l;
+                                  }),
+                                };
+                                dispatch(setOrderToBeMade(newOrder));
+                              }}
+                              disabled={
+                                line.quantity >= product.productQuantity
+                              }
+                            >
+                              <AiOutlinePlus className="sm:text-3xl lg:text-xs" />
+                            </IconButton>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               else return null;

@@ -22,6 +22,8 @@ import { FiTrendingUp } from "react-icons/fi";
 import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
 import { addItemToShoppingCart } from "../../../redux/slices/shoppingCartSlice";
 import SuccessSnackbar from "../suucess-snackbar/SuccessSnackbar";
+import { setOrderToBeMade } from "../../../redux/slices/orderToBeMadeSlice";
+import CreateOrderLineDTO from "../../../data/models/CreateOrderLineDTO";
 
 type Props = {
   product: ProductAndRelatedInfo;
@@ -115,9 +117,30 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
       </CardActionArea>
       <CardActions className="w-full flex items-center justify-between sm:px-5 lg:px-2 sm:pb-8 lg:pb-4">
         <Button
-          className="sm:w-10/12 lg:w-10/12 bg-amber-300 font-raleway font-semibold text-primary sm:text-3xl lg:text-base"
+          className="sm:w-10/12 lg:w-10/12 bg-amber-400 font-raleway font-semibold text-primary sm:text-3xl lg:text-base"
           variant="contained"
           color="secondary"
+          onClick={() => {
+            dispatch(
+              setOrderToBeMade({
+                ordererFirstName: "",
+                ordererLastName: "",
+                ordererEmail: "",
+                ordererPhoneNumber: "",
+                ordererCompleteAddress: "",
+                clientId: null,
+                neighborhoodId: 0,
+                lines: [
+                  {
+                    quantity: 1,
+                    productId: product.productId,
+                    orderId: 0,
+                  } as CreateOrderLineDTO,
+                ],
+              })
+            );
+            navigate("/finalize-order");
+          }}
         >
           Acheter
         </Button>

@@ -9,7 +9,9 @@ import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
 import { AnimatedButton } from "../core";
-import { type } from "os";
+import { setOrderToBeMade } from "../../redux/slices/orderToBeMadeSlice";
+import CreateOrderLineDTO from "../../data/models/CreateOrderLineDTO";
+import { useDispatch } from "react-redux";
 
 type Props = {
   productAndRelatedInfos: ProductAndRelatedInfo;
@@ -24,7 +26,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
   ).find((b) => b.SubCategoryId === productAndRelatedInfos.subCategoryId);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
-
+  const dispatch = useDispatch();
   return (
     <div
       className="w-full flex sm:flex-col lg:flex-row justify-between cursor-pointer bg-white border-y-2 sm:py-4 lg:py-0"
@@ -295,6 +297,27 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
               variant="contained"
               startIcon={<GiShoppingCart className="sm:text-6xl lg:text-4xl" />}
               className="sm:h-20 lg:h-12 sm:text-2xl lg:text-base bg-amber-400 text-primary font-raleway w-full"
+              onClick={() => {
+                dispatch(
+                  setOrderToBeMade({
+                    ordererFirstName: "",
+                    ordererLastName: "",
+                    ordererEmail: "",
+                    ordererPhoneNumber: "",
+                    ordererCompleteAddress: "",
+                    clientId: null,
+                    neighborhoodId: 0,
+                    lines: [
+                      {
+                        quantity: 1,
+                        productId: productAndRelatedInfos.productId,
+                        orderId: 0,
+                      } as CreateOrderLineDTO,
+                    ],
+                  })
+                );
+                navigate("/finalize-order");
+              }}
             >
               Ajouter au panier
             </Button>

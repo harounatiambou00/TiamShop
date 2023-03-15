@@ -1,12 +1,4 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Step,
-  StepContent,
-  StepLabel,
-  Stepper,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import React from "react";
 import PersonalInfos from "./personal-infos/PersonalInfos";
 import { OrderToBeMadeType } from "../../../redux/slices/orderToBeMadeSlice";
@@ -14,14 +6,25 @@ import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector
 import { RootState } from "../../../redux/store";
 import DeliveryAddress from "./delivery-address/DeliveryAddress";
 import PayementMethods from "./payement-methods/PayementMethods";
-import { MdKeyboardArrowDown, MdOutlineLocationOn } from "react-icons/md";
-import { BsCheckCircleFill, BsInfoSquare, BsPatchCheck } from "react-icons/bs";
-import { GiCheckMark, GiMoneyStack } from "react-icons/gi";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { BsPatchCheck } from "react-icons/bs";
+import { GiMoneyStack } from "react-icons/gi";
 import { TbInfoSquare } from "react-icons/tb";
-import { AiFillCheckCircle } from "react-icons/ai";
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
+import { setShoppingCart } from "../../../redux/slices/shoppingCartSlice";
 
-const OrderInfos = () => {
+type Props = {
+  setOrderLaunchedSuccessfully: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenErrorSnackbar: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const OrderInfos = ({
+  setOrderLaunchedSuccessfully,
+  setOpenErrorSnackbar,
+}: Props) => {
+  const dispatch = useAppDispatch();
+
   const authenticatedClient = useAppSelector(
     (state: RootState) => state.authenticatedClient.client
   );
@@ -58,6 +61,81 @@ const OrderInfos = () => {
       }));
     }
   }, [order, authenticatedClient]);
+
+  const [isLoading, setIsLoading] = React.useState(false);
+  const shoppingCart = useAppSelector((state: RootState) => state.shoppingCart);
+  const handleConfirmOrder = async () => {
+    setIsLoading(true);
+    if (order.clientId !== null) {
+      let url =
+        process.env.REACT_APP_API_URL + "orders/create-order-for-client";
+      let request = {
+        ordererCompleteAddress: values.ordererCompleteAddress,
+        clientId: values.clientId,
+        neighborhoodId: values.neighborhoodId,
+        lines: order.lines,
+      };
+      let response = await fetch(url, {
+        body: JSON.stringify(request),
+        method: "POST",
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+        },
+      });
+      let content = await response.json();
+      if (content.success) {
+        setOrderLaunchedSuccessfully(true);
+        dispatch(
+          setShoppingCart({
+            items: shoppingCart.items.filter(
+              (s) =>
+                order.lines.find((l) => l.productId === s.productId) ===
+                undefined
+            ),
+          })
+        );
+      } else {
+        setOpenErrorSnackbar(true);
+      }
+    } else {
+      let url =
+        process.env.REACT_APP_API_URL + "orders/create-order-for-visitor";
+      let request = {
+        ordererFirstName: values.ordererFirstName,
+        ordererLastName: values.ordererLastName,
+        ordererEmail: values.ordererEmail,
+        ordererPhoneNumber: values.ordererPhoneNumber,
+        ordererCompleteAddress: values.ordererCompleteAddress,
+        neighborhoodId: values.neighborhoodId,
+        lines: order.lines,
+      };
+      let response = await fetch(url, {
+        body: JSON.stringify(request),
+        method: "POST",
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+        },
+      });
+      let content = await response.json();
+      if (content.success) {
+        setOrderLaunchedSuccessfully(true);
+        dispatch(
+          setShoppingCart({
+            items: shoppingCart.items.filter(
+              (s) =>
+                order.lines.find((l) => l.productId === s.productId) ===
+                undefined
+            ),
+          })
+        );
+      } else {
+        setOpenErrorSnackbar(true);
+      }
+    }
+    setIsLoading(false);
+  };
 
   return (
     <div className="sm:col-span-12 lg:col-span-7 mt-1 sm:mb-0 lg:mb-10">
@@ -152,6 +230,8 @@ const OrderInfos = () => {
           <PayementMethods
             activeStep={activeStep}
             setActiveStep={setActiveStep}
+            handleConfirm={handleConfirmOrder}
+            isLoading={isLoading}
           />
         </AccordionDetails>
       </Accordion>

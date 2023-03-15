@@ -104,6 +104,43 @@ namespace api.Controllers
                 var admin = getAdminResponse.Data;
                 if(order != null && admin != null)
                 {
+                    //If the order was initialy rejected or not answered, we have to reduce the products quantities before validating the order
+                    if(order.ValidatedAt == null)
+                    {
+                        var getOrderLinesResponse = await _orderService.GetOrderLinesOfOrder(order.OrderId);
+                        if (getOrderLinesResponse != null && getOrderLinesResponse.Success && getOrderLinesResponse.Data != null)
+                        {
+                            int i = 0;
+                            while (i < getOrderLinesResponse.Data.Count)
+                            {
+                                var validateLineResponse = await _orderLineService.ValidateOrderLine(getOrderLinesResponse.Data[i].OrderLineId);
+                                if (validateLineResponse == null || !validateLineResponse.Success)
+                                {
+                                    //If one of the lines is not validated successfully, we have to undo the ones that succeded
+                                    int j = 0;
+                                    while (j < i)
+                                    {
+                                        await _orderLineService.RejectOrderLine(getOrderLinesResponse.Data[j].OrderLineId);
+                                        j++;
+                                    }
+                                    return new ServiceResponse<string?>()
+                                    {
+                                        Data = null,
+                                        Success = false,
+                                        Message = getOrderLinesResponse.Data[i].ProductId + "_IS_OUT_OF_STOCK"
+                                    };
+                                }
+                                i++;
+                            }
+                        }
+                        else return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "SOMETHING_WENT_WRONG"
+                        };
+                    }
+
                     order.AdminWhoValidatedItId = admin.UserId;
                     order.AdminWhoRejectedItId = null;
                     order.ValidatedAt = DateTime.Now;
@@ -111,7 +148,7 @@ namespace api.Controllers
                     return await _orderService.UpdateOrder(new UpdateOrderDTO()
                     {
                         OrderId = order.OrderId,
-                        OrdererFirstName =order.OrdererFirstName,
+                        OrdererFirstName = order.OrdererFirstName,
                         OrdererLastName = order.OrdererLastName,
                         OrdererEmail = order.OrdererEmail,
                         OrdererPhoneNumber = order.OrdererPhoneNumber,
@@ -161,6 +198,44 @@ namespace api.Controllers
                 var admin = getAdminResponse.Data;
                 if (order != null && admin != null)
                 {
+
+                    //If the order was initialy validated, we have to reduce the products quantities before validating the order
+                    if (order.ValidatedAt == null)
+                    {
+                        var getOrderLinesResponse = await _orderService.GetOrderLinesOfOrder(order.OrderId);
+                        if (getOrderLinesResponse != null && getOrderLinesResponse.Success && getOrderLinesResponse.Data != null)
+                        {
+                            int i = 0;
+                            while (i < getOrderLinesResponse.Data.Count)
+                            {
+                                var rejectLineResponse = await _orderLineService.RejectOrderLine(getOrderLinesResponse.Data[i].OrderLineId);
+                                if (rejectLineResponse == null || !rejectLineResponse.Success)
+                                {
+                                    //If one of the lines is not rejected successfully, we have to undo the ones that succeded
+                                    int j = 0;
+                                    while (j < i)
+                                    {
+                                        await _orderLineService.ValidateOrderLine(getOrderLinesResponse.Data[j].OrderLineId);
+                                        j++;
+                                    }
+                                    return new ServiceResponse<string?>()
+                                    {
+                                        Data = null,
+                                        Success = false,
+                                        Message = getOrderLinesResponse.Data[i].ProductId + "_IS_OUT_OF_STOCK"
+                                    };
+                                }
+                                i++;
+                            }
+                        }
+                        else return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "SOMETHING_WENT_WRONG"
+                        };
+                    }
+
                     order.AdminWhoValidatedItId = null;
                     order.AdminWhoRejectedItId = admin.UserId;
                     order.ValidatedAt = null;

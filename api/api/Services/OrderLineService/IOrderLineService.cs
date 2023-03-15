@@ -8,5 +8,7 @@ namespace api.Services.OrderLineService
         Task<ServiceResponse<string?>> CreateOrderLine(CreateOrderLineDTO request);
         Task<ServiceResponse<string?>> UpdateOrderLine(UpdateOrderLineDTO request);
         Task<ServiceResponse<string?>> DeleteOrderLine(long id);
+        Task<ServiceResponse<string?>> ValidateOrderLine(long id);
+        Task<ServiceResponse<string?>> RejectOrderLine(long id);
     }
 }

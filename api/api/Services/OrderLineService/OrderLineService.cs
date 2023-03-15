@@ -47,92 +47,57 @@ namespace api.Services.OrderLineService
                     var product = getProductResponse.Data;
                     if(product != null)
                     {
-                        if(request.Quantity > product.ProductQuantity)
+                        float discountPercentage = 0;
+                        if (product.ProductDiscountId != null)
                         {
-                            return new ServiceResponse<string?>()
-                            {
-                                Data = null,
-                                Success = false,
-                                Message = "TOO_MUCH_QUANTITY"
-                            };
-                        }
-                        else
-                        {
-                            float discountPercentage = 0;
-                            if(product.ProductDiscountId != null)
-                            {
-                                var getProductDiscountResponse = await _productDiscountService.GetProductDiscountById((long)product.ProductDiscountId);
-                                if(getProductDiscountResponse.Data != null) discountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage;
+                            var getProductDiscountResponse = await _productDiscountService.GetProductDiscountById((long)product.ProductDiscountId);
+                            if (getProductDiscountResponse.Data != null) discountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage;
 
-                                using (var connection = new SqlConnection(_connectionString))
+                            using (var connection = new SqlConnection(_connectionString))
+                            {
+                                try
                                 {
-                                    try
-                                    {
-                                        connection.Open();
-                                        string query = "EXEC dbo.CreateOrderLine @Quantity, @DiscountPercentage, @OrderId, @ProductId";
-                                        var dictionary = new Dictionary<string, object?>
+                                    connection.Open();
+                                    string query = "EXEC dbo.CreateOrderLine @Quantity, @DiscountPercentage, @OrderId, @ProductId";
+                                    var dictionary = new Dictionary<string, object?>
                                         {
                                             {"@Quantity", request.Quantity},
                                             {"@DiscountPercentage", discountPercentage},
                                             {"@OrderId", request.OrderId},
                                             {"@ProductId", request.ProductId},
                                         };
-                                        var parameters = new DynamicParameters(dictionary);
-                                        var affectedRows = await connection.ExecuteAsync(query, parameters);
+                                    var parameters = new DynamicParameters(dictionary);
+                                    var affectedRows = await connection.ExecuteAsync(query, parameters);
 
-                                        var updateProductResponse = await _productService.UpdateProduct(new DTOs.ProductDTOs.UpdateProductDTO()
-                                        {
-                                            ProductId = product.ProductId,
-                                            ProductName = product.ProductName,
-                                            ProductDescription = product.ProductDescription,
-                                            ProductPrice = product.ProductPrice,
-                                            ProductPrincipalImageId = product.ProductPrincipalImageId,
-                                            ProductQuantity = product.ProductQuantity - request.Quantity,
-                                            Color = product.Color,
-                                            Waranty = product.Waranty,
-                                            BrandId = product.BrandId,
-                                            ProductDiscountStartDate = getProductDiscountResponse.Data.ProductDiscountStartDate,
-                                            ProductDiscountEndDate = getProductDiscountResponse.Data.ProductDiscountEndDate,
-                                            ProductDiscountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage,
-                                            SubCategoryId = product.SubCategoryId
-                                        });
-                                        if (updateProductResponse.Success)
-                                            return new ServiceResponse<string?>()
-                                            {
-                                                Data = null,
-                                                Success = true,
-                                                Message = "ORDERLINE_CREATED_SUCCESSFULLY"
-                                            };
-                                        else
-                                             return new ServiceResponse<string?>()
-                                            {
-                                                Data = null,
-                                                Success = true,
-                                                Message = "ORDERLINE_CREATED_SUCCESSFULLY_BUT_SOMETHING_WENT_WRONG_WHILE_UPDATING_THE_PRODUCT_QUANTITY"
-                                            };
-                                    }
-                                    catch
+                                    return new ServiceResponse<string?>()
                                     {
-                                        return new ServiceResponse<string?>()
-                                        {
-                                            Data = null,
-                                            Success = false,
-                                            Message = "SOMETHING_WENT_WRONG"
-                                        };
-                                    }
+                                        Data = null,
+                                        Success = true,
+                                        Message = "ORDERLINE_CREATED_SUCCESSFULLY"
+                                    };
+                                }
+                                catch
+                                {
+                                    return new ServiceResponse<string?>()
+                                    {
+                                        Data = null,
+                                        Success = false,
+                                        Message = "SOMETHING_WENT_WRONG"
+                                    };
                                 }
                             }
-                            else
-                            {
-                                return new ServiceResponse<string?>()
-                                {
-                                    Data = null,
-                                    Success = false,
-                                    Message = "PRODUCT_DISCOUNT_NOT_FOUND"
-                                };
-                            }
                         }
-                    }else
+                        else
+                        {
+                            return new ServiceResponse<string?>()
+                            {
+                                Data = null,
+                                Success = false,
+                                Message = "PRODUCT_DISCOUNT_NOT_FOUND"
+                            };
+                        }
+                    }
+                    else
                     {
                         return new ServiceResponse<string?>()
                         {
@@ -209,6 +174,71 @@ namespace api.Services.OrderLineService
                     };
                 }
             }
+        }
+
+        public async Task<ServiceResponse<string?>> RejectOrderLine(long id)
+        {
+            var getOrderLineResponse = await GetOrderLineById(id);
+            if (getOrderLineResponse != null && getOrderLineResponse.Success && getOrderLineResponse.Data != null)
+            {
+                var getProductResponse = await _productService.GetProductById(getOrderLineResponse.Data.ProductId);
+                if (getProductResponse != null && getProductResponse.Success && getProductResponse.Data != null)
+                {
+                    var product = getProductResponse.Data;
+                    var getProductDiscountResponse = await _productDiscountService.GetProductDiscountById((long)product.ProductDiscountId);
+                    if (getProductDiscountResponse != null && getProductDiscountResponse.Success && getProductDiscountResponse.Data != null)
+                    {
+                        var updateProductResponse = await _productService.UpdateProduct(new DTOs.ProductDTOs.UpdateProductDTO()
+                        {
+                            ProductId = product.ProductId,
+                            ProductName = product.ProductName,
+                            ProductDescription = product.ProductDescription,
+                            ProductPrice = product.ProductPrice,
+                            ProductPrincipalImageId = product.ProductPrincipalImageId,
+                            ProductQuantity = product.ProductQuantity + getOrderLineResponse.Data.Quantity,
+                            Color = product.Color,
+                            Waranty = product.Waranty,
+                            BrandId = product.BrandId,
+                            ProductDiscountStartDate = getProductDiscountResponse.Data.ProductDiscountStartDate,
+                            ProductDiscountEndDate = getProductDiscountResponse.Data.ProductDiscountEndDate,
+                            ProductDiscountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage,
+                            SubCategoryId = product.SubCategoryId
+                        });
+                        if (updateProductResponse.Success)
+                            return new ServiceResponse<string?>()
+                            {
+                                Data = null,
+                                Success = true,
+                                Message = "ORDERLINE_REJECTED_SUCCESSFULLY"
+                            };
+                        else
+                            return new ServiceResponse<string?>()
+                            {
+                                Data = null,
+                                Success = true,
+                                Message = "SOMETHING_WENT_WRONG_WHILE_UPDATING_THE_PRODUCT"
+                            };
+                    }
+                    else return new ServiceResponse<string?>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "PRODUCT_DISCOUNT_NOT_FOUND"
+                    };
+                }
+                else return new ServiceResponse<string?>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "THE_PRODUCT_HAS_BEEN_DELETED"
+                };
+            }
+            else return new ServiceResponse<string?>()
+            {
+                Data = null,
+                Success = false,
+                Message = "ORDERLINE_NOT_FOUND"
+            };
         }
 
         public async Task<ServiceResponse<string?>> UpdateOrderLine(UpdateOrderLineDTO request)
@@ -349,6 +379,71 @@ namespace api.Services.OrderLineService
                     Message = "ORDERLINE_NOT_FOUND"
                 };
             }
+        }
+
+        public async Task<ServiceResponse<string?>> ValidateOrderLine(long id)
+        {
+            var getOrderLineResponse = await GetOrderLineById(id);
+            if (getOrderLineResponse != null && getOrderLineResponse.Success && getOrderLineResponse.Data != null)
+            {
+                var getProductResponse = await _productService.GetProductById(getOrderLineResponse.Data.ProductId);
+                if(getProductResponse != null && getProductResponse.Success && getProductResponse.Data != null)
+                {
+                    var product = getProductResponse.Data;
+                    var getProductDiscountResponse = await _productDiscountService.GetProductDiscountById((long)product.ProductDiscountId);
+                    if(getProductDiscountResponse != null && getProductDiscountResponse.Success && getProductDiscountResponse.Data != null)
+                    {
+                        var updateProductResponse = await _productService.UpdateProduct(new DTOs.ProductDTOs.UpdateProductDTO()
+                        {
+                            ProductId = product.ProductId,
+                            ProductName = product.ProductName,
+                            ProductDescription = product.ProductDescription,
+                            ProductPrice = product.ProductPrice,
+                            ProductPrincipalImageId = product.ProductPrincipalImageId,
+                            ProductQuantity = product.ProductQuantity - getOrderLineResponse.Data.Quantity,
+                            Color = product.Color,
+                            Waranty = product.Waranty,
+                            BrandId = product.BrandId,
+                            ProductDiscountStartDate = getProductDiscountResponse.Data.ProductDiscountStartDate,
+                            ProductDiscountEndDate = getProductDiscountResponse.Data.ProductDiscountEndDate,
+                            ProductDiscountPercentage = getProductDiscountResponse.Data.ProductDiscountPercentage,
+                            SubCategoryId = product.SubCategoryId
+                        });
+                        if (updateProductResponse.Success)
+                            return new ServiceResponse<string?>()
+                            {
+                                Data = null,
+                                Success = true,
+                                Message = "ORDERLINE_VALIDATED_SUCCESSFULLY"
+                            };
+                        else
+                            return new ServiceResponse<string?>()
+                            {
+                                Data = null,
+                                Success = true,
+                                Message = "SOMETHING_WENT_WRONG_WHILE_UPDATING_THE_PRODUCT"
+                            };
+                    }
+                    else return new ServiceResponse<string?>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "PRODUCT_DISCOUNT_NOT_FOUND"
+                    };
+                }
+                else return new ServiceResponse<string?>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "THE_PRODUCT_HAS_BEEN_DELETED"
+                };
+            }
+            else return new ServiceResponse<string?>()
+            {
+                Data = null,
+                Success = false,
+                Message = "ORDERLINE_NOT_FOUND"
+            };
         }
     }
 }

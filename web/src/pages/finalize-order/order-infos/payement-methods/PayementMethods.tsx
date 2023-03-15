@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import React from "react";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
@@ -5,6 +6,8 @@ import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 type Props = {
   activeStep: number;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  handleConfirm: () => void;
+  isLoading: boolean;
 };
 
 const payementMethods = [
@@ -29,7 +32,11 @@ const payementMethods = [
   },
 ];
 
-const PayementMethods = ({ activeStep, setActiveStep }: Props) => {
+const PayementMethods = ({
+  setActiveStep,
+  handleConfirm,
+  isLoading,
+}: Props) => {
   const [policiesAccepted, setPoliciesAccepted] = React.useState(false);
   return (
     <div className="w-full">
@@ -90,20 +97,23 @@ const PayementMethods = ({ activeStep, setActiveStep }: Props) => {
         <Button
           onClick={() => setActiveStep(1)}
           className="h-fit normal-case sm:text-2xl lg:text-base font-kanit"
+          disabled={isLoading}
         >
           Retour
         </Button>
-        <Button
+        <LoadingButton
           disabled={!policiesAccepted}
+          loading={isLoading}
+          onClick={handleConfirm}
           variant="contained"
           className={
-            policiesAccepted
-              ? "bg-amber-400 sm:text-4xl lg:text-xl text-primary font-kanit font-normal"
-              : "sm:text-3xl lg:text-xl font-kanit font-normal"
+            policiesAccepted && !isLoading
+              ? "bg-amber-400 sm:text-4xl lg:text-lg text-primary font-kanit font-normal"
+              : "sm:text-3xl lg:text-lg font-kanit font-normal"
           }
         >
-          Confirmer la commade
-        </Button>
+          Confirmer la commande
+        </LoadingButton>
       </div>
     </div>
   );
