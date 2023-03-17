@@ -50,7 +50,11 @@ const AdminApp = () => {
     getAuthenticatedAdmin();
   }, []);
 
-  return <Outlet />;
+  return (
+    <div className="w-full">
+      <Outlet />
+    </div>
+  );
 };
 
 export default AdminApp;

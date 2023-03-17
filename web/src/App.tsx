@@ -71,8 +71,9 @@ import ShoppingCart from "./data/models/ShoppingCart";
 import { setShoppingCart } from "./redux/slices/shoppingCartSlice";
 import { DelivererSignInPage } from "./deliverer-pages";
 import DelivererDashboard from "./deliverer-pages/dashboard/DelivererDashboard";
+import { setGlobalLoading } from "./redux/slices/globalLoadingSlice";
 
-function App() {
+const App = () => {
   const dispatch = useAppDispatch();
   /***
    * Creating the cart if it doesn't exist else, we get the items from local storage
@@ -86,193 +87,188 @@ function App() {
   } else {
     dispatch(setShoppingCart(JSON.parse(shoppingCartFromLocalStorage)));
   }
-  //Get The authenticated client
-  React.useEffect(() => {
-    const getAuthenticatedClient = async () => {
-      let url = process.env.REACT_APP_API_URL + "auth/get-logged-client";
-      let response = await fetch(url, {
-        method: "GET",
-        credentials: "include",
-      });
 
-      let content = await response.json();
-      if (content) {
-        if (content.success) {
-          let data = content.data;
+  const getAuthenticatedClient = async () => {
+    let url = process.env.REACT_APP_API_URL + "auth/get-logged-client";
+    let response = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+    });
 
-          let client: Client = {
-            userId: data.userId,
-            FirstName: data.firstName,
-            LastName: data.lastName,
-            Email: data.email,
-            PhoneNumber: data.phoneNumber,
-            CompleteAddress: data.completeAddress,
-            BirthDate:
-              //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match
-              data.birthDate,
-            NeighborhoodId: data.neighborhoodId,
-          };
-
-          dispatch(setAuthenticatedClient({ client: client }));
-        } else {
-          dispatch(setAuthenticatedClient({ client: null }));
-        }
-      }
-    };
-    getAuthenticatedClient();
-  });
-
-  //Get all the products
-  React.useEffect(() => {
-    const getProducts = async () => {
-      let url =
-        process.env.REACT_APP_API_URL +
-        "products/get-all-products-and-their-related-info";
-      let response = await fetch(url);
-      let content = await response.json();
+    let content = await response.json();
+    if (content) {
       if (content.success) {
-        let products = [] as ProductAndRelatedInfo[];
         let data = content.data;
-        for (let i of data) {
-          products = [
-            ...products,
-            {
-              ...{},
-              productId: i.productId,
-              productReference: i.productReference,
-              productName: i.productName,
-              productDescription: i.productDescription,
-              productPrice: i.productPrice,
-              productQuantity: i.productQuantity,
-              createdAt: i.createdAt,
-              waranty: i.waranty,
-              color: i.color,
-              productPrincipalImageId: i.productPrincipalImageId,
-              brandId: i.brandId,
-              subCategoryId: i.subCategoryId,
-              productDiscountId: i.productDiscountId,
-              productDiscountEndDate: i.productDiscountEndDate,
-              productDiscountPercentage: i.productDiscountPercentage,
-              rating: i.rating,
-              numberOfVotes: i.numberOfVotes,
-              images: i.images,
-              caracteristics: i.caracteristics,
-            },
-          ];
-        }
-        dispatch(setAllProducts({ allProducts: products }));
+
+        let client: Client = {
+          userId: data.userId,
+          FirstName: data.firstName,
+          LastName: data.lastName,
+          Email: data.email,
+          PhoneNumber: data.phoneNumber,
+          CompleteAddress: data.completeAddress,
+          BirthDate:
+            //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match
+            data.birthDate,
+          NeighborhoodId: data.neighborhoodId,
+        };
+
+        dispatch(setAuthenticatedClient({ client: client }));
       } else {
-        dispatch(setAllProducts({ allProducts: [] }));
+        dispatch(setAuthenticatedClient({ client: null }));
       }
-    };
-    getProducts();
-  }, []);
-
-  //Get The categories
-  React.useEffect(() => {
-    const getCategories = async () => {
-      const url = process.env.REACT_APP_API_URL + "categories";
-      let response = await fetch(url);
-      let content = await response.json();
-      if (content.success) {
-        let data = content.data;
-        let categories: Category[] = [];
-        for (let i of data) {
-          categories.push({
+    }
+  };
+  const getProducts = async () => {
+    let url =
+      process.env.REACT_APP_API_URL +
+      "products/get-all-products-and-their-related-info";
+    let response = await fetch(url);
+    let content = await response.json();
+    if (content.success) {
+      let products = [] as ProductAndRelatedInfo[];
+      let data = content.data;
+      for (let i of data) {
+        products = [
+          ...products,
+          {
             ...{},
-            CategoryId: i.categoryId,
-            CategoryName: i.categoryName,
-            CategoryTitle: i.categoryTitle,
-            CategoryImageId: i.categoryImageId,
-            CategoryRanking: i.categoryRanking,
-          });
-        }
-        dispatch(setCategories({ categories }));
-      } else {
-        dispatch(setCategories({ categories: [] }));
-      }
-    };
-    getCategories();
-  }, []);
-
-  //Get The sub-categories
-  React.useEffect(() => {
-    const getSubCategories = async () => {
-      const url = process.env.REACT_APP_API_URL + "sub-categories";
-      let response = await fetch(url);
-      let content = await response.json();
-      if (content.success) {
-        let subCategories = [] as SubCategory[];
-        let data = content.data;
-        for (let i of data) {
-          subCategories = [
-            ...subCategories,
-            {
-              ...{},
-              SubCategoryId: i.subCategoryId,
-              SubCategoryName: i.subCategoryName,
-              SubCategoryTitle: i.subCategoryTitle,
-              SubCategoryImageId: i.subCategoryImageId,
-              SubCategoryRanking: i.subCategoryRanking,
-              CategoryId: i.categoryId,
-            },
-          ];
-        }
-        dispatch(setSubCategories({ subCategories }));
-      }
-    };
-    getSubCategories();
-  }, []);
-
-  //Get The brands
-  React.useEffect(() => {
-    const getBrands = async () => {
-      const url = process.env.REACT_APP_API_URL + "brands";
-      let response = await fetch(url);
-      let content = await response.json();
-      if (content.success) {
-        let brands = [] as Brand[];
-        let data = content.data;
-        for (let i of data) {
-          brands.push({
-            ...{},
+            productId: i.productId,
+            productReference: i.productReference,
+            productName: i.productName,
+            productDescription: i.productDescription,
+            productPrice: i.productPrice,
+            productQuantity: i.productQuantity,
+            createdAt: i.createdAt,
+            waranty: i.waranty,
+            color: i.color,
+            productPrincipalImageId: i.productPrincipalImageId,
             brandId: i.brandId,
-            BrandName: i.brandName,
-            PartnershipDate: i.partnershipDate,
-            BrandWebsiteLink: i.brandWebsiteLink,
-            BrandImageId: i.brandImageId,
-          });
-        }
-        dispatch(setAllBrands({ brands }));
+            subCategoryId: i.subCategoryId,
+            productDiscountId: i.productDiscountId,
+            productDiscountEndDate: i.productDiscountEndDate,
+            productDiscountPercentage: i.productDiscountPercentage,
+            rating: i.rating,
+            numberOfVotes: i.numberOfVotes,
+            images: i.images,
+            caracteristics: i.caracteristics,
+          },
+        ];
       }
-    };
-    getBrands();
-  }, []);
-
-  //Get The brands
-  React.useEffect(() => {
-    const getImages = async () => {
-      const url = process.env.REACT_APP_API_URL + "images";
-      let response = await fetch(url);
-      let content = await response.json();
-      if (content.success) {
-        let images = [] as CustomImage[];
-        let data = content.data as CustomImage[];
-        for (let i of data) {
-          images.push({
+      dispatch(setAllProducts({ allProducts: products }));
+    } else {
+      dispatch(setAllProducts({ allProducts: [] }));
+    }
+  };
+  const getCategories = async () => {
+    const url = process.env.REACT_APP_API_URL + "categories";
+    let response = await fetch(url);
+    let content = await response.json();
+    if (content.success) {
+      let data = content.data;
+      let categories: Category[] = [];
+      for (let i of data) {
+        categories.push({
+          ...{},
+          CategoryId: i.categoryId,
+          CategoryName: i.categoryName,
+          CategoryTitle: i.categoryTitle,
+          CategoryImageId: i.categoryImageId,
+          CategoryRanking: i.categoryRanking,
+        });
+      }
+      dispatch(setCategories({ categories }));
+    } else {
+      dispatch(setCategories({ categories: [] }));
+    }
+  };
+  const getSubCategories = async () => {
+    const url = process.env.REACT_APP_API_URL + "sub-categories";
+    let response = await fetch(url);
+    let content = await response.json();
+    if (content.success) {
+      let subCategories = [] as SubCategory[];
+      let data = content.data;
+      for (let i of data) {
+        subCategories = [
+          ...subCategories,
+          {
             ...{},
-            imageId: i.imageId,
-            imageName: i.imageName,
-            imageDescription: i.imageDescription,
-            imageBytes: i.imageBytes,
-            imageExtension: i.imageExtension,
-            imageSize: i.imageSize,
-          });
-        }
-        dispatch(setImages({ images }));
+            SubCategoryId: i.subCategoryId,
+            SubCategoryName: i.subCategoryName,
+            SubCategoryTitle: i.subCategoryTitle,
+            SubCategoryImageId: i.subCategoryImageId,
+            SubCategoryRanking: i.subCategoryRanking,
+            CategoryId: i.categoryId,
+          },
+        ];
       }
-    };
+      dispatch(setSubCategories({ subCategories }));
+    }
+  };
+  const getBrands = async () => {
+    const url = process.env.REACT_APP_API_URL + "brands";
+    let response = await fetch(url);
+    let content = await response.json();
+    if (content.success) {
+      let brands = [] as Brand[];
+      let data = content.data;
+      for (let i of data) {
+        brands.push({
+          ...{},
+          brandId: i.brandId,
+          BrandName: i.brandName,
+          PartnershipDate: i.partnershipDate,
+          BrandWebsiteLink: i.brandWebsiteLink,
+          BrandImageId: i.brandImageId,
+        });
+      }
+      dispatch(setAllBrands({ brands }));
+    }
+  };
+  const getImages = async () => {
+    const url = process.env.REACT_APP_API_URL + "images";
+    let response = await fetch(url);
+    let content = await response.json();
+    if (content.success) {
+      let images = [] as CustomImage[];
+      let data = content.data as CustomImage[];
+      for (let i of data) {
+        images.push({
+          ...{},
+          imageId: i.imageId,
+          imageName: i.imageName,
+          imageDescription: i.imageDescription,
+          imageBytes: i.imageBytes,
+          imageExtension: i.imageExtension,
+          imageSize: i.imageSize,
+        });
+      }
+      dispatch(setImages({ images }));
+    }
+  };
+
+  React.useEffect(() => {
+    dispatch(setGlobalLoading({ isLoading: true }));
+    //Get The authenticated client
+    getAuthenticatedClient();
+
+    //Get all the products
+    getProducts();
+
+    //Get The categories
+    getCategories();
+
+    //Get The sub-categories
+    getSubCategories();
+
+    //Get The brands
+    getBrands();
+
+    //Get The images
     getImages();
+
+    dispatch(setGlobalLoading({ isLoading: false }));
   }, []);
 
   return (
@@ -373,6 +369,6 @@ function App() {
       </Routes>
     </div>
   );
-}
+};
 
 export default App;

@@ -1,4 +1,4 @@
-export default interface Order {
+export default interface OrderLine {
   orderLineId: number;
   quantity: number;
   discountPercentage: number;

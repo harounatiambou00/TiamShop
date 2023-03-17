@@ -10,6 +10,7 @@ import { imagesSlice } from "./slices/imagesSlice";
 import { shoppingCartSlice } from "./slices/shoppingCartSlice";
 import { authenticatedDelivererSlice } from "./slices/authenticatedDelivererSlice";
 import { orderToBeMadeSlice } from "./slices/orderToBeMadeSlice";
+import { globalLoadingSlice } from "./slices/globalLoadingSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     shoppingCart: shoppingCartSlice.reducer,
     authenticatedDeliverer: authenticatedDelivererSlice.reducer,
     orderToBeMade: orderToBeMadeSlice.reducer,
+    globalLoading: globalLoadingSlice.reducer,
   },
 });
 

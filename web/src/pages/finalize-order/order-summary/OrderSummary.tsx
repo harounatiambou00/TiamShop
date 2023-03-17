@@ -169,7 +169,7 @@ const OrderSummary = ({ readOnly }: Props) => {
                       <div className="flex flex-col items-end justify-between h-full">
                         {order.lines.length > 1 && (
                           <IconButton
-                            className="w-fit h-fit"
+                            className="w-fit h-fit mb-5"
                             color="error"
                             onClick={() => {
                               let newOrder = {
@@ -188,7 +188,7 @@ const OrderSummary = ({ readOnly }: Props) => {
                               dispatch(setOrderToBeMade(newOrder));
                             }}
                           >
-                            <AiOutlineDelete className="sm:text-4xl lg:text-base mb-5" />
+                            <AiOutlineDelete className="sm:text-4xl lg:text-base" />
                           </IconButton>
                         )}
                         <div className="w-fit flex items-center">

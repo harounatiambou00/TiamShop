@@ -2,6 +2,7 @@
 using api.Services.DeliveryService;
 using api.Services.OrderLineService;
 using api.Services.OrderService;
+using api.Services.ProductService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,16 +13,20 @@ namespace api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
         private readonly IOrderLineService _orderLineService;
         private readonly IUserService _userService;
         private readonly IDeliveryService _deliveryService;
+        private readonly IEmailService _emailService;
 
-        public OrderController(IOrderService orderService, IOrderLineService orderLineService, IUserService userService, IDeliveryService deliveryService)
+        public OrderController(IOrderService orderService, IProductService productService, IOrderLineService orderLineService, IUserService userService, IDeliveryService deliveryService, IEmailService emailService)
         {
             _orderService = orderService;
+            _productService = productService;
             _orderLineService = orderLineService;
             _userService = userService;
             _deliveryService = deliveryService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -145,7 +150,7 @@ namespace api.Controllers
                     order.AdminWhoRejectedItId = null;
                     order.ValidatedAt = DateTime.Now;
                     order.RejectedAt = null;
-                    return await _orderService.UpdateOrder(new UpdateOrderDTO()
+                    var updateOrderResponse = await _orderService.UpdateOrder(new UpdateOrderDTO()
                     {
                         OrderId = order.OrderId,
                         OrdererFirstName = order.OrdererFirstName,
@@ -162,6 +167,75 @@ namespace api.Controllers
                         DeliveryId = order.DeliveryId,
                         NeighborhoodId = order.NeighborhoodId,
                     });
+
+                    //If the order has been validated successfully we send an email to the orderer
+                    if (updateOrderResponse.Success)
+                    {
+                        var getLinesResponse = await _orderService.GetOrderLinesOfOrder(order.OrderId);
+                        var lines = getLinesResponse.Data;
+                        var emailBody = "";
+                        emailBody += "<div style=\"background-color: #FFFFFF; padding-left: 50px; padding-right: 50px; font-family: Verdana, sans-serif; padding-bottom: 25px\">";
+                        emailBody += "<img src=\"https://radiant-bunny-7569fa.netlify.app/static/media/logo.9d6669f6aa0e3090ebc9.png\" style=\"height: 100px; width: 100px; margin-top: 10px\"/>";
+                        emailBody += "<h3 style=\"opacity: 0.9;\">Bonjour " + order.OrdererFirstName.ToLower() + " " + order.OrdererLastName.ToUpper() + "</h3>";
+                        emailBody += "<p>Nous vous remercions d'avoir fait vos courses sur Tiamshop.</p>";
+                        emailBody += "<div style=\"height: 4px; width: 40px; background-color: black; border-radius: 50px\"></div>";
+                        emailBody += "<h3 style=\"width: fit-content; background-color: #dcfce7; color: #166534; padding-left: 10px; padding-right: 10px; border-radius: 50px\">Votre commande a été validée.</h3>";
+                        emailBody += "<h4 style=\"opacity: 0.9;\">Détails de la commande </h4>";
+                        emailBody += "<div style=\"border: 2px solid #dddddd; padding: 10px\">";
+                        emailBody += "<span> <h4 style=\"display: inline\">Commande: </h4>" + order.OrderReference.ToUpper() + " passée le " + order.OrderDate.Day + "/" + order.OrderDate.Month + "/" + order.OrderDate.Year + " à " + order.OrderDate.Hour + ":" + order.OrderDate.Minute + ":" + order.OrderDate.Second + "</span>";
+                        emailBody += "<div style=\"margin-top: 10px\"> <h4 style=\"display: inline\">Paiement: </h4> Paiement comptant à la livraison (Cash on delivery)</div>";
+                        emailBody += "</div>";
+                        emailBody += "<div style=\"margin-top: 25px\">";
+                        emailBody += "<table style=\"width: 100%\">";
+                        emailBody += "<tr>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">N°</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Produit</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Quantité</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Réduction</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Total</th>";
+                        emailBody += "</tr>";
+                        for(int i = 0; i < lines.Count; i++)
+                        {
+                            var getProductResponse = await _productService.GetProductById(lines[i].ProductId);
+                            var product = getProductResponse.Data;
+                            if(product != null)
+                            {
+                                emailBody += "<tr>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + i + 1 + "</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + product.ProductName + "</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + lines[i].Quantity + "</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + lines[i].DiscountPercentage * product.ProductPrice + " FCFA</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + (product.ProductPrice - (product.ProductPrice * lines[i].DiscountPercentage / 100)) * lines[i].Quantity  + " FCFA</td>";
+                                emailBody += "</tr>";
+                            }
+                        }
+
+                        emailBody += "</table>";
+                        emailBody += "</div>";
+                        emailBody += "<div style=\"margin-top: 25px; text-align: center\">";
+                        emailBody += "<small>";
+                        emailBody += "Pour suivre votre commande et télécharger votre facture sur notre site, rendez-vous dans la rubrique « Mes commandes ou me reçus » de votre compte client.";
+                        emailBody += "</small>";
+                        emailBody += "</div>";
+                        emailBody += "</div>";
+                        var sendValidationEmailResponse = await _emailService.SendEmail(order.OrdererEmail, "[Tiamshop] Votre commande a été validée", emailBody);
+                        if (!sendValidationEmailResponse.Success) return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "ORDER_VALIDATED_SUCCESSFULLY_BUT_SOMETHING_WENT_WRONG_WHILE_SENDING_THE_EMAIL"
+                        };
+
+                        return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "ORDER_VALIDATED_SUCCESSFULLY"
+                        };
+
+                    }
+                    else return updateOrderResponse;
+
                 }
                 else return new ServiceResponse<string?>()
                 {
@@ -240,7 +314,7 @@ namespace api.Controllers
                     order.AdminWhoRejectedItId = admin.UserId;
                     order.ValidatedAt = null;
                     order.RejectedAt = DateTime.Now;
-                    return await _orderService.UpdateOrder(new UpdateOrderDTO()
+                    var updateOrderResponse = await _orderService.UpdateOrder(new UpdateOrderDTO()
                     {
                         OrderId = order.OrderId,
                         OrdererFirstName = order.OrdererFirstName,
@@ -257,6 +331,74 @@ namespace api.Controllers
                         DeliveryId = order.DeliveryId,
                         NeighborhoodId = order.NeighborhoodId,
                     });
+
+                    //If the order has been validated successfully we send an email to the orderer
+                    if (updateOrderResponse.Success)
+                    {
+                        var getLinesResponse = await _orderService.GetOrderLinesOfOrder(order.OrderId);
+                        var lines = getLinesResponse.Data;
+                        var emailBody = "";
+                        emailBody += "<div style=\"background-color: #FFFFFF; padding-left: 50px; padding-right: 50px; font-family: Verdana, sans-serif; padding-bottom: 25px\">";
+                        emailBody += "<img src=\"https://radiant-bunny-7569fa.netlify.app/static/media/logo.9d6669f6aa0e3090ebc9.png\" style=\"height: 100px; width: 100px; margin-top: 10px\"/>";
+                        emailBody += "<h3 style=\"opacity: 0.9;\">Bonjour " + order.OrdererFirstName.ToLower() + " " + order.OrdererLastName.ToUpper() + "</h3>";
+                        emailBody += "<p>Nous vous remercions d'avoir fait vos courses sur Tiamshop.</p>";
+                        emailBody += "<div style=\"height: 4px; width: 40px; background-color: black; border-radius: 50px\"></div>";
+                        emailBody += "<h3 style=\"width: fit-content; background-color: #fee2e2; color: #991b1b; padding-left: 10px; padding-right: 10px; border-radius: 50px\">Votre commande a été annulée.</h3>";
+                        emailBody += "<h4 style=\"opacity: 0.9;\">Détails de la commande </h4>";
+                        emailBody += "<div style=\"border: 2px solid #dddddd; padding: 10px\">";
+                        emailBody += "<span> <h4 style=\"display: inline\">Commande: </h4>" + order.OrderReference.ToUpper() + " passée le " + order.OrderDate.Day + "/" + order.OrderDate.Month + "/" + order.OrderDate.Year + " à " + order.OrderDate.Hour + ":" + order.OrderDate.Minute + ":" + order.OrderDate.Second + "</span>";
+                        emailBody += "<div style=\"margin-top: 10px\"> <h4 style=\"display: inline\">Paiement: </h4> Paiement comptant à la livraison (Cash on delivery)</div>";
+                        emailBody += "</div>";
+                        emailBody += "<div style=\"margin-top: 25px\">";
+                        emailBody += "<table style=\"width: 100%\">";
+                        emailBody += "<tr>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">N°</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Produit</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Quantité</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Réduction</th>";
+                        emailBody += "<th style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">Total</th>";
+                        emailBody += "</tr>";
+                        for (int i = 0; i < lines.Count; i++)
+                        {
+                            var getProductResponse = await _productService.GetProductById(lines[i].ProductId);
+                            var product = getProductResponse.Data;
+                            if (product != null)
+                            {
+                                emailBody += "<tr>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + i + 1 + "</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + product.ProductName + "</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + lines[i].Quantity + "</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + lines[i].DiscountPercentage * product.ProductPrice + " FCFA</td>";
+                                emailBody += "<td style=\"padding: 5px; border: 1px solid #dddddd; text-align: center\">" + (product.ProductPrice - (product.ProductPrice * lines[i].DiscountPercentage / 100)) * lines[i].Quantity + " FCFA</td>";
+                                emailBody += "</tr>";
+                            }
+                        }
+
+                        emailBody += "</table>";
+                        emailBody += "</div>";
+                        emailBody += "<div style=\"margin-top: 25px; text-align: center\">";
+                        emailBody += "<small>";
+                        emailBody += "Pour suivre votre commande et télécharger votre facture sur notre site, rendez-vous dans la rubrique « Mes commandes ou me reçus » de votre compte client.";
+                        emailBody += "</small>";
+                        emailBody += "</div>";
+                        emailBody += "</div>";
+                        var sendValidationEmailResponse = await _emailService.SendEmail(order.OrdererEmail, "[Tiamshop] Votre commande a été validée", emailBody);
+                        if (!sendValidationEmailResponse.Success) return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "ORDER_VALIDATED_SUCCESSFULLY_BUT_SOMETHING_WENT_WRONG_WHILE_SENDING_THE_EMAIL"
+                        };
+
+                        return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = true,
+                            Message = "ORDER_VALIDATED_SUCCESSFULLY"
+                        };
+
+                    }
+                    else return updateOrderResponse;
                 }
                 else return new ServiceResponse<string?>()
                 {
