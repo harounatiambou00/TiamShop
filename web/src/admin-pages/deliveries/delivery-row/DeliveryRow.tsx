@@ -72,7 +72,7 @@ const DeliveryRow = ({ delivery, index, refreshDeliveries }: Props) => {
     };
 
     getDeliverer();
-  }, []);
+  }, [delivery]);
 
   const [neighborhood, setNeighborhood] = React.useState<Neighborhood | null>(
     null

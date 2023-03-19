@@ -410,9 +410,9 @@ namespace api.Controllers
         }
 
         [HttpPut("put-order-in-delivery")]
-        public async Task<ActionResult<ServiceResponse<string?>>> PutOrderInADelivery(string adminGuid, long orderId, long deliveryId)
+        public async Task<ActionResult<ServiceResponse<string?>>> PutOrderInADelivery(PutOrderInDeliveryDTO request)
         {
-            var getAdminResponse = await _userService.GetAdminByGuid(adminGuid);
+            var getAdminResponse = await _userService.GetAdminByGuid(request.AdminGuid);
             if (!getAdminResponse.Success)
                 return new ServiceResponse<string?>()
                 {
@@ -421,7 +421,7 @@ namespace api.Controllers
                     Message = "ADMIN_NOT_FOUND"
                 };
 
-            var getOrderResponse = await _orderService.GetOrderById(orderId);
+            var getOrderResponse = await _orderService.GetOrderById(request.OrderId);
             if (!getOrderResponse.Success)
                 return new ServiceResponse<string?>()
                 {
@@ -430,7 +430,7 @@ namespace api.Controllers
                     Message = "ORDER_NOT_FOUND"
                 };
 
-            var getDeliveryResponse = await _deliveryService.GetDeliveryById(deliveryId);
+            var getDeliveryResponse = await _deliveryService.GetDeliveryById(request.DeliveryId);
             if (!getDeliveryResponse.Success)
                 return new ServiceResponse<string?>()
                 {
