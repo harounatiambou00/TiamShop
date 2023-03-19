@@ -13,11 +13,12 @@ const Clients = () => {
     let url = process.env.REACT_APP_API_URL + "users/get-all-clients";
     let response = await fetch(url);
     let content = await response.json();
-    let data = content.data;
-    for (let i of data) {
-      setClients((currentClients) => [
-        ...currentClients,
-        {
+    if (content.success) {
+      setClients([]);
+      let data = content.data;
+      let tempClients = [] as Client[];
+      for (let i of data) {
+        tempClients.push({
           ...{},
           userId: i.userId,
           FirstName: i.firstName,
@@ -42,11 +43,11 @@ const Clients = () => {
                   parseInt(i.birthDate.slice(8, 10))
                 )
               : null,
-        },
-      ]);
+        });
+      }
+      setClients(tempClients);
     }
   };
-
   React.useEffect(() => {
     getCients();
   }, []);

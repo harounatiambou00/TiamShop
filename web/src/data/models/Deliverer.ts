@@ -6,6 +6,6 @@ export type Deliverer = {
   phoneNumber: string;
   completeAddress: string;
   verifiedAt?: Date | null;
-  birthDate: Date;
+  birthDate: Date | null;
   neighborhoodId: number | string;
 };

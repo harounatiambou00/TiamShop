@@ -46,10 +46,17 @@ namespace api.Controllers
             return await _deliveryService.UpdateDelivery(request);
         }
 
+        [HttpPut("assign-delivery-to-deliverer")]
+        public async Task<ActionResult<ServiceResponse<string?>>> AssignDeliveryToDeliverer(AssignDeliveryToDelivererDTO request)
+        {
+            return await _deliveryService.AssignDeliveryToDeliverer(request);
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<string?>>> DeleteDelivery(long id)
         {
             return await _deliveryService.DeleteDelivery(id);
         }
+
     }
 }

@@ -53,62 +53,61 @@ const AdminOrdersPage = () => {
     let content = await response.json();
     if (!content.success) {
     } else {
+      setOrders([]);
       let data = content.data;
+      let tempOrders = [] as Order[];
       for (let order of data) {
-        setOrders((current) => [
-          ...current,
-          {
-            orderId: order.orderId,
-            orderReference: order.orderReference,
-            ordererFirstName: order.ordererFirstName,
-            ordererLastName: order.ordererLastName,
-            ordererEmail: order.ordererEmail,
-            ordererCompleteAddress: order.ordererCompleteAddress,
-            ordererPhoneNumber: order.ordererPhoneNumber,
-            orderDate:
-              order.orderDate !== null
-                ? new Date(
-                    parseInt(order.orderDate.slice(0, 4)),
-                    parseInt(order.orderDate.slice(5, 7)) - 1,
-                    parseInt(order.orderDate.slice(8, 10))
-                  )
-                : new Date(),
-            neighborhoodId: order.neighborhoodId,
-            clientId: order.neighborhoodId,
-            validatedAt:
-              order.validatedAt !== null
-                ? new Date(
-                    parseInt(order.validatedAt.slice(0, 4)),
-                    parseInt(order.validatedAt.slice(5, 7)) - 1,
-                    parseInt(order.validatedAt.slice(8, 10))
-                  )
-                : null,
-            rejectedAt:
-              order.rejectedAt !== null
-                ? new Date(
-                    parseInt(order.rejectedAt.slice(0, 4)),
-                    parseInt(order.rejectedAt.slice(5, 7)) - 1,
-                    parseInt(order.rejectedAt.slice(8, 10))
-                  )
-                : null,
-            deliveredAt:
-              order.deliveredAt !== null
-                ? new Date(
-                    parseInt(order.deliveredAt.slice(0, 4)),
-                    parseInt(order.deliveredAt.slice(5, 7)) - 1,
-                    parseInt(order.deliveredAt.slice(8, 10))
-                  )
-                : null,
-            deliveryId: order.deliveryId,
-            adminWhoValidatedItId: order.adminWhoValidatedItId,
-            adminWhoRejectedItId: order.adminWhoRejectedItId,
-          },
-        ]);
+        tempOrders.push({
+          orderId: order.orderId,
+          orderReference: order.orderReference,
+          ordererFirstName: order.ordererFirstName,
+          ordererLastName: order.ordererLastName,
+          ordererEmail: order.ordererEmail,
+          ordererCompleteAddress: order.ordererCompleteAddress,
+          ordererPhoneNumber: order.ordererPhoneNumber,
+          orderDate:
+            order.orderDate !== null
+              ? new Date(
+                  parseInt(order.orderDate.slice(0, 4)),
+                  parseInt(order.orderDate.slice(5, 7)) - 1,
+                  parseInt(order.orderDate.slice(8, 10))
+                )
+              : new Date(),
+          neighborhoodId: order.neighborhoodId,
+          clientId: order.neighborhoodId,
+          validatedAt:
+            order.validatedAt !== null
+              ? new Date(
+                  parseInt(order.validatedAt.slice(0, 4)),
+                  parseInt(order.validatedAt.slice(5, 7)) - 1,
+                  parseInt(order.validatedAt.slice(8, 10))
+                )
+              : null,
+          rejectedAt:
+            order.rejectedAt !== null
+              ? new Date(
+                  parseInt(order.rejectedAt.slice(0, 4)),
+                  parseInt(order.rejectedAt.slice(5, 7)) - 1,
+                  parseInt(order.rejectedAt.slice(8, 10))
+                )
+              : null,
+          deliveredAt:
+            order.deliveredAt !== null
+              ? new Date(
+                  parseInt(order.deliveredAt.slice(0, 4)),
+                  parseInt(order.deliveredAt.slice(5, 7)) - 1,
+                  parseInt(order.deliveredAt.slice(8, 10))
+                )
+              : null,
+          deliveryId: order.deliveryId,
+          adminWhoValidatedItId: order.adminWhoValidatedItId,
+          adminWhoRejectedItId: order.adminWhoRejectedItId,
+        });
       }
+      setOrders(tempOrders);
     }
   };
   React.useEffect(() => {
-    setOrders([]);
     getOrders();
   }, []);
 

@@ -19,6 +19,55 @@ namespace api.Services.DeliveryService
             _userService = userService;
             _userTypeService = userTypeService;
         }
+
+        public async Task<ServiceResponse<string?>> AssignDeliveryToDeliverer(AssignDeliveryToDelivererDTO request)
+        {
+            var getAdminResponse = await _userService.GetAdminByGuid(request.AdminGuid);
+            var admin = getAdminResponse.Data;
+            if (getAdminResponse == null || !getAdminResponse.Success || admin == null)
+                return new ServiceResponse<string?>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "ADMIN_NOT_FOUND"
+                };
+            else
+            {
+                var getDelivererResponse = await _userService.GetUserById(request.DelivererId);
+                var deliverer = getDelivererResponse.Data;
+                if(getDelivererResponse == null || !getDelivererResponse.Success || deliverer == null)
+                    return new ServiceResponse<string?>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "DELIVERER_NOT_FOUND"
+                    };
+                else
+                {
+                    var getDeliveryResponse = await GetDeliveryById(request.DeliveryId);
+                    var delivery = getDeliveryResponse.Data;
+                    if(delivery == null || !getDeliveryResponse.Success)
+                        return new ServiceResponse<string?>()
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "DELIVERY_NOT_FOUND"
+                        };
+                    else
+                    {
+                        var updateDeliveryResponse = await UpdateDelivery(new UpdateDeliveryDTO()
+                        {
+                            DeliveryId = delivery.DeliveryId,
+                            DeliveryStatus = delivery.DeliveryStatus,
+                            AssignedTo = deliverer.UserId,
+                            DeliveredAt = delivery.DeliveredAt
+                        });
+                        return updateDeliveryResponse;
+                    }
+                }
+            }
+        }
+
         public async Task<ServiceResponse<string?>> CreateDelivery(CreateDeliveryDTO request)
         {
             using (var connection = new SqlConnection(_connectionString))

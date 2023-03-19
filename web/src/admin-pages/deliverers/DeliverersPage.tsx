@@ -47,6 +47,7 @@ const DeliverersPage = () => {
   };
 
   React.useEffect(() => {
+    setDeliverers([]);
     getDeliverers();
   }, []);
 
@@ -105,24 +106,25 @@ const DeliverersPage = () => {
         <TableContainer className="mt-5 font-kanit">
           <Table className="w-full font-kanit" size="small">
             <TableHead>
-              <TableRow>
+              <TableRow className="bg-white">
                 <TableCell className="font-kanit"></TableCell>
                 <TableCell className=" font-kanit">NOM</TableCell>
                 <TableCell className=" font-kanit">PRENOM</TableCell>
                 <TableCell className=" font-kanit">EMAIL</TableCell>
                 <TableCell className=" font-kanit">TELEPHONE</TableCell>
                 <TableCell className=" font-kanit">AGE</TableCell>
-                <TableCell className=" font-kanit">Secteur</TableCell>
+                <TableCell className=" font-kanit">SECTEUR</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {deliverers
                 .slice(currentPage * 10 - 10, currentPage * 10)
-                .map((deliverer) => {
+                .map((deliverer, index) => {
                   return (
                     <DelivbrerTableRow
-                      key={deliverer.useId}
+                      key={index}
+                      index={index}
                       deliverer={deliverer as Deliverer}
                       refreshDeliverers={refreshDeliverers}
                     />

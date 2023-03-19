@@ -9,9 +9,10 @@ import ErrorSnackbar from "../../components/core/error-snackbar/ErrorSnackbar";
 type Props = {
   deliverer: Deliverer;
   refreshDeliverers: () => {};
+  index: number;
 };
 
-const DelivbrerTableRow = ({ deliverer, refreshDeliverers }: Props) => {
+const DelivbrerTableRow = ({ deliverer, refreshDeliverers, index }: Props) => {
   const [neighborhood, setNeighborhood] = React.useState<Neighborhood | null>(
     null
   );
@@ -56,7 +57,10 @@ const DelivbrerTableRow = ({ deliverer, refreshDeliverers }: Props) => {
   }, []);
 
   return (
-    <TableRow className="font-kanit" key={deliverer.userId}>
+    <TableRow
+      className={index % 2 !== 0 ? "font-kanit bg-white" : "font-kanit"}
+      key={deliverer.userId}
+    >
       <TableCell className="font-kanit font-light">
         <Avatar className="bg-gray-300 text-primary font-kanit">
           {deliverer.lastName[0]}

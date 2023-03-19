@@ -10,5 +10,6 @@ namespace api.Services.DeliveryService
         Task<ServiceResponse<string?>> CreateDelivery(CreateDeliveryDTO request);
         Task<ServiceResponse<string?>> DeleteDelivery(long id);
         Task<ServiceResponse<string?>> UpdateDelivery(UpdateDeliveryDTO request);
+        Task<ServiceResponse<string?>> AssignDeliveryToDeliverer(AssignDeliveryToDelivererDTO request);
     }
 }
