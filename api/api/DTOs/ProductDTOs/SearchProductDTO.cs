@@ -4,7 +4,6 @@ namespace api.DTOs.ProductDTOs
 {
     public class SearchProductDTO
     {
-        [Required]
         public string Criteria { get; set; } = String.Empty;
         public bool? OnlyAvailableProducts { get; set; } = false;
         public string? SortBy { get; set; } = "correspondance";

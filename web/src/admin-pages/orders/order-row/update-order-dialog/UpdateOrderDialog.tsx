@@ -2,7 +2,6 @@ import {
   AppBar,
   Dialog,
   IconButton,
-  Menu,
   MenuItem,
   OutlinedInput,
   Select,
@@ -53,7 +52,7 @@ type ValuesStateType = {
 };
 
 const UpdateOrderDialog = ({ open, setOpen, order, readOnly }: Props) => {
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading] = React.useState(false);
   const [neighborhoods, setNeighborhoods] = React.useState<Neighborhood[]>([]);
   const [orderLines, setOrderLines] = React.useState<OrderLine[]>([]);
 
@@ -87,7 +86,6 @@ const UpdateOrderDialog = ({ open, setOpen, order, readOnly }: Props) => {
         },
       });
       let content = await response.json();
-      console.log(content);
       if (content.success) {
         let data = content.data;
         for (let i of data)
@@ -618,6 +616,7 @@ const UpdateOrderDialog = ({ open, setOpen, order, readOnly }: Props) => {
                     variant="rectangular"
                     className="w-full h-28"
                     animation="wave"
+                    key={index}
                   />
                 );
               })}

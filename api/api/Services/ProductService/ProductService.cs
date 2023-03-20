@@ -547,9 +547,18 @@ namespace api.Services.ProductService
         {
             List<GetProductAndOtherRelatedInformationDTO> response = new List<GetProductAndOtherRelatedInformationDTO>();
             //  Checking criteria
-            foreach(GetProductAndOtherRelatedInformationDTO p in allProducts.ToArray())
+            if(filters.Criteria != null && filters.Criteria != "" && filters.Criteria != String.Empty)
             {
-                if(p.ProductName.ToLower().Contains(filters.Criteria.Trim().ToLower())) response.Add(p);
+                foreach (GetProductAndOtherRelatedInformationDTO p in allProducts.ToArray())
+                {
+                    if (p.ProductName.ToLower().Contains(filters.Criteria.Trim().ToLower())) response.Add(p);
+                }
+            }else
+            {
+                foreach (GetProductAndOtherRelatedInformationDTO p in allProducts.ToArray())
+                {
+                    response.Add(p);
+                }
             }
 
             //Checking availablility
@@ -674,26 +683,26 @@ namespace api.Services.ProductService
             }
             else if (filters.SortBy == "asc_prices") response.Sort((p1, p2) =>
             {
-                if (p1.ProductPrice < p2.ProductPrice) return -1;
-                else if (p1.ProductPrice > p2.ProductPrice) return 1;
+                if (p1.ProductPrice < p2.ProductPrice) return 1;
+                else if (p1.ProductPrice > p2.ProductPrice) return -1;
                 else return 0;
             });
             else if (filters.SortBy == "desc_prices") response.Sort((p1, p2) =>
             {
-                if (p1.ProductPrice > p2.ProductPrice) return -1;
-                else if (p1.ProductPrice < p2.ProductPrice) return 1;
+                if (p1.ProductPrice > p2.ProductPrice) return 1;
+                else if (p1.ProductPrice < p2.ProductPrice) return -1;
                 else return 0;
             });
             else if (filters.SortBy == "asc_ratings") response.Sort((p1, p2) =>
             {
-                if (p1.Rating < p2.Rating) return -1;
-                else if (p1.Rating > p2.Rating) return 1;
+                if (p1.Rating < p2.Rating) return 1;
+                else if (p1.Rating > p2.Rating) return -1;
                 else return 0;
             });
             else if (filters.SortBy == "desc_ratings") response.Sort((p1, p2) =>
             {
-                if (p1.Rating > p2.Rating) return -1;
-                else if (p1.Rating < p2.Rating) return 1;
+                if (p1.Rating > p2.Rating) return 1;
+                else if (p1.Rating < p2.Rating) return -1;
                 else return 0;
             });
             else if (filters.SortBy == "asc_sales")
