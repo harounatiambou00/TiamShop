@@ -8,45 +8,6 @@ import { RootState } from "../../redux/store";
 import { CircularProgress } from "@mui/material";
 
 const DelivererDashboard = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  //Get The authenticated client
-  React.useEffect(() => {
-    const getAuthenticatedDeliverer = async () => {
-      let url = process.env.REACT_APP_API_URL + "auth/get-logged-deliverer";
-      let response = await fetch(url, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      let content = await response.json();
-      if (content) {
-        if (content.success) {
-          let data = content.data;
-
-          let deliverer: Deliverer = {
-            userId: data.userId,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            completeAddress: data.completeAddress,
-            birthDate:
-              //if the birthday is not null we create a date object by slicing the string because .net datetime and typescript date don't match
-              data.birthDate,
-            neighborhoodId: data.neighborhoodId,
-          };
-
-          dispatch(setAuthenticatedDeliverer({ deliverer: deliverer }));
-        } else {
-          dispatch(setAuthenticatedDeliverer({ deliverer: null }));
-          navigate("/");
-        }
-      }
-    };
-    getAuthenticatedDeliverer();
-  });
-
   const deliverer = useAppSelector(
     (state: RootState) => state.authenticatedDeliverer.deliverer
   );

@@ -271,7 +271,7 @@ const FormGroup = ({ readOnly, client, setReadOnly }: Props) => {
 
   return (
     <form className="w-full mt-10 sm:pt-10 lg:p-0">
-      <div className="grid sm:grid-cols-1 lg:grid-cols-2 sm:gap-16 lg:gap-7">
+      <div className="grid sm:grid-cols-1 lg:grid-cols-2 sm:gap-10 lg:gap-7">
         <TextField
           className="border-2"
           autoFocus
@@ -533,15 +533,20 @@ const FormGroup = ({ readOnly, client, setReadOnly }: Props) => {
             fontWeight: { md: "400", lg: "300" },
           },
         }}
-        className="sm:mt-16 lg:mt-7"
-        helperText="Cette addresse nous aide à vous situer au sein de votre quartier, merci de bien la choisir."
+        className="sm:mt-16 lg:mt-7 "
+        helperText={
+          <span className="sm:text-xl lg:text-xs">
+            Cette addresse nous aide à vous situer au sein de votre quartier,
+            merci de bien la choisir.
+          </span>
+        }
         FormHelperTextProps={{
           sx: {
             fontFamily: "Kanit, 'sans-serif'",
           },
         }}
       />
-      <div className="mt-5">
+      <div className="sm:mt-8 lg:mt-5">
         <LoadingButton
           loading={isLoading && !readOnly}
           loadingPosition="start"
@@ -551,12 +556,12 @@ const FormGroup = ({ readOnly, client, setReadOnly }: Props) => {
             errors.emailError ||
             errors.phoneNumberError ||
             errors.neighborhoodError
-              ? "font-kanit normal-case font-normal"
+              ? "font-kanit normal-case font-normal sm:text-4xl lg:text-base"
               : isLoading
-              ? "bg-primary text-white font-kanit normal-case font-normal"
-              : "bg-primary font-kanit normal-case font-normal"
+              ? "bg-primary text-white font-kanit normal-case font-normal sm:text-4xl lg:text-base"
+              : "bg-primary font-kanit normal-case font-normal sm:text-4xl lg:text-base"
           }
-          startIcon={<BiSave />}
+          startIcon={<BiSave className="sm:text-4xl lg:text-base" />}
           size="large"
           disabled={
             readOnly ||

@@ -78,7 +78,7 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
       productGradeId: 0,
       grade: 0,
       productId: product.productId,
-      userId: authenticatedClient.userId,
+      userId: 0,
     });
   const handleChangeRate = (grade: 0 | 1 | 2 | 3 | 4 | 5) => {
     if (clientCurrentRate !== undefined) {
@@ -90,79 +90,83 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
   };
 
   const handleSave = async () => {
-    if (clientCurrentRate?.productGradeId === 0) {
-      //We will add
-      let url = process.env.REACT_APP_API_URL + "product-grades";
-      let response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          grade: clientCurrentRate.grade,
-          productId: product.productId,
-          userId: authenticatedClient.userId,
-        }),
-        headers: {
-          accept: "text/plain",
-          "Content-Type": "application/json",
-        },
-      });
-      let content = await response.json();
-      if (content.success) setOpen(false);
-    } else {
-      //We will update
-      let url = process.env.REACT_APP_API_URL + "product-grades";
-      let response = await fetch(url, {
-        method: "PUT",
-        body: JSON.stringify(clientCurrentRate),
-        headers: {
-          accept: "text/plain",
-          "Content-Type": "application/json",
-        },
-      });
-      let content = await response.json();
-      if (content.success) setOpen(false);
+    if (authenticatedClient !== null) {
+      if (clientCurrentRate?.productGradeId === 0) {
+        //We will add
+        let url = process.env.REACT_APP_API_URL + "product-grades";
+        let response = await fetch(url, {
+          method: "POST",
+          body: JSON.stringify({
+            grade: clientCurrentRate.grade,
+            productId: product.productId,
+            userId: authenticatedClient.userId,
+          }),
+          headers: {
+            accept: "text/plain",
+            "Content-Type": "application/json",
+          },
+        });
+        let content = await response.json();
+        if (content.success) setOpen(false);
+      } else {
+        //We will update
+        let url = process.env.REACT_APP_API_URL + "product-grades";
+        let response = await fetch(url, {
+          method: "PUT",
+          body: JSON.stringify(clientCurrentRate),
+          headers: {
+            accept: "text/plain",
+            "Content-Type": "application/json",
+          },
+        });
+        let content = await response.json();
+        if (content.success) setOpen(false);
+      }
     }
   };
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   React.useEffect(() => {
     const getUserCurrentRate = async () => {
-      let url =
-        process.env.REACT_APP_API_URL +
-        "product-grades/get-product-grades-by-product-id-and-user-id";
-      let request = {
-        productId: product.productId,
-        userId: authenticatedClient?.userId,
-      };
-
-      let response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(request),
-        headers: {
-          Accept: "text/plain",
-          "Content-Type": "application/json",
-        },
-      });
-
-      let content = await response.json();
-      if (!content.success) {
-        setClientCurrentRate({
-          productGradeId: 0,
-          grade: 0,
+      if (authenticatedClient !== null) {
+        let url =
+          process.env.REACT_APP_API_URL +
+          "product-grades/get-product-grades-by-product-id-and-user-id";
+        let request = {
           productId: product.productId,
-          userId: authenticatedClient.userId,
-        } as ProductGrade);
-      } else {
-        const data = content.data as ProductGrade;
-        setClientCurrentRate({
-          productGradeId: data.productGradeId,
-          grade: data.grade,
-          productId: data.productId,
-          userId: data.userId,
-        } as ProductGrade);
+          userId: authenticatedClient?.userId,
+        };
+
+        let response = await fetch(url, {
+          method: "POST",
+          body: JSON.stringify(request),
+          headers: {
+            Accept: "text/plain",
+            "Content-Type": "application/json",
+          },
+        });
+
+        let content = await response.json();
+        if (!content.success) {
+          setClientCurrentRate({
+            productGradeId: 0,
+            grade: 0,
+            productId: product.productId,
+            userId: authenticatedClient.userId,
+          } as ProductGrade);
+        } else {
+          const data = content.data as ProductGrade;
+          setClientCurrentRate({
+            productGradeId: data.productGradeId,
+            grade: data.grade,
+            productId: data.productId,
+            userId: data.userId,
+          } as ProductGrade);
+        }
       }
+      setIsLoading(true);
+      getUserCurrentRate();
+      setIsLoading(false);
     };
-    setIsLoading(true);
-    getUserCurrentRate();
-    setIsLoading(false);
   }, [open]);
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>

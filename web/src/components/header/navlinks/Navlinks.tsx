@@ -2,10 +2,10 @@ import React from "react";
 
 import { GiShoppingCart } from "react-icons/gi";
 import { MdOutlineFavoriteBorder } from "react-icons/md";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { HiOutlineUserCircle } from "react-icons/hi";
-import { Badge, IconButton } from "@mui/material";
+import { Avatar, Badge, IconButton } from "@mui/material";
 import AccountButtonPopover from "./account-button-popover/AccountButtonPopover";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
@@ -53,7 +53,11 @@ const Navlinks = () => {
             else navigate("sign-in");
           }}
         >
-          <AiOutlineUserAdd className="text-6xl text-primary  hover:text-secondary" />
+          {authenticatedClient ? (
+            <AiOutlineUser className="text-6xl text-primary  hover:text-secondary" />
+          ) : (
+            <AiOutlineUserAdd className="text-6xl text-primary  hover:text-secondary" />
+          )}
         </IconButton>
       </div>
       <div className="sm:hidden lg:flex h-full items-center">

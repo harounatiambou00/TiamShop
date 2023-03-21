@@ -51,8 +51,8 @@ const DesktopSearchbar = () => {
           <Select
             className={
               openDesktopSearchbarPopover
-                ? "h-full w-full rounded-tl-md font-normal font-kanit bg-amber-200"
-                : "h-full w-full rounded-l-md font-normal font-kanit bg-amber-200"
+                ? "h-full w-full rounded-tl-md font-normal font-kanit bg-amber-300"
+                : "h-full w-full rounded-l-md font-normal font-kanit bg-amber-300"
             }
             sx={{
               "& 	.MuiOutlinedInput-notchedOutline": {

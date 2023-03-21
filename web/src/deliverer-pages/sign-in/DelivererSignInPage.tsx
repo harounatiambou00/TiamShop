@@ -203,7 +203,7 @@ const DelivererSignInPage = () => {
 
         let content = await response.json();
         if (content.success) {
-          navigate("/");
+          navigate("/deliverer-dashboard");
           setErrors((currentState) => ({
             ...currentState,
             passwordError: false,

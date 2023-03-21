@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import SidebarLink from "../../../components/client-account-page-components/sidebar-link/SidebarLink";
@@ -6,17 +5,12 @@ import SidebarLink from "../../../components/client-account-page-components/side
 import { linkType, links } from "./types";
 
 import { TbLogout } from "react-icons/tb";
-import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
 import { setAuthenticatedClient } from "../../../redux/slices/authenticatedClientSlice";
-import { RootState } from "../../../redux/store";
+import { LoadingButton } from "@mui/lab";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
-  let authenticatedClient = useAppSelector(
-    (state: RootState) => state.authenticatedClient.client
-  );
-
   const dispatch = useAppDispatch();
 
   const [activeLink, setActiveLink] = React.useState<linkType>("details");
@@ -66,15 +60,21 @@ const Sidebar: React.FC = () => {
           />
         );
       })}
-      <Button
+      <LoadingButton
+        loading={logoutIsLoading}
+        loadingPosition="start"
         variant="contained"
         color="error"
         startIcon={<TbLogout />}
         onClick={logout}
-        className="bg-red-600 normal-case font-kanit justify-start font-light mt-16"
+        className={
+          logoutIsLoading
+            ? "normal-case font-kanit justify-start font-light mt-10"
+            : "bg-red-600 normal-case font-kanit justify-start font-light mt-10"
+        }
       >
         Se déconnecter
-      </Button>
+      </LoadingButton>
     </div>
   );
 };

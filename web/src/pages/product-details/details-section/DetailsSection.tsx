@@ -5,8 +5,7 @@ import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector
 import { RootState } from "../../../redux/store";
 import { GiShoppingCart } from "react-icons/gi";
 import { AnimatedButton } from "../../../components/core";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
+import { BsStar, BsStarFill } from "react-icons/bs";
 import RateProductDialog from "./rate-product-dialog/RateProductDialog";
 
 type Props = {
@@ -58,6 +57,7 @@ const DetailsSection = ({ product }: Props) => {
   if (brandImage === undefined) {
     return <Skeleton />;
   }
+  console.log("re-rendered");
   return (
     <div className="w-full h-full px-6 py-2">
       <div className="flex justify-between items-center">
@@ -93,11 +93,13 @@ const DetailsSection = ({ product }: Props) => {
       <div className="flex justify-between items-center">
         <div
           className={
-            authenticatedClient
+            authenticatedClient !== null
               ? "bg-amber-50 px-4 py-1 rounded-sm drop-shadow-sm cursor-pointer "
               : "bg-amber-50 px-4 py-1 rounded-sm drop-shadow-sm"
           }
-          onClick={() => authenticatedClient && setOpenRateProductDialog(true)}
+          onClick={() =>
+            authenticatedClient !== null && setOpenRateProductDialog(true)
+          }
         >
           <Stars grade={product.rating} />
           <div className="w-full flex items-center justify-between mt-2">

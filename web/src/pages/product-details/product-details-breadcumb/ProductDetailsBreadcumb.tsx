@@ -28,7 +28,7 @@ const ProductDetailsBreadcumb = ({ product }: Props) => {
   );
 
   return (
-    <div className="h-10 w-full border-2 sm:rounded-lg lg:rounded-md px-5 sm:hidden lg:flex items-center">
+    <div className="h-10 w-full border-2 sm:rounded-lg lg:rounded-md px-5 sm:hidden lg:flex items-center bg-white">
       <span
         className="flex items-center text-gray-600 hover:underline underline-offset-4 cursor-pointer"
         onClick={() => navigate("/")}

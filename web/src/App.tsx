@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, ScrollRestoration } from "react-router-dom";
 
 //Visitor&Client Pages
 import {
@@ -72,6 +72,7 @@ import { setShoppingCart } from "./redux/slices/shoppingCartSlice";
 import { DelivererSignInPage } from "./deliverer-pages";
 import DelivererDashboard from "./deliverer-pages/dashboard/DelivererDashboard";
 import { setGlobalLoading } from "./redux/slices/globalLoadingSlice";
+import DelivererPagesMainLayout from "./_layouts/deliverer-pages-main-layout/DelivererPagesMainLayout";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -364,7 +365,10 @@ const App = () => {
         <Route path="admin-sign-in" element={<AdminSignInPage />} />
 
         <Route path="deliverer-sign-in" element={<DelivererSignInPage />} />
-        <Route path="deliverer-dashboard" element={<DelivererDashboard />} />
+        <Route path="deliverer" element={<DelivererPagesMainLayout />}>
+          <Route path="" element={<DelivererDashboard />} />
+          <Route path="deliverer-dashboard" element={<DelivererDashboard />} />
+        </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>
     </div>

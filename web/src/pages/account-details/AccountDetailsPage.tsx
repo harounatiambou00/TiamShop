@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import React from "react";
 
 import { FiEdit } from "react-icons/fi";
@@ -64,15 +64,22 @@ const AccountDetailsPage = () => {
   React.useEffect(() => {
     getClient();
   }, []);
-  console.log(client);
-  return (
+   return (
     <div className="p-5">
       <div className="flex items-center justify-between">
         <h1 className="sm:text-4xl lg:text-2xl font-medium text-gray-600">
           Mes informations personnelles
         </h1>
         <div className="sm:block lg:hidden">
-          {readOnly ? <FiEdit className="text-4xl" /> : <MdOutlineCancel />}
+          {readOnly ? (
+            <IconButton onClick={() => setReadOnly(!readOnly)} color="primary">
+              <FiEdit className="text-4xl" />
+            </IconButton>
+          ) : (
+            <IconButton onClick={() => setReadOnly(!readOnly)} color="error">
+              <MdOutlineCancel className="text-4xl" />
+            </IconButton>
+          )}
         </div>
         <div className="sm:hidden lg:block">
           <Button
