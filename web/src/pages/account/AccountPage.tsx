@@ -179,7 +179,7 @@ const AccountPage: React.FC = () => {
         <div className="lg:w-2/12 sm:w-0 sm:hidden lg:block rounded-md drop-shadow-md">
           <Sidebar />
         </div>
-        <div className="lg:w-10/12 sm:w-full bg-white rounded-md border-2 sm:ml-0 lg:ml-10">
+        <div className="lg:w-10/12 sm:w-full bg-white rounded-md border-2 sm:ml-0 lg:ml-10 p-5">
           <Outlet context={[clientId]} />
         </div>
       </div>

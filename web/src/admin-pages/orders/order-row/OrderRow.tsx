@@ -175,7 +175,7 @@ const OrderRow = ({ order, index, refreshOrders }: Props) => {
       <TableCell className="font-raleway font-semibold">
         {order.orderDate.getDate().toString() +
           "/" +
-          order.orderDate.getMonth() +
+          (order.orderDate.getMonth() + 1) +
           "/" +
           order.orderDate.getFullYear()}
       </TableCell>
@@ -226,7 +226,7 @@ const OrderRow = ({ order, index, refreshOrders }: Props) => {
           )}
           {order.rejectedAt === null && order.validatedAt === null && (
             <span className="font-kanit bg-gray-200 text-black rounded-full drop-shadow-sm align-middle first-letter:uppercase">
-              à voir
+              à veififier
             </span>
           )}
         </Button>

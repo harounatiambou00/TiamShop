@@ -104,7 +104,7 @@ const AdminOrdersPage = () => {
           adminWhoRejectedItId: order.adminWhoRejectedItId,
         });
       }
-      setOrders(tempOrders);
+      setOrders(tempOrders.reverse());
     }
   };
   React.useEffect(() => {

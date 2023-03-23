@@ -64,8 +64,8 @@ const AccountDetailsPage = () => {
   React.useEffect(() => {
     getClient();
   }, []);
-   return (
-    <div className="p-5">
+  return (
+    <div className="">
       <div className="flex items-center justify-between">
         <h1 className="sm:text-4xl lg:text-2xl font-medium text-gray-600">
           Mes informations personnelles
