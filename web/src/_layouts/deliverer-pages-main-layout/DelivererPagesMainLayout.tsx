@@ -50,7 +50,7 @@ const DelivererPagesMainLayout = () => {
   return (
     <div>
       <Header />
-      <div className="pt-20">
+      <div className="pt-28 p-5">
         <Outlet />
       </div>
     </div>

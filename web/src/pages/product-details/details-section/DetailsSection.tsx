@@ -7,6 +7,11 @@ import { GiShoppingCart } from "react-icons/gi";
 import { AnimatedButton } from "../../../components/core";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import RateProductDialog from "./rate-product-dialog/RateProductDialog";
+import CreateOrderLineDTO from "../../../data/models/CreateOrderLineDTO";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
+import { setOrderToBeMade } from "../../../redux/slices/orderToBeMadeSlice";
+import { addItemToShoppingCart } from "../../../redux/slices/shoppingCartSlice";
 
 type Props = {
   product: ProductAndRelatedInfo;
@@ -43,6 +48,8 @@ const Stars = ({ grade }: { grade: number }) => {
 };
 
 const DetailsSection = ({ product }: Props) => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const brand = useAppSelector(
     (state: RootState) => state.allBrands.brands
   ).find((i) => i.brandId === product.brandId);
@@ -57,7 +64,7 @@ const DetailsSection = ({ product }: Props) => {
   if (brandImage === undefined) {
     return <Skeleton />;
   }
-  console.log("re-rendered");
+
   return (
     <div className="w-full h-full px-6 py-2">
       <div className="flex justify-between items-center">
@@ -128,12 +135,43 @@ const DetailsSection = ({ product }: Props) => {
             variant="contained"
             startIcon={<GiShoppingCart className="sm:text-6xl lg:text-4xl" />}
             className="sm:h-20 lg:h-12 sm:text-2xl lg:text-base bg-amber-300 text-primary font-raleway w-full"
+            onClick={() => {
+              dispatch(
+                addItemToShoppingCart({
+                  productId: product.productId,
+                })
+              );
+            }}
           >
             Ajouter au panier
           </Button>
         </div>
         <div className="w-1/2 pl-2">
-          <AnimatedButton text="Acheter" isLoading={false} />
+          <AnimatedButton
+            text="Acheter"
+            isLoading={false}
+            handleClick={() => {
+              dispatch(
+                setOrderToBeMade({
+                  ordererFirstName: "",
+                  ordererLastName: "",
+                  ordererEmail: "",
+                  ordererPhoneNumber: "",
+                  ordererCompleteAddress: "",
+                  clientId: null,
+                  neighborhoodId: 0,
+                  lines: [
+                    {
+                      quantity: 1,
+                      productId: product.productId,
+                      orderId: 0,
+                    } as CreateOrderLineDTO,
+                  ],
+                })
+              );
+              navigate("/finalize-order");
+            }}
+          />
         </div>
       </div>
       <div className="mt-5 min-h-96 w-full bg-gray-100 p-5">

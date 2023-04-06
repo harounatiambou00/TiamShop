@@ -81,12 +81,7 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
       userId: 0,
     });
   const handleChangeRate = (grade: 0 | 1 | 2 | 3 | 4 | 5) => {
-    if (clientCurrentRate !== undefined) {
-      setClientCurrentRate({
-        ...clientCurrentRate,
-        grade: grade,
-      });
-    }
+    setGrade(grade);
   };
 
   const handleSave = async () => {
@@ -97,7 +92,7 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
         let response = await fetch(url, {
           method: "POST",
           body: JSON.stringify({
-            grade: clientCurrentRate.grade,
+            grade: grade,
             productId: product.productId,
             userId: authenticatedClient.userId,
           }),
@@ -113,7 +108,7 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
         let url = process.env.REACT_APP_API_URL + "product-grades";
         let response = await fetch(url, {
           method: "PUT",
-          body: JSON.stringify(clientCurrentRate),
+          body: JSON.stringify({ ...clientCurrentRate, grade: grade }),
           headers: {
             accept: "text/plain",
             "Content-Type": "application/json",
@@ -124,9 +119,10 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
       }
     }
   };
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   React.useEffect(() => {
     const getUserCurrentRate = async () => {
+      setIsLoading(true);
       if (authenticatedClient !== null) {
         let url =
           process.env.REACT_APP_API_URL +
@@ -167,7 +163,15 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
       getUserCurrentRate();
       setIsLoading(false);
     };
-  }, [open]);
+    getUserCurrentRate();
+  }, [open, authenticatedClient, product]);
+
+  const [grade, setGrade] = React.useState(0);
+  React.useEffect(() => {
+    if (clientCurrentRate) setGrade(clientCurrentRate.grade);
+    else setGrade(0);
+  }, [clientCurrentRate]);
+
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>
       {isLoading ? (
@@ -181,10 +185,7 @@ const RateProductDialog = ({ product, open, setOpen }: Props) => {
           </h1>
           <div className="flex items-center justify-between font-light bg-stone-100 px-5 py-2 mt-2 rounded-full ">
             {clientCurrentRate !== undefined && (
-              <Stars
-                grade={clientCurrentRate.grade}
-                handleChangeRate={handleChangeRate}
-              />
+              <Stars grade={grade} handleChangeRate={handleChangeRate} />
             )}
             <span>{clientCurrentRate?.grade} sur 5</span>
           </div>

@@ -45,7 +45,7 @@ const PayementMethods = ({
           <div key={index} className="px-4 py-2 border-y relative">
             <h1 className="sm:text-4xl lg:text-xl font-normal">
               {p.title}{" "}
-              {index !== 0 && (
+              {index !== 0 && index !== 3 && (
                 <small className="bg-red-100 text-red-600 px-2 rounded-full ml-1 sm:text-md lg:text-xs sm:font-light lg:font-normal">
                   Indisponible pour le moment.
                 </small>
@@ -53,9 +53,8 @@ const PayementMethods = ({
             </h1>
             <p className="sm:text-3xl lg:text-base">{p.description}</p>
             <Checkbox
-              value={index === 0}
-              checked={index === 0}
-              disabled={index !== 0}
+              checked={false}
+              disabled={index !== 0 && index !== 3}
               icon={
                 <MdCheckBoxOutlineBlank className="sm:text-4xl lg:text-xl" />
               }

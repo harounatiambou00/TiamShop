@@ -384,22 +384,13 @@ const UpdateProductDialog = ({ open, setOpen, product }: Props) => {
       setErrorMessage("Un produit ne peut pas avoir plus de 10 images.");
       setIsSaving(false);
       return;
-    } else if (values.productDiscountPercentage !== undefined) {
-      if (isNaN(Number(values.productDiscountPercentage))) {
-        setFormError("INVALID_DISCOUNT_PERCENTAGE");
-        setIsSaving(false);
-        return;
-      } else if (
-        moment().toDate().getTime() >=
-        new Date(values.productDiscountEndDate).getTime()
-      ) {
-        setFormError("INVALID_DISCOUNT_END_DATE");
-        setIsSaving(false);
-        return;
-      } else {
-        setFormError("NONE");
-        setIsSaving(false);
-      }
+    } else if (
+      values.productDiscountPercentage !== undefined &&
+      isNaN(Number(values.productDiscountPercentage))
+    ) {
+      setFormError("INVALID_DISCOUNT_PERCENTAGE");
+      setIsSaving(false);
+      return;
     } else {
       setFormError("NONE");
       setOpenErrorSnackbar(false);

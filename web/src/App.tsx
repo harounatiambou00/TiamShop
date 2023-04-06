@@ -285,7 +285,7 @@ const App = () => {
           <Route index element={<HomePage />} />
           {/*On this page a visitor will know about the company */}
           <Route path="about-us" element={<AboutUsPage />} />
-          {/*On this page a visitor will be able to get in touch with us */}
+          {/*On  this page a visitor will be able to get in touch with us */}
           <Route path="contact-us" element={<ContactUsPage />} />
           {/*On this page a visitor can have more information about the product with the specified id */}
           <Route
@@ -367,7 +367,7 @@ const App = () => {
         <Route path="deliverer-sign-in" element={<DelivererSignInPage />} />
         <Route path="deliverer" element={<DelivererPagesMainLayout />}>
           <Route path="" element={<DelivererDashboard />} />
-          <Route path="deliverer-dashboard" element={<DelivererDashboard />} />
+          <Route path="account" element={<DelivererDashboard />} />
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>
