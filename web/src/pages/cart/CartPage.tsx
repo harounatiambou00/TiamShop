@@ -21,9 +21,7 @@ const CartPage: React.FC = () => {
   let shoppingCart = useAppSelector(
     (state: RootState) => state.shoppingCart
   ) as ShoppingCart;
-  let allProducts = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  ) as ProductAndRelatedInfo[];
+  let allProducts = [] as ProductAndRelatedInfo[];
   const [selectedCartItems, setSelectedCartItems] =
     React.useState<ShoppingCart>(shoppingCart);
 

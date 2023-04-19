@@ -10,9 +10,7 @@ import HomepageProductsSwiper from "../../../components/homepage-components/home
 
 const RecommendationSection = () => {
   const navigate = useNavigate();
-  let allProducts = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  ) as ProductAndRelatedInfo[];
+  let allProducts = [] as ProductAndRelatedInfo[];
   const [productsToBeDisplayed, setProductsToBeDisplayed] =
     React.useState<ProductAndRelatedInfo[]>(allProducts);
 

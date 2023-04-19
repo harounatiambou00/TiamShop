@@ -1,14 +1,13 @@
 import HomePageSection from "../../../components/homepage-components/homepage-section/HomePageSection";
 import HomepageProductsSwiper from "../../../components/homepage-components/homepage-sections-products-swiper/HomepageProductsSwiper";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
 
 import { useNavigate } from "react-router-dom";
 
 const BestSellersSection = () => {
-  let products = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  );
+  let products = [] as ProductAndRelatedInfo[];
   const navigate = useNavigate();
   return (
     <HomePageSection

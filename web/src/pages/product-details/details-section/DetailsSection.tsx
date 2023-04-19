@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/redux-custom-hooks/useAppDispatch";
 import { setOrderToBeMade } from "../../../redux/slices/orderToBeMadeSlice";
 import { addItemToShoppingCart } from "../../../redux/slices/shoppingCartSlice";
+import { CustomImage } from "../../../data/models/Image";
 
 type Props = {
   product: ProductAndRelatedInfo;
@@ -53,9 +54,10 @@ const DetailsSection = ({ product }: Props) => {
   const brand = useAppSelector(
     (state: RootState) => state.allBrands.brands
   ).find((i) => i.brandId === product.brandId);
-  const brandImage = useAppSelector(
-    (state: RootState) => state.images.images
-  ).find((i) => i.imageId === brand?.BrandImageId);
+
+  const [brandImage, setBrandImage] = React.useState<CustomImage | undefined>(
+    undefined
+  );
   const [openRateProductDialog, setOpenRateProductDialog] =
     React.useState<boolean>(false);
   const authenticatedClient = useAppSelector(

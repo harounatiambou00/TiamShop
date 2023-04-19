@@ -5,12 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../redux/store";
 import Item from "./item/Item";
+import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 
 const BestSellers = () => {
   const navigate = useNavigate();
-  const products = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  );
+  const products = [] as ProductAndRelatedInfo[];
   return (
     <div className="mt-5 w-full rounded-sm drop-shadow-sm bg-white p-5">
       <div className="flex items-center justify-between">

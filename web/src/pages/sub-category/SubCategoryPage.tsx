@@ -17,6 +17,7 @@ import SubCategoryPageBreadcumb from "./sub-category-page-breadcumb/SubCategoryP
 import { Product } from "../../data/models/Product";
 import { Brand } from "../../data/models/Brand";
 import DisplayProduct from "./display-product/DisplayProduct";
+import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 
 const SubCategoryPage = () => {
   const navigate = useNavigate();
@@ -29,9 +30,7 @@ const SubCategoryPage = () => {
     (state: RootState) => state.allBrands.brands
   ) as Brand[];
 
-  const allProducts = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  ) as Product[];
+  let allProducts = [] as Product[];
 
   const [subCategory, setSubCategory] = React.useState<SubCategory | undefined>(
     undefined

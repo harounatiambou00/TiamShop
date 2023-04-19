@@ -3,10 +3,8 @@ import { authenticatedAdminSlice } from "./slices/authenticatedAdminSlice";
 import { authenticatedClientSlice } from "./slices/authenticatedClientSlice";
 import { categoriesSlice } from "./slices/categoriesSlice";
 import { subCategoriesSlice } from "./slices/subCategoriesSlice";
-import { allProductSlice } from "./slices/allProductsSlice";
 import { currentProductSlice } from "./slices/currentProductSlice";
 import { allBrandsSlice } from "./slices/allBrandsSlice";
-import { imagesSlice } from "./slices/imagesSlice";
 import { shoppingCartSlice } from "./slices/shoppingCartSlice";
 import { authenticatedDelivererSlice } from "./slices/authenticatedDelivererSlice";
 import { orderToBeMadeSlice } from "./slices/orderToBeMadeSlice";
@@ -18,10 +16,8 @@ export const store = configureStore({
     authenticatedAdmin: authenticatedAdminSlice.reducer,
     categories: categoriesSlice.reducer,
     subCategories: subCategoriesSlice.reducer,
-    allProducts: allProductSlice.reducer,
     currentProduct: currentProductSlice.reducer,
     allBrands: allBrandsSlice.reducer,
-    images: imagesSlice.reducer,
     shoppingCart: shoppingCartSlice.reducer,
     authenticatedDeliverer: authenticatedDelivererSlice.reducer,
     orderToBeMade: orderToBeMadeSlice.reducer,

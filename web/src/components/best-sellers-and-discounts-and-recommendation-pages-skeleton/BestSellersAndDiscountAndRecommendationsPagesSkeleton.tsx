@@ -25,9 +25,7 @@ const BestSellersAndDiscountAndRecommendationsPagesSkeleton = ({
   subTitle,
   type,
 }: Props) => {
-  let allProducts = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  ) as ProductAndRelatedInfo[];
+  let allProducts = [] as ProductAndRelatedInfo[];
   const allBrands = useAppSelector(
     (state: RootState) => state.allBrands.brands
   ) as Brand[];

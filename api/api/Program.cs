@@ -94,7 +94,9 @@ builder.Services.AddCors(options =>
                           policy.WithOrigins(new string[] {
                                     "http://localhost:3000",
                                     "http://localhost:3000/product-details/",
-                                    "http://localhost:3000/product-details/40789A01-75EC-47C7-A5E4-DC6631167D14"
+                                    "http://localhost:3000/product-details/40789A01-75EC-47C7-A5E4-DC6631167D14",
+                                    "https://tiamshop.netlify.app",
+                                    "https://tiamshopniger.com"
                                 })
                                 .AllowAnyMethod()
                                 .AllowAnyHeader()

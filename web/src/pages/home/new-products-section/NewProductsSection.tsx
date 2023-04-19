@@ -6,9 +6,7 @@ import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import HomepageProductsSwiper from "../../../components/homepage-components/homepage-sections-products-swiper/HomepageProductsSwiper";
 
 const NewProductsSection = () => {
-  let allProducts = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  );
+  let allProducts = [] as ProductAndRelatedInfo[];
   const [productsToBeDisplayed, setProductsToBeDisplayed] = React.useState<
     ProductAndRelatedInfo[]
   >([]);

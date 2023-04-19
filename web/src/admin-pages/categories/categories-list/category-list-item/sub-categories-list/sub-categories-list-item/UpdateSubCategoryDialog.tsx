@@ -27,6 +27,7 @@ import SuccessSnackbar from "../../../../../../components/core/suucess-snackbar/
 import ErrorSnackbar from "../../../../../../components/core/error-snackbar/ErrorSnackbar";
 import { useAppSelector } from "../../../../../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../../../../../redux/store";
+import ProductAndRelatedInfo from "../../../../../../data/models/ProductAndRelatedInfo";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -188,9 +189,7 @@ const UpdateSubCategoryDialog = ({
     setSavingIsLoading(false);
   };
 
-  const products = useAppSelector(
-    (state: RootState) => state.allProducts.allProducts
-  ).filter((p) => p.subCategoryId === subCategory.SubCategoryId);
+  const products = [] as ProductAndRelatedInfo[];
 
   return !isLoading && subCategoryImage ? (
     <Dialog

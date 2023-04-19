@@ -59,14 +59,10 @@ import { useAppDispatch } from "./hooks/redux-custom-hooks/useAppDispatch";
 import { setAuthenticatedClient } from "./redux/slices/authenticatedClientSlice";
 import { setCategories } from "./redux/slices/categoriesSlice";
 import { Category } from "./data/models/Category";
-import { setAllProducts } from "./redux/slices/allProductsSlice";
 import { Brand } from "./data/models/Brand";
 import { SubCategory } from "./data/models/SubCategory";
 import { setSubCategories } from "./redux/slices/subCategoriesSlice";
 import { setAllBrands } from "./redux/slices/allBrandsSlice";
-import { CustomImage } from "./data/models/Image";
-import { setImages } from "./redux/slices/imagesSlice";
-import ProductAndRelatedInfo from "./data/models/ProductAndRelatedInfo";
 import ShoppingCart from "./data/models/ShoppingCart";
 import { setShoppingCart } from "./redux/slices/shoppingCartSlice";
 import { DelivererSignInPage } from "./deliverer-pages";
@@ -120,47 +116,7 @@ const App = () => {
       }
     }
   };
-  const getProducts = async () => {
-    let url =
-      process.env.REACT_APP_API_URL +
-      "products/get-all-products-and-their-related-info";
-    let response = await fetch(url);
-    let content = await response.json();
-    if (content.success) {
-      let products = [] as ProductAndRelatedInfo[];
-      let data = content.data;
-      for (let i of data) {
-        products = [
-          ...products,
-          {
-            ...{},
-            productId: i.productId,
-            productReference: i.productReference,
-            productName: i.productName,
-            productDescription: i.productDescription,
-            productPrice: i.productPrice,
-            productQuantity: i.productQuantity,
-            createdAt: i.createdAt,
-            waranty: i.waranty,
-            color: i.color,
-            productPrincipalImageId: i.productPrincipalImageId,
-            brandId: i.brandId,
-            subCategoryId: i.subCategoryId,
-            productDiscountId: i.productDiscountId,
-            productDiscountEndDate: i.productDiscountEndDate,
-            productDiscountPercentage: i.productDiscountPercentage,
-            rating: i.rating,
-            numberOfVotes: i.numberOfVotes,
-            images: i.images,
-            caracteristics: i.caracteristics,
-          },
-        ];
-      }
-      dispatch(setAllProducts({ allProducts: products }));
-    } else {
-      dispatch(setAllProducts({ allProducts: [] }));
-    }
-  };
+
   const getCategories = async () => {
     const url = process.env.REACT_APP_API_URL + "categories";
     let response = await fetch(url);
@@ -227,35 +183,11 @@ const App = () => {
       dispatch(setAllBrands({ brands }));
     }
   };
-  const getImages = async () => {
-    const url = process.env.REACT_APP_API_URL + "images";
-    let response = await fetch(url);
-    let content = await response.json();
-    if (content.success) {
-      let images = [] as CustomImage[];
-      let data = content.data as CustomImage[];
-      for (let i of data) {
-        images.push({
-          ...{},
-          imageId: i.imageId,
-          imageName: i.imageName,
-          imageDescription: i.imageDescription,
-          imageBytes: i.imageBytes,
-          imageExtension: i.imageExtension,
-          imageSize: i.imageSize,
-        });
-      }
-      dispatch(setImages({ images }));
-    }
-  };
 
   React.useEffect(() => {
     dispatch(setGlobalLoading({ isLoading: true }));
     //Get The authenticated client
     getAuthenticatedClient();
-
-    //Get all the products
-    getProducts();
 
     //Get The categories
     getCategories();
@@ -265,9 +197,6 @@ const App = () => {
 
     //Get The brands
     getBrands();
-
-    //Get The images
-    getImages();
 
     dispatch(setGlobalLoading({ isLoading: false }));
   }, []);
