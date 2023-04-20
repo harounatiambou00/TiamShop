@@ -5,3 +5,23 @@
   --swiper-navigation-color: #d67d3e;
   --swiper-pagination-color: #d67d3e;
 }
+
+.first_panel button {
+  display: block;
+  height: 40px;
+  width: 150px;
+  line-height: 40px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-align: center;
+  position: relative;
+  transition: all 0.35s;
+  border: 2px solid white;
+  color: white;
+}
+
+.first_panel:hover button {
+  border: 2px solid #003049;
+  color: #003049;
+  background-color: #fcd34d;
+}

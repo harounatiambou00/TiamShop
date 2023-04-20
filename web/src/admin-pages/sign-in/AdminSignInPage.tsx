@@ -14,6 +14,7 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { AnimatedButton } from "../../components/core";
 
 import { useNavigate } from "react-router-dom";
+import SignInPagePanel from "./SignInPagePanel";
 
 const AdminSignInPage = () => {
   const navigate = useNavigate();
@@ -107,8 +108,9 @@ const AdminSignInPage = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-background">
       <div className="h-full w-full flex">
-        <div className="h-full w-4/6 bg-secondary"></div>
+        <SignInPagePanel />
         <div className="w-2/6 h-full flex flex-col p-5 overflow-y-scroll">
+          <div className="h-full sm:w-0 lg:w-2 bg-secondary fixed left-0"></div>
           <img
             src={process.env.PUBLIC_URL + "/assets/images/logo.png"}
             alt="logo"

@@ -1,30 +1,17 @@
-import { Skeleton } from "@mui/material";
+import "./styles.css";
 
 const BillboardSection = () => {
   return (
-    <div className="w-full h-96 pt-5 px-10 grid grid-cols-12 gap-7">
-      <div className="h-full col-span-8 drop-shadow-sm">
-        <Skeleton
-          variant="rectangular"
-          animation="pulse"
-          className="w-full h-full rounded-md"
+    <div className="w-full pt-5 px-10 ">
+      <div className="drop-shadow-md rounded-md cursor-pointer first_panel">
+        <img
+          src="https://www.tunisianet.com.tn/modules/wbimageslider/views/img/a800d8f4234a4a4d21e8cca9827edaed8d0c6dc9_MEA_1580x460.jpg"
+          alt=""
+          className="w-full rounded-md"
         />
-      </div>
-      <div className="h-full col-span-4 flex flex-col">
-        <div className="w-full h-1/2 pb-2">
-          <Skeleton
-            variant="rectangular"
-            animation="wave"
-            className="w-full h-full rounded-md"
-          />
-        </div>
-        <div className="w-full h-1/2 pt-2">
-          <Skeleton
-            variant="rectangular"
-            animation="wave"
-            className="w-full h-full rounded-md"
-          />
-        </div>
+        <button className="fixed bottom-2 left-5 rounded-md text-sm font-normal">
+          <span>Savoir plus</span>
+        </button>
       </div>
     </div>
   );
