@@ -5,49 +5,110 @@ import { TbArrowsLeftRight, TbHeartPlus } from "react-icons/tb";
 
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { GiShoppingCart } from "react-icons/gi";
-import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
 import { AnimatedButton } from "../core";
 import { setOrderToBeMade } from "../../redux/slices/orderToBeMadeSlice";
 import CreateOrderLineDTO from "../../data/models/CreateOrderLineDTO";
 import { useDispatch } from "react-redux";
+import { Product } from "../../data/models/Product";
+import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 
 type Props = {
-  productAndRelatedInfos: ProductAndRelatedInfo;
+  product: Product;
 };
 
-const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
+const DisplayProduct = ({ product }: Props) => {
+  const dispatch = useDispatch();
+
   const brand = useAppSelector(
     (state: RootState) => state.allBrands.brands
-  ).find((b) => b.brandId === productAndRelatedInfos.brandId);
+  ).find((b) => b.brandId === product.brandId);
   const subCategory = useAppSelector(
     (state: RootState) => state.subCategories.subCategories
-  ).find((b) => b.SubCategoryId === productAndRelatedInfos.subCategoryId);
+  ).find((b) => b.SubCategoryId === product.subCategoryId);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
-  const dispatch = useDispatch();
+  const [productAndRelatedInfos, setProductAndRelatedInfos] = React.useState<
+    ProductAndRelatedInfo | undefined
+  >(undefined);
+  const getProductAdRelatedInfos = async () => {
+    setIsLoading(true);
+    let url =
+      process.env.REACT_APP_API_URL +
+      "products/get-product-and-all-related-info/" +
+      product.productId;
+    const response = await fetch(url);
+    const content = await response.json();
+    if (content.success) {
+      let data = content.data as ProductAndRelatedInfo;
+      if (data !== null) {
+        setProductAndRelatedInfos((currentState) => ({
+          ...currentState,
+          productId: data.productId,
+          productReference: data.productReference,
+          productName: data.productName,
+          productDescription: data.productDescription,
+          productPrice: data.productPrice,
+          productQuantity: data.productQuantity,
+          createdAt:
+            data.createdAt !== null && typeof data.createdAt === "string"
+              ? new Date(
+                  parseInt(data.createdAt.slice(0, 4)),
+                  parseInt(data.createdAt.slice(5, 7)) - 1,
+                  parseInt(data.createdAt.slice(8, 10))
+                )
+              : null,
+          waranty: data.waranty,
+          color: data.color,
+          productPrincipalImageId: data.productPrincipalImageId,
+          brandId: data.brandId,
+          subCategoryId: data.subCategoryId,
+          productDiscountId: data.productDiscountId,
+
+          images: data.images,
+          caracteristics: data.caracteristics,
+          productDiscountPercentage: data.productDiscountPercentage,
+          productDiscountEndDate: data.productDiscountEndDate,
+          rating: data.rating,
+          numberOfVotes: data.numberOfVotes,
+        }));
+      }
+    }
+    setIsLoading(false);
+  };
+
+  React.useEffect(() => {
+    getProductAdRelatedInfos();
+  }, []);
+
   return (
     <div
       className="w-full flex sm:flex-col lg:flex-row justify-between cursor-pointer bg-white border-y-2 sm:py-4 lg:py-0"
-      onClick={() =>
-        navigate("/product-details/" + productAndRelatedInfos.productId)
-      }
+      onClick={() => navigate("/product-details/" + product.productId)}
     >
       <div className="sm:w-full lg:w-1/4">
         {!isLoading ? (
           <div className="p-16 flex items-center justify-center bg-white relative">
-            <img
-              src={
-                "data:" +
-                productAndRelatedInfos?.images[0].imageExtension +
-                ";base64," +
-                productAndRelatedInfos?.images[0].imageBytes
-              }
-              alt={productAndRelatedInfos?.images[0].imageName}
-              className="sm:max-h-96 lg:max-h-80"
-            />
-            {productAndRelatedInfos !== null &&
+            {productAndRelatedInfos !== undefined ? (
+              <img
+                src={
+                  "data:" +
+                  productAndRelatedInfos.images[0].imageExtension +
+                  ";base64," +
+                  productAndRelatedInfos.images[0].imageBytes
+                }
+                alt={productAndRelatedInfos.images[0].imageName}
+                className="sm:max-h-96 lg:max-h-80"
+              />
+            ) : (
+              <Skeleton
+                variant="rectangular"
+                animation="wave"
+                className="sm:h-96 lg:h-80 sm:w-96 lg:w-80"
+              />
+            )}
+            {productAndRelatedInfos !== undefined &&
               productAndRelatedInfos.productDiscountPercentage !== 0 && (
                 <div className="top-0 left-0 absolute bg-red-100 text-red-700 sm:text-4xl lg:text-2xl px-2">
                   - {productAndRelatedInfos.productDiscountPercentage}%
@@ -91,7 +152,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
           />
         ) : (
           <h1 className="font-raleway uppercase font-medium sm:text-2xl lg:text-base">
-            {productAndRelatedInfos.productName}
+            {product.productName}
           </h1>
         )}
         {isLoading ? (
@@ -138,16 +199,15 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
           </div>
         ) : (
           <div className="mt-2">
-            {productAndRelatedInfos.productPrice > 500000 && (
+            {product.productPrice > 500000 && (
               <span className="bg-green-100 text-green-900 px-2 rounded-full drop-shadow-sm sm:text-xl lg:text-sm">
                 Livraison gratuite
               </span>
             )}
 
-            {productAndRelatedInfos.productQuantity <= 20 && (
+            {product.productQuantity <= 20 && (
               <span className="bg-red-100 text-red-700 px-2 rounded-full drop-shadow-sm sm:text-xl lg:text-sm ml-4">
-                Faites vite, il n'en reste plus que{" "}
-                {productAndRelatedInfos.productQuantity} !
+                Faites vite, il n'en reste plus que {product.productQuantity} !
               </span>
             )}
           </div>
@@ -161,7 +221,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
         ) : (
           /*Hidden on large screens */
           <div className="w-full sm:mt-3 lg:mt-0 lg:hidden sm:flex items-center">
-            {productAndRelatedInfos !== null &&
+            {productAndRelatedInfos !== undefined &&
               (isLoading ? (
                 <Skeleton />
               ) : (
@@ -173,7 +233,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
                   <span className="font-raleway">FCFA</span>
                 </h1>
               ))}
-            {productAndRelatedInfos !== null &&
+            {productAndRelatedInfos !== undefined &&
               productAndRelatedInfos.productDiscountPercentage !== 0 &&
               (isLoading ? (
                 <Skeleton />
@@ -192,7 +252,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
             animation="wave"
           />
         ) : (
-          productAndRelatedInfos !== null &&
+          productAndRelatedInfos !== undefined &&
           productAndRelatedInfos.productDiscountPercentage !== 0 && (
             /*Hidden on large screens */
             <small className="lg:hidden sm:block text-red-700 bg-red-100 first-letter:uppercase px-4 rounded-full mb-5 w-fit sm:text-xl lg:text-sm font-normal drop-shadow-sm">
@@ -246,7 +306,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
         ) : (
           /*Hidden on small screens */
           <div className="w-full sm:hidden lg:flex items-center">
-            {productAndRelatedInfos !== null &&
+            {productAndRelatedInfos !== undefined &&
               (isLoading ? (
                 <Skeleton />
               ) : (
@@ -258,7 +318,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
                   <span className="font-raleway">FCFA</span>
                 </h1>
               ))}
-            {productAndRelatedInfos !== null &&
+            {productAndRelatedInfos !== undefined &&
               productAndRelatedInfos.productDiscountPercentage !== 0 &&
               (isLoading ? (
                 <Skeleton />
@@ -277,7 +337,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
             animation="wave"
           />
         ) : (
-          productAndRelatedInfos !== null &&
+          productAndRelatedInfos !== undefined &&
           productAndRelatedInfos.productDiscountPercentage !== 0 && (
             /*Hidden on small screens */
             <small className="sm:hidden lg:block text-red-700 bg-red-100 first-letter:uppercase px-4 rounded-full mb-5 w-fit text-sm font-normal drop-shadow-sm">
@@ -310,7 +370,7 @@ const DisplayProduct = ({ productAndRelatedInfos }: Props) => {
                     lines: [
                       {
                         quantity: 1,
-                        productId: productAndRelatedInfos.productId,
+                        productId: product.productId,
                         orderId: 0,
                       } as CreateOrderLineDTO,
                     ],

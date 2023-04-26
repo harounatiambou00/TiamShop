@@ -2,17 +2,17 @@ import React from "react";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
 import { RootState } from "../../redux/store";
 import { Brand } from "../../data/models/Brand";
-import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 import { SubCategory } from "../../data/models/SubCategory";
 import {
   Alert,
   AlertTitle,
+  CircularProgress,
   MenuItem,
   Pagination,
   Select,
-  SelectChangeEvent,
 } from "@mui/material";
 import DisplayProduct from "./DisplayProduct";
+import { Product } from "../../data/models/Product";
 
 type Props = {
   title: string;
@@ -25,7 +25,6 @@ const BestSellersAndDiscountAndRecommendationsPagesSkeleton = ({
   subTitle,
   type,
 }: Props) => {
-  let allProducts = [] as ProductAndRelatedInfo[];
   const allBrands = useAppSelector(
     (state: RootState) => state.allBrands.brands
   ) as Brand[];
@@ -34,113 +33,101 @@ const BestSellersAndDiscountAndRecommendationsPagesSkeleton = ({
   ) as SubCategory[];
 
   const [productsToBeDisplayed, setProductsToBeDisplayed] = React.useState<
-    ProductAndRelatedInfo[]
+    Product[]
   >([]);
+  const [isLoading, setIsLoading] = React.useState(false);
   React.useEffect(() => {
     if (type === "on_discount_products") {
-      setProductsToBeDisplayed(
-        allProducts
-          .filter(
-            (p) =>
-              p.productDiscountPercentage !== 0 &&
-              p.productDiscountEndDate !== null
-          )
-          .sort((p1, p2) => {
-            if (p1.productDiscountPercentage > p2.productDiscountPercentage)
-              return -1;
-            else if (
-              p1.productDiscountPercentage < p2.productDiscountPercentage
-            )
-              return 1;
-            else return 0;
-          })
-      );
+      const getProductsToBeDisplayed = async () => {
+        setIsLoading(true);
+        let url =
+          process.env.REACT_APP_API_URL + "products/get-products-on-discount";
+        let response = await fetch(url);
+        let content = await response.json();
+        if (content.success) {
+          setProductsToBeDisplayed([]);
+          for (let i of content.data) {
+            setProductsToBeDisplayed((current) => [
+              ...current,
+              {
+                productId: i.productId,
+                productReference: i.productReference,
+                productName: i.productName,
+                productDescription: i.productDescription,
+                productPrice: i.productPrice,
+                productQuantity: i.productQuantity,
+                createdAt:
+                  i.createdAt !== null && typeof i.createdAt === "string"
+                    ? new Date(
+                        parseInt(i.createdAt.slice(0, 4)),
+                        parseInt(i.createdAt.slice(5, 7)) - 1,
+                        parseInt(i.createdAt.slice(8, 10))
+                      )
+                    : null,
+                waranty: i.waranty,
+                color: i.color,
+                productPrincipalImageId: i.productPrincipalImageId,
+                brandId: i.brandId,
+                subCategoryId: i.subCategoryId,
+                productDiscountId: i.productDiscountId,
+              },
+            ]);
+          }
+        }
+        setIsLoading(false);
+      };
+      getProductsToBeDisplayed();
     } else if (type === "best_sellers") {
-      /**
-       * TODO: Sort the products bys number of sales
-       */
-      setProductsToBeDisplayed(allProducts);
+      const getProductsToBeDisplayed = async () => {
+        setIsLoading(true);
+        let url =
+          process.env.REACT_APP_API_URL + "products/get-best-sellers-products";
+        let response = await fetch(url);
+        let content = await response.json();
+        if (content.success) {
+          setProductsToBeDisplayed([]);
+          for (let i of content.data) {
+            setProductsToBeDisplayed((current) => [
+              ...current,
+              {
+                productId: i.productId,
+                productReference: i.productReference,
+                productName: i.productName,
+                productDescription: i.productDescription,
+                productPrice: i.productPrice,
+                productQuantity: i.productQuantity,
+                createdAt:
+                  i.createdAt !== null && typeof i.createdAt === "string"
+                    ? new Date(
+                        parseInt(i.createdAt.slice(0, 4)),
+                        parseInt(i.createdAt.slice(5, 7)) - 1,
+                        parseInt(i.createdAt.slice(8, 10))
+                      )
+                    : null,
+                waranty: i.waranty,
+                color: i.color,
+                productPrincipalImageId: i.productPrincipalImageId,
+                brandId: i.brandId,
+                subCategoryId: i.subCategoryId,
+                productDiscountId: i.productDiscountId,
+              },
+            ]);
+          }
+        }
+        setIsLoading(false);
+      };
+      getProductsToBeDisplayed();
+      setProductsToBeDisplayed([]);
     } else {
       /**
        * TODO: Sort the products by recommendation percentage
        */
-      setProductsToBeDisplayed(allProducts);
+      setProductsToBeDisplayed([]);
     }
-  }, [allProducts]);
+  }, []);
   const [sortByValue, setSortByValue] = React.useState<string>("ASC_PRICES");
   const [brandId, setBrandId] = React.useState<number>(0);
   const [subCategoryId, setSubCategoryId] = React.useState<number>(0);
-  const handleChangeSortByValue = () => {
-    if (sortByValue === "DESC_PRICES") {
-      setProductsToBeDisplayed(
-        productsToBeDisplayed
-          .filter(
-            (p) =>
-              p.productDiscountPercentage !== 0 &&
-              p.productDiscountEndDate !== null
-          )
-          .sort((p1, p2) => {
-            if (p1.productPrice > p2.productPrice) return -1;
-            else if (p1.productPrice < p2.productPrice) return 1;
-            else return 0;
-          })
-      );
-    } else if (sortByValue === "BEST_SELLERS") {
-    } else if (sortByValue === "RATINGS") {
-      setProductsToBeDisplayed(
-        productsToBeDisplayed
-          .filter(
-            (p) =>
-              p.productDiscountPercentage !== 0 &&
-              p.productDiscountEndDate !== null
-          )
-          .sort((p1, p2) => {
-            if (p1.rating > p2.rating) return -1;
-            else if (p1.rating < p2.rating) return 1;
-            else return 0;
-          })
-      );
-    } else {
-      setProductsToBeDisplayed(
-        productsToBeDisplayed
-          .filter(
-            (p) =>
-              p.productDiscountPercentage !== 0 &&
-              p.productDiscountEndDate !== null
-          )
-          .sort((p1, p2) => {
-            if (p1.productPrice < p2.productPrice) return -1;
-            else if (p1.productPrice > p2.productPrice) return 1;
-            else return 0;
-          })
-      );
-    }
-  };
-  React.useEffect(() => {
-    handleChangeSortByValue();
-  }, [sortByValue]);
-
-  React.useEffect(() => {
-    if (brandId === 0) {
-      setProductsToBeDisplayed(
-        allProducts.filter((p) => p.productDiscountPercentage !== 0)
-      );
-    } else {
-      setProductsToBeDisplayed(
-        allProducts.filter((p) => p.brandId === brandId)
-      );
-    }
-  }, [brandId]);
-
-  React.useEffect(() => {
-    if (subCategoryId === 0) {
-      setProductsToBeDisplayed(allProducts);
-    } else {
-      setProductsToBeDisplayed(
-        allProducts.filter((p) => p.subCategoryId === subCategoryId)
-      );
-    }
-  }, [subCategoryId]);
 
   return (
     <div className="p-5">
@@ -281,20 +268,26 @@ const BestSellersAndDiscountAndRecommendationsPagesSkeleton = ({
           </div>
         </div>
       </div>
-      <div className="w-full mt-5">
-        {productsToBeDisplayed.length !== 0 ? (
-          productsToBeDisplayed.map((p) => (
-            <DisplayProduct productAndRelatedInfos={p} key={p.productId} />
-          ))
-        ) : (
-          <div className="w-full h-20 flex justify-center items-center">
-            <Alert severity="error" className="h-full font-kanit">
-              <AlertTitle className="font-kanit">Erreur</AlertTitle>
-              Aucun produit qui respecte votre filtre n'a été trouvé.
-            </Alert>
-          </div>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="w-full h-96 py-16 flex items-center justify-center">
+          <CircularProgress size="large" />
+        </div>
+      ) : (
+        <div className="w-full mt-5">
+          {productsToBeDisplayed.length !== 0 ? (
+            productsToBeDisplayed.map((p) => (
+              <DisplayProduct product={p} key={p.productId} />
+            ))
+          ) : (
+            <div className="w-full h-20 flex justify-center items-center">
+              <Alert severity="error" className="h-full font-kanit">
+                <AlertTitle className="font-kanit">Erreur</AlertTitle>
+                Aucun produit qui respecte votre filtre n'a été trouvé.
+              </Alert>
+            </div>
+          )}
+        </div>
+      )}
       <div className="mt-7 flex items-center justify-center w-full">
         {productsToBeDisplayed.length !== 0 && (
           <Pagination

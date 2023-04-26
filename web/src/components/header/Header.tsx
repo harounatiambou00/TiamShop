@@ -1,4 +1,4 @@
-import { AppBar, IconButton, Toolbar, Button } from "@mui/material";
+import { AppBar, IconButton, Toolbar, Button, Skeleton } from "@mui/material";
 import React from "react";
 import { ElevationScroll } from "../core";
 
@@ -65,16 +65,26 @@ const Header = (props: Props) => {
             <IconButton onClick={() => props.setOpenLeftDrawer(true)}>
               <FiMenu className="text-primary hover:text-amber-500" />
             </IconButton>
-            {categories.slice(0, 8).map((category) => (
-              <Button
-                size="small"
-                className="text-xs font-medium font-raleway normal-case hover:text-amber-600"
-                onClick={() => navigate("/category/" + category.CategoryName)}
-                key={category.CategoryId}
-              >
-                {category.CategoryTitle}
-              </Button>
-            ))}
+            {categories.length > 0
+              ? categories.slice(0, 8).map((category) => (
+                  <Button
+                    size="small"
+                    className="text-xs font-medium font-raleway normal-case hover:text-amber-600"
+                    onClick={() =>
+                      navigate("/category/" + category.CategoryName)
+                    }
+                    key={category.CategoryId}
+                  >
+                    {category.CategoryTitle}
+                  </Button>
+                ))
+              : [0, 1, 2, 3, 4, 5, 6, 7].map((i, index) => (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    className="h-5 w-24 rounded-md"
+                  />
+                ))}
           </div>
           {/** Mobile sceen searchbar, will be displayed only on small screens otherwise it'll be hidden  */}
           <MobileSearchbar />

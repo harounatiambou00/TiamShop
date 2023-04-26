@@ -9,6 +9,7 @@ import {
   CardMedia,
   IconButton,
   Rating,
+  Skeleton,
   Snackbar,
 } from "@mui/material";
 import { GiShoppingCart } from "react-icons/gi";
@@ -24,9 +25,10 @@ import { addItemToShoppingCart } from "../../../redux/slices/shoppingCartSlice";
 import SuccessSnackbar from "../suucess-snackbar/SuccessSnackbar";
 import { setOrderToBeMade } from "../../../redux/slices/orderToBeMadeSlice";
 import CreateOrderLineDTO from "../../../data/models/CreateOrderLineDTO";
+import { Product } from "../../../data/models/Product";
 
 type Props = {
-  product: ProductAndRelatedInfo;
+  product: Product;
   isTrend?: boolean;
   isNew?: boolean;
 };
@@ -38,6 +40,59 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
   const dispatch = useAppDispatch();
   const [openProductAddedToCartSnackbar, setOpenPoductAddedToCartSnackbar] =
     React.useState<boolean>(false);
+
+  const [productAndRelatedInfos, setProductAndRelatedInfo] = React.useState<
+    ProductAndRelatedInfo | undefined
+  >(undefined);
+
+  const getProductAdRelatedInfos = async () => {
+    let url =
+      process.env.REACT_APP_API_URL +
+      "products/get-product-and-all-related-info/" +
+      product.productId;
+    const response = await fetch(url);
+    const content = await response.json();
+    if (content.success) {
+      let data = content.data as ProductAndRelatedInfo;
+      if (data !== null) {
+        setProductAndRelatedInfo((currentState) => ({
+          ...currentState,
+          productId: data.productId,
+          productReference: data.productReference,
+          productName: data.productName,
+          productDescription: data.productDescription,
+          productPrice: data.productPrice,
+          productQuantity: data.productQuantity,
+          createdAt:
+            data.createdAt !== null && typeof data.createdAt === "string"
+              ? new Date(
+                  parseInt(data.createdAt.slice(0, 4)),
+                  parseInt(data.createdAt.slice(5, 7)) - 1,
+                  parseInt(data.createdAt.slice(8, 10))
+                )
+              : null,
+          waranty: data.waranty,
+          color: data.color,
+          productPrincipalImageId: data.productPrincipalImageId,
+          brandId: data.brandId,
+          subCategoryId: data.subCategoryId,
+          productDiscountId: data.productDiscountId,
+
+          images: data.images,
+          caracteristics: data.caracteristics,
+          productDiscountPercentage: data.productDiscountPercentage,
+          productDiscountEndDate: data.productDiscountEndDate,
+          rating: data.rating,
+          numberOfVotes: data.numberOfVotes,
+        }));
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    getProductAdRelatedInfos();
+  }, []);
+
   return (
     <Card className="w-full min-h-full relative flex flex-col justify-between">
       <div className="absolute sm:top-4 sm:right-2 lg:top-1 lg:right-1 flex flex-col z-50">
@@ -49,40 +104,50 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
         </IconButton>
       </div>
       <CardActionArea
-        className="z-40 pt-5"
-        onClick={() =>
-          product && navigate("/product-details/" + product.productId)
-        }
+        className="z-40"
+        onClick={() => navigate("/product-details/" + product.productId)}
       >
-        {product &&
-          product.productDiscountPercentage !== null &&
-          product.productDiscountPercentage !== 0 && (
+        {productAndRelatedInfos !== undefined &&
+          productAndRelatedInfos.productDiscountPercentage !== null &&
+          productAndRelatedInfos.productDiscountPercentage !== 0 && (
             <div className="absolute top-0 left-0 bg-red-400 sm:px-4 lg:px-2 drop-shadow-sm text-primary sm:text-2xl lg:text-base font-normal font-raleway">
-              Economisez {product.productDiscountPercentage}%
+              Economisez {productAndRelatedInfos.productDiscountPercentage}%
             </div>
           )}
-        <CardMedia
-          component="img"
-          className="w-full px-16"
-          image={
-            "data:" +
-            product.images[0].imageExtension +
-            ";base64," +
-            product.images[0].imageBytes
-          }
-          alt={product.productName}
-        />
+        {productAndRelatedInfos ? (
+          <CardMedia
+            component="img"
+            className="w-full px-16 pt-5"
+            image={
+              "data:" +
+              productAndRelatedInfos.images[0].imageExtension +
+              ";base64," +
+              productAndRelatedInfos.images[0].imageBytes
+            }
+            alt={productAndRelatedInfos.productName}
+          />
+        ) : (
+          <CardMedia>
+            <Skeleton
+              variant="rectangular"
+              animation="wave"
+              className="w-full h-60"
+            />
+          </CardMedia>
+        )}
         <CardContent className="flex flex-col items-center sm:mt-5 lg:mt-4">
           <h1 className="font-raleway font-medium sm:text-2xl lg:text-base w-full sm:px-3 lg:px-1 text-center">
             {product.productName}
           </h1>
           <div className="flex items-center justify-between sm:text-2xl lg:text-base w-full sm:px-3 lg:px-1 sm:mt-2 lg:mt-1">
-            <p>
-              {product.productPrice -
-                product.productDiscountPercentage *
-                  (product.productPrice / 100)}{" "}
-              FCFA
-            </p>
+            {productAndRelatedInfos && (
+              <p>
+                {product.productPrice -
+                  productAndRelatedInfos.productDiscountPercentage *
+                    (product.productPrice / 100)}{" "}
+                FCFA
+              </p>
+            )}
             {brand !== undefined && <small>{brand.BrandName}</small>}
           </div>
           <div className="flex items-center justify-center">
@@ -99,18 +164,32 @@ const ProductCard = ({ product, isTrend, isNew }: Props) => {
           </div>
           <div className="w-full flex justify-between sm:px-3 lg:px-1 items-center sm:mt-1 lg:mt-0">
             <small className="text-center">
-              <Rating
-                className="sm:text-3xl lg:text-base"
-                size="small"
-                value={product.rating}
-                readOnly
-              />
-              <span className="block sm:text-xl lg:text-sm">
-                {product.numberOfVotes} votes
-              </span>
-            </small>
-            <small className="text-center text-gray-500 sm:text-xl lg:text-sm">
-              1000 ventes
+              {productAndRelatedInfos !== undefined ? (
+                <Rating
+                  className="sm:text-3xl lg:text-base"
+                  size="small"
+                  value={productAndRelatedInfos?.rating}
+                  readOnly
+                />
+              ) : (
+                <Skeleton
+                  variant="rectangular"
+                  animation="wave"
+                  className="rounded-full w-24 h-4 mb-2"
+                />
+              )}
+
+              {productAndRelatedInfos !== undefined ? (
+                <span className="block sm:text-xl lg:text-sm">
+                  {productAndRelatedInfos.numberOfVotes} votes
+                </span>
+              ) : (
+                <Skeleton
+                  variant="rectangular"
+                  animation="wave"
+                  className="rounded-full w-20 h-3"
+                />
+              )}
             </small>
           </div>
         </CardContent>

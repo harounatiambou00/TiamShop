@@ -538,11 +538,6 @@ namespace api.Services.ProductService
             }
         }
 
-        public Task<ServiceResponse<List<Product>>> GetTheTwentyNewestProducts()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ServiceResponse<List<GetProductAndOtherRelatedInformationDTO>>> SearchForAProduct(List<GetProductAndOtherRelatedInformationDTO> allProducts, SearchProductDTO filters)
         {
             List<GetProductAndOtherRelatedInformationDTO> response = new List<GetProductAndOtherRelatedInformationDTO>();
@@ -729,6 +724,187 @@ namespace api.Services.ProductService
         public Task<ServiceResponse<Category?>> GetProductCategory(Guid productId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetBestSellers(int? limit)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    if(limit == null || limit <= 0)
+                    {
+                        string SQL = "SELECT p.ProductId, p.ProductName, MAX(p.ProductReference) AS ProductReference, p.ProductPrice, p.ProductDescription, p.Waranty, p.Color, p.ProductDiscountId, p.ProductPrincipalImageId, p.BrandId, p.SubcategoryId, p.ProductQuantity, p.CreatedAt, SUM(ol.Quantity) AS TotalQuantitySold FROM dbo.tblProducts p JOIN dbo.tblOrderLines ol ON p.ProductId = ol.ProductId JOIN dbo.tblOrders o ON ol.OrderId = o.OrderId WHERE o.OrderDate BETWEEN @StartDate AND @EndDate GROUP BY p.ProductId, p.ProductName, p.ProductPrice, p.ProductDescription, p.Waranty, p.Color, p.ProductDiscountId, p.ProductPrincipalImageId, p.BrandId, p.SubcategoryId, p.ProductQuantity, p.CreatedAt ORDER BY TotalQuantitySold DESC;";
+                        var dictionary = new Dictionary<string, object?>
+                        {
+                            {"@StartDate", DateTime.Now.AddDays(-31)},
+                            {"@EndDate", DateTime.Now }
+                        };
+                        var parameters = new DynamicParameters(dictionary);
+                        var products = await connection.QueryAsync<Product>(SQL, parameters);
+                        return new ServiceResponse<List<Product>>()
+                        {
+                            Data = products.ToList(),
+                            Success = true
+                        };
+                    }
+                    else
+                    {
+                        string SQL = "SELECT TOP " + limit + " p.ProductId, p.ProductName, MAX(p.ProductReference) AS ProductReference, p.ProductPrice, p.ProductDescription, p.Waranty, p.Color, p.ProductDiscountId, p.ProductPrincipalImageId, p.BrandId, p.SubcategoryId, p.ProductQuantity, p.CreatedAt, SUM(ol.Quantity) AS TotalQuantitySold FROM dbo.tblProducts p JOIN dbo.tblOrderLines ol ON p.ProductId = ol.ProductId JOIN dbo.tblOrders o ON ol.OrderId = o.OrderId WHERE o.OrderDate BETWEEN @StartDate AND @EndDate GROUP BY p.ProductId, p.ProductName, p.ProductPrice, p.ProductDescription, p.Waranty, p.Color, p.ProductDiscountId, p.ProductPrincipalImageId, p.BrandId, p.SubcategoryId, p.ProductQuantity, p.CreatedAt ORDER BY TotalQuantitySold DESC;";
+                        var dictionary = new Dictionary<string, object?>
+                        {
+                            {"@StartDate", DateTime.Now.AddDays(-31)},
+                            {"@EndDate", DateTime.Now }
+                        };
+                        var parameters = new DynamicParameters(dictionary);
+                        var products = await connection.QueryAsync<Product>(SQL, parameters);
+                        return new ServiceResponse<List<Product>>()
+                        {
+                            Data = products.ToList(),
+                            Success = true
+                        };
+                    }
+                }
+                catch (Exception e)
+                {
+                    return new ServiceResponse<List<Product>>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message,
+                    };
+                }
+            }
+        }
+
+        public Task<ServiceResponse<List<Product>>> RecommandationProducts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetTenNewestProducts()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string SQL = "SELECT TOP 10 * FROM ( SELECT *, ROW_NUMBER() OVER (ORDER BY CreatedAt DESC) AS row_num FROM dbo.tblProducts) subquery ORDER BY row_num ASC;";
+                    var products = await connection.QueryAsync<Product>(SQL);
+                    return new ServiceResponse<List<Product>>()
+                    {
+                        Data = products.ToList(),
+                        Success = true
+                    };
+
+                }
+                catch (Exception e)
+                {
+                    return new ServiceResponse<List<Product>>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message,
+                    };
+                }
+            }
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetProductsOnDiscount(int? limit)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    if(limit == null || limit <= 0)
+                    {
+                        string SQL = "SELECT * FROM dbo.tblProducts AS P WHERE ( SELECT ProductDiscountPercentage FROM dbo.tblProductDiscounts AS D WHERE P.ProductDiscountId = D.ProductDiscountId ) > 0;";
+                        var products = await connection.QueryAsync<Product>(SQL);
+                        return new ServiceResponse<List<Product>>()
+                        {
+                            Data = products.ToList(),
+                            Success = true
+                        };
+                    }else
+                    {
+                        string SQL = "SELECT TOP " + limit + " * FROM dbo.tblProducts AS P WHERE ( SELECT ProductDiscountPercentage FROM dbo.tblProductDiscounts AS D WHERE P.ProductDiscountId = D.ProductDiscountId ) > 0;";
+                        var dictionary = new Dictionary<string, object?>
+                        {
+                            {"@valeur", limit},
+                        };
+                        var parameters = new DynamicParameters(dictionary);
+                        var products = await connection.QueryAsync<Product>(SQL, parameters);
+                        return new ServiceResponse<List<Product>>()
+                        {
+                            Data = products.ToList(),
+                            Success = true
+                        };
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    return new ServiceResponse<List<Product>>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message,
+                    };
+                }
+            }
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetProductsOfSubCategory(long subCategoryId, int? limit = null)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    if(limit == null || limit <= 0)
+                    {
+                        string SQL = "SELECT * FROM dbo.tblProducts WHERE SubCategoryId = @SubCategoryId;";
+                        var dictionary = new Dictionary<string, object?>
+                        {
+                            {"@SubCategoryId", subCategoryId},
+                        };
+                        var parameters = new DynamicParameters(dictionary);
+                        var products = await connection.QueryAsync<Product>(SQL, parameters);
+                        return new ServiceResponse<List<Product>>()
+                        {
+                            Data = products.ToList(),
+                            Success = true
+                        };
+                    }
+                    else
+                    {
+                        string SQL = "SELECT TOP " + limit + " * FROM dbo.tblProducts WHERE SubCategoryId = @SubCategoryId;";
+                        var dictionary = new Dictionary<string, object?>
+                        {
+                            {"@SubCategoryId", subCategoryId},
+                        };
+                        var parameters = new DynamicParameters(dictionary);
+                        var products = await connection.QueryAsync<Product>(SQL, parameters);
+                        return new ServiceResponse<List<Product>>()
+                        {
+                            Data = products.ToList(),
+                            Success = true
+                        };
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    return new ServiceResponse<List<Product>>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = e.Message,
+                    };
+                }
+            }
         }
     }
 }

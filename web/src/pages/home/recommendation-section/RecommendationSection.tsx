@@ -5,14 +5,14 @@ import { RootState } from "../../../redux/store";
 
 // import required modules
 import { useNavigate } from "react-router-dom";
-import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import HomepageProductsSwiper from "../../../components/homepage-components/homepage-sections-products-swiper/HomepageProductsSwiper";
+import { Product } from "../../../data/models/Product";
 
 const RecommendationSection = () => {
   const navigate = useNavigate();
-  let allProducts = [] as ProductAndRelatedInfo[];
+  let allProducts = [] as Product[];
   const [productsToBeDisplayed, setProductsToBeDisplayed] =
-    React.useState<ProductAndRelatedInfo[]>(allProducts);
+    React.useState<Product[]>(allProducts);
 
   React.useEffect(() => {
     setProductsToBeDisplayed(allProducts);

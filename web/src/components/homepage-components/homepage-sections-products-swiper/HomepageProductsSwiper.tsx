@@ -1,13 +1,13 @@
 import React from "react";
-import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ProductCard } from "../../core";
 import { Navigation, Pagination } from "swiper";
 
 import "./styles.css";
+import { Product } from "../../../data/models/Product";
 
 type Props = {
-  products: ProductAndRelatedInfo[];
+  products: Product[];
   newProducts?: boolean;
   trendingProducts?: boolean;
 };

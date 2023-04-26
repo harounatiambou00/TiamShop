@@ -27,6 +27,7 @@ import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 import { ProductCard } from "../../components/core";
 import { BiMessageError } from "react-icons/bi";
 import { MdClose } from "react-icons/md";
+import { Product } from "../../data/models/Product";
 
 type SortByType = {
   name: SearchValuesSortByType;
@@ -452,7 +453,23 @@ const SearchResultsPage: React.FC = () => {
                   {matchedProducts
                     .slice(currentPage * 15 - 15, currentPage * 15)
                     .map((p, index) => (
-                      <ProductCard key={index} product={p} />
+                      <ProductCard
+                        key={index}
+                        product={
+                          {
+                            productId: p.productId,
+                            productName: p.productName,
+                            productDescription: p.productDescription,
+                            productPrice: p.productPrice,
+                            productDiscountId: p.productDiscountId,
+                            productQuantity: p.productQuantity,
+                            productPrincipalImageId: p.productPrincipalImageId,
+                            productReference: p.productReference,
+                            waranty: p.waranty,
+                            color: p.color,
+                          } as Product
+                        }
+                      />
                     ))}
                 </div>
               )}

@@ -5,6 +5,7 @@ import HomePageSection from "../../../components/homepage-components/homepage-se
 import { Swiper, SwiperSlide } from "swiper/react";
 import BrandsItem from "./brands-item/BrandsItem";
 import { Autoplay } from "swiper";
+import { Skeleton } from "@mui/material";
 
 const BrandsSection = () => {
   let brands = useAppSelector((state: RootState) =>
@@ -27,13 +28,25 @@ const BrandsSection = () => {
           }}
           modules={[Autoplay]}
         >
-          {brands.map((b) => {
-            return (
-              <SwiperSlide key={b.brandId} className="h-full">
-                <BrandsItem brand={b} />
-              </SwiperSlide>
-            );
-          })}
+          {brands.length > 0
+            ? brands.map((b) => {
+                return (
+                  <SwiperSlide key={b.brandId} className="h-full">
+                    <BrandsItem brand={b} />
+                  </SwiperSlide>
+                );
+              })
+            : [0, 1, 2].map((b) => {
+                return (
+                  <SwiperSlide key={b} className="h-full">
+                    <Skeleton
+                      variant="rectangular"
+                      animation="wave"
+                      className="h-full w-full rounded-md"
+                    />
+                  </SwiperSlide>
+                );
+              })}
         </Swiper>
         {/**Only on large screens */}
         <Swiper
@@ -49,13 +62,25 @@ const BrandsSection = () => {
           }}
           modules={[Autoplay]}
         >
-          {brands.map((b) => {
-            return (
-              <SwiperSlide key={b.brandId} className="h-full">
-                <BrandsItem brand={b} />
-              </SwiperSlide>
-            );
-          })}
+          {brands.length > 0
+            ? brands.map((b) => {
+                return (
+                  <SwiperSlide key={b.brandId} className="h-full">
+                    <BrandsItem brand={b} />
+                  </SwiperSlide>
+                );
+              })
+            : [0, 1, 2, 3].map((b) => {
+                return (
+                  <SwiperSlide key={b} className="h-full">
+                    <Skeleton
+                      variant="rectangular"
+                      animation="wave"
+                      className="h-full w-full rounded-md"
+                    />
+                  </SwiperSlide>
+                );
+              })}
         </Swiper>
       </div>
     </HomePageSection>

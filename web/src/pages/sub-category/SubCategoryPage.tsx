@@ -11,13 +11,11 @@ import {
   Pagination,
   Select,
   SelectChangeEvent,
-  Skeleton,
 } from "@mui/material";
 import SubCategoryPageBreadcumb from "./sub-category-page-breadcumb/SubCategoryPageBreadcumb";
 import { Product } from "../../data/models/Product";
 import { Brand } from "../../data/models/Brand";
 import DisplayProduct from "./display-product/DisplayProduct";
-import ProductAndRelatedInfo from "../../data/models/ProductAndRelatedInfo";
 
 const SubCategoryPage = () => {
   const navigate = useNavigate();
@@ -30,11 +28,60 @@ const SubCategoryPage = () => {
     (state: RootState) => state.allBrands.brands
   ) as Brand[];
 
-  let allProducts = [] as Product[];
+  const [allProducts, setAllProducts] = React.useState<Product[]>([]);
 
   const [subCategory, setSubCategory] = React.useState<SubCategory | undefined>(
     undefined
   );
+  const [isLoading, setIsLoading] = React.useState(false);
+  React.useEffect(() => {
+    const getProducts = async () => {
+      if (subCategory !== undefined) {
+        setIsLoading(true);
+        let url =
+          process.env.REACT_APP_API_URL +
+          "products/get-products-of-subcategory?subCategoryId=" +
+          subCategory.SubCategoryId;
+        let response = await fetch(url);
+        let content = await response.json();
+        if (content.success) {
+          setAllProducts([]);
+          for (let i of content.data) {
+            setAllProducts((current) => [
+              ...current,
+              {
+                productId: i.productId,
+                productReference: i.productReference,
+                productName: i.productName,
+                productDescription: i.productDescription,
+                productPrice: i.productPrice,
+                productQuantity: i.productQuantity,
+                createdAt:
+                  i.createdAt !== null && typeof i.createdAt === "string"
+                    ? new Date(
+                        parseInt(i.createdAt.slice(0, 4)),
+                        parseInt(i.createdAt.slice(5, 7)) - 1,
+                        parseInt(i.createdAt.slice(8, 10))
+                      )
+                    : null,
+                waranty: i.waranty,
+                color: i.color,
+                productPrincipalImageId: i.productPrincipalImageId,
+                brandId: i.brandId,
+                subCategoryId: i.subCategoryId,
+                productDiscountId: i.productDiscountId,
+              },
+            ]);
+          }
+        }
+        setIsLoading(false);
+      }
+    };
+    getProducts();
+  }, [subCategory]);
+  React.useEffect(() => {
+    setProductsToBeDisplayed(allProducts);
+  }, [allProducts]);
 
   const [sortByValue, setSortByValue] = React.useState<string>("ASC_PRICES");
   const [brandId, setBrandId] = React.useState<number>(0);
@@ -48,15 +95,10 @@ const SubCategoryPage = () => {
       );
       if (correspondingSubCategory !== undefined) {
         setSubCategory(correspondingSubCategory);
-        setProductsToBeDisplayed(
-          allProducts.filter(
-            (p) => p.subCategoryId === correspondingSubCategory.SubCategoryId
-          )
-        );
       }
       correspondingSubCategory === undefined && navigate("/");
     }
-  }, [subCategoryName]);
+  }, [subCategoryName, allSubCategories]);
 
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const handleChangePage = (
@@ -235,27 +277,33 @@ const SubCategoryPage = () => {
           showLastButton
         />
       </div>
-      <div className="w-full mt-5">
-        {productsToBeDisplayed.length !== 0 ? (
-          productsToBeDisplayed
-            .slice(currentPage * 10 - 10, currentPage * 10)
-            .map((p) => (
-              <DisplayProduct
-                key={p.productId}
-                product={p}
-                subCategory={subCategory}
-              />
-            ))
-        ) : (
-          <div className="w-full h-20 flex justify-center items-center">
-            <Alert severity="error" className="h-full font-kanit">
-              <AlertTitle className="font-kanit">Erreur</AlertTitle>
-              Aucun produit de la catégorie "{subCategory.SubCategoryTitle}" qui
-              respecte votre filtre n'a été trouvé.
-            </Alert>
-          </div>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="w-full h-96 flex items-center justify-center mt-5">
+          <CircularProgress size="large" />
+        </div>
+      ) : (
+        <div className="w-full mt-5">
+          {productsToBeDisplayed.length !== 0 ? (
+            productsToBeDisplayed
+              .slice(currentPage * 10 - 10, currentPage * 10)
+              .map((p) => (
+                <DisplayProduct
+                  key={p.productId}
+                  product={p}
+                  subCategory={subCategory}
+                />
+              ))
+          ) : (
+            <div className="w-full h-20 flex justify-center items-center">
+              <Alert severity="error" className="h-full font-kanit">
+                <AlertTitle className="font-kanit">Erreur</AlertTitle>
+                Aucun produit de la catégorie "{subCategory.SubCategoryTitle}"
+                qui respecte votre filtre n'a été trouvé.
+              </Alert>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-14 w-full flex flex-col items-center justify-center">
         <span className="text-gray-500 pl-2 font-normal sm:text-xl lg:text-sm text-center">

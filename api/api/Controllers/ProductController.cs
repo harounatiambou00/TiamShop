@@ -46,6 +46,31 @@ namespace api.Controllers
             return await _productService.GetAllProducts();  
         }
 
+        [HttpGet("get-ten-newest-products")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetTenNewestProducts()
+        {
+            return await _productService.GetTenNewestProducts();
+        }
+
+        [HttpGet("get-best-sellers-products")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetBestSellers(int? limit)
+        {
+            return await _productService.GetBestSellers(limit);
+        }
+
+        [HttpGet("get-products-on-discount")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsOnDiscount(int? limit)
+        {
+            return await _productService.GetProductsOnDiscount(limit);
+        }
+
+        [HttpGet("get-products-of-subcategory")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductsOfSubCategory(long subCategoryId, int? limit)
+        {
+            return await _productService.GetProductsOfSubCategory(subCategoryId, limit);
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<string?>>> AddProduct([FromForm] AddProductDTO newProduct)
         {

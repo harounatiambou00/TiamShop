@@ -1,41 +1,73 @@
 import React from "react";
 import HomePageSection from "../../../components/homepage-components/homepage-section/HomePageSection";
-import { useAppSelector } from "../../../hooks/redux-custom-hooks/useAppSelector";
-import { RootState } from "../../../redux/store";
-import ProductAndRelatedInfo from "../../../data/models/ProductAndRelatedInfo";
 import { useNavigate } from "react-router-dom";
 import HomepageProductsSwiper from "../../../components/homepage-components/homepage-sections-products-swiper/HomepageProductsSwiper";
+import { Product } from "../../../data/models/Product";
+import { Skeleton } from "@mui/material";
 
 const OnDiscountSection = () => {
-  let allProducts = [] as ProductAndRelatedInfo[];
   const [productsToBeDisplayed, setProductsToBeDisplayed] = React.useState<
-    ProductAndRelatedInfo[]
+    Product[]
   >([]);
+  const [isLoading, setIsLoading] = React.useState(false);
   React.useEffect(() => {
-    setProductsToBeDisplayed(
-      allProducts
-        .filter(
-          (p) =>
-            p.productDiscountPercentage !== 0 &&
-            p.productDiscountEndDate !== null
-        )
-        .sort((p1, p2) => {
-          if (p1.productDiscountPercentage > p2.productDiscountPercentage)
-            return -1;
-          else if (p1.productDiscountPercentage < p2.productDiscountPercentage)
-            return 1;
-          else return 0;
-        })
-        .slice(0, 10)
-    );
-  }, [allProducts]);
+    const getProductsToBeDisplayed = async () => {
+      setIsLoading(true);
+      let url =
+        process.env.REACT_APP_API_URL +
+        "products/get-products-on-discount?limit=10";
+      let response = await fetch(url);
+      let content = await response.json();
+      if (content.success) {
+        setProductsToBeDisplayed([]);
+        for (let i of content.data) {
+          setProductsToBeDisplayed((current) => [
+            ...current,
+            {
+              productId: i.productId,
+              productReference: i.productReference,
+              productName: i.productName,
+              productDescription: i.productDescription,
+              productPrice: i.productPrice,
+              productQuantity: i.productQuantity,
+              createdAt:
+                i.createdAt !== null && typeof i.createdAt === "string"
+                  ? new Date(
+                      parseInt(i.createdAt.slice(0, 4)),
+                      parseInt(i.createdAt.slice(5, 7)) - 1,
+                      parseInt(i.createdAt.slice(8, 10))
+                    )
+                  : null,
+              waranty: i.waranty,
+              color: i.color,
+              productPrincipalImageId: i.productPrincipalImageId,
+              brandId: i.brandId,
+              subCategoryId: i.subCategoryId,
+              productDiscountId: i.productDiscountId,
+            },
+          ]);
+        }
+      }
+      setIsLoading(false);
+    };
+    getProductsToBeDisplayed();
+  }, []);
+
   const navigate = useNavigate();
   return (
     <HomePageSection
       title="En solde"
       handleClickSeeMoreButton={() => navigate("/on-discount-products")}
     >
-      <HomepageProductsSwiper products={productsToBeDisplayed.slice(0, 10)} />
+      {!isLoading ? (
+        <HomepageProductsSwiper products={productsToBeDisplayed} />
+      ) : (
+        <Skeleton
+          variant="rectangular"
+          animation="wave"
+          className="h-80 w-full rounded-md mt-5"
+        />
+      )}
     </HomePageSection>
   );
 };
