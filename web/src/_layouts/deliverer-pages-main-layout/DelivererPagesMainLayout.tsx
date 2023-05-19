@@ -1,15 +1,24 @@
 import React from "react";
 import Header from "./header/Header";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/redux-custom-hooks/useAppDispatch";
 import { Deliverer } from "../../data/models/Deliverer";
 import { setAuthenticatedDeliverer } from "../../redux/slices/authenticatedDelivererSlice";
-import { RootState } from "../../redux/store";
+
+import Leftbar from "./leftbar/Leftbar";
+import { DeliveriesList } from "../../deliverer-pages";
+import { CircularProgress } from "@mui/material";
 import { useAppSelector } from "../../hooks/redux-custom-hooks/useAppSelector";
+import { RootState } from "../../redux/store";
 
 const DelivererPagesMainLayout = () => {
+  const authenticatedDeliverer = useAppSelector(
+    (state: RootState) => state.authenticatedDeliverer.deliverer
+  );
+  const [activeLink, setActiveLink] = React.useState<number>(1);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(true);
   //Get The authenticated client
   React.useEffect(() => {
     const getAuthenticatedDeliverer = async () => {
@@ -38,6 +47,7 @@ const DelivererPagesMainLayout = () => {
           };
 
           dispatch(setAuthenticatedDeliverer({ deliverer: deliverer }));
+          setIsLoading(false);
         } else {
           dispatch(setAuthenticatedDeliverer({ deliverer: null }));
           navigate("/");
@@ -48,11 +58,25 @@ const DelivererPagesMainLayout = () => {
   });
 
   return (
-    <div>
-      <Header />
-      <div className="pt-28 p-5">
-        <Outlet />
-      </div>
+    <div className="w-full overflow-hidden">
+      {!isLoading ? (
+        <div className="w-full h-screen">
+          <Header />
+          <div className="w-full flex h-full overflow-y-scroll">
+            <Leftbar activeLink={activeLink} setActiveLink={setActiveLink} />
+            <div className="flex-1 pt-24 px-5 bg-white">
+              <DeliveriesList
+                activeLink={activeLink}
+                setActiveLink={setActiveLink}
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="h-full w-full flex items-center justify-center">
+          <CircularProgress thickness={4} size={200} />
+        </div>
+      )}
     </div>
   );
 };

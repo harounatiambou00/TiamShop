@@ -53,7 +53,7 @@ const Dashboard = () => {
     getClients();
   }, []);
   return (
-    <div className="pt-24 px-10 flex flex-col w-full h-screen overflow-y-scroll pb-10">
+    <div className="pt-24 px-10 flex flex-col w-full h-screen overflow-y-scroll pb-10 bg-white">
       <div className="w-full flex items-center justify-between">
         <div>
           <h1 className="text-primary font-raleway font-bold text-2xl">

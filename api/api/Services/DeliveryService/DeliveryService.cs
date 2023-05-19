@@ -191,6 +191,39 @@ namespace api.Services.DeliveryService
             }
         }
 
+        public async Task<ServiceResponse<List<Delivery>>> GetDeliveriesAffectedToDeliverer(int delivererId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "SELECT * FROM dbo.tblDeliveries WHERE AssignedTo = @DelivererId";
+                    var dictionary = new Dictionary<string, object>
+                    {
+                        {"@DelivererId", delivererId},
+                    };
+                    var parameters = new DynamicParameters(dictionary);
+                    var deliveries = await connection.QueryAsync<Delivery>(query, parameters);
+                    return new ServiceResponse<List<Delivery>>
+                    {
+                        Data = deliveries.AsList(),
+                        Success = true,
+                        Message = ""
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ServiceResponse<List<Delivery>>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = ex.Message
+                    };
+                }
+            }
+        }
+
         public async Task<ServiceResponse<Delivery?>> GetDeliveryById(long id)
         {
             using (var connection = new SqlConnection(_connectionString))

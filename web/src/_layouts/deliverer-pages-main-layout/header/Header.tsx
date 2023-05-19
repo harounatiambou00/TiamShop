@@ -12,16 +12,27 @@ const Header = () => {
     (state: RootState) => state.authenticatedDeliverer.deliverer
   );
   return (
-    <AppBar elevation={2}>
-      <Toolbar className=" bg-background text-primary flex items-center justify-evenly">
+    <AppBar elevation={0}>
+      <Toolbar className=" bg-background text-primary flex items-center justify-evenly h-20">
         <img
           src={"/" + process.env.PUBLIC_URL + "assets/images/logo.png"}
           alt="logo"
-          className="sm:h-32 lg:h-24 cursor-pointer"
+          className="h-5/6"
           onClick={() => navigate("/deliverer")}
         />
-        <div className="flex flex-1 items-center justify-center"></div>
-        <div className="px-5 py-2 rounded-md bg-slate-200 flex items-start cursor-pointer hover:drop-shadow-md">
+        <div className="flex flex-1 items-center justify-center">
+          <div className="h-10 w-7/12 bg-gray-100 border-2 border-primary flex items-center rounded-md">
+            <input
+              type="search"
+              className="w-9/12 h-full outline-none pl-3 rounded-l-md"
+              placeholder="Rechercher une livraison à partir de sa référence"
+            />
+            <div className="h-full w-3/12 bg-primary text-white uppercase font-raleway flex items-center justify-center font-medium cursor-pointer border-2 border-primary">
+              Rechercher
+            </div>
+          </div>
+        </div>
+        <div className="px-4 py-2 rounded-full bg-white flex items-start cursor-pointer hover:drop-shadow-md">
           <Avatar className="text-primary"></Avatar>
           <div className="flex flex-col items-start text-center ml-2">
             <span className="text-sm text-gray-600 text-center w-full select-none">

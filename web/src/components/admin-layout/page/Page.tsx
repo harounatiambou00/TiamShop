@@ -13,7 +13,7 @@ type Props = {
 
 const Page = (props: Props) => {
   return (
-    <div className="h-full w-full overflow-y-scroll px-10 pt-24">
+    <div className="h-full w-full overflow-y-scroll px-10 pt-24 bg-white">
       <div className="flex items-center justify-between x-full">
         <div className="w-full">
           <h1 className="text-3xl text-primary font-semibold font-raleway uppercase">

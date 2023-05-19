@@ -141,14 +141,14 @@ const Leftbar = () => {
     setLogoutIsLoading(false);
   };
   return (
-    <div className="w-72 pt-20 h-screen relative bg-white">
-      <div className="w-full h-3/4 flex flex-col pt-5">
+    <div className="w-72 pt-20 h-screen relative bg-gray-100">
+      <div className="w-full h-3/4 flex flex-col px-2 pt-5">
         {links.map((link) => (
           <div
             key={link.id}
             className={
               activeLink === link.name
-                ? "px-4 py-3 flex items-center mb-2 bg-primary text-white"
+                ? "px-4 py-3 flex items-center mb-2 bg-primary text-white rounded-md"
                 : "px-4 py-3 flex items-center mb-2 text-primary hover:bg-gray-100 cursor-pointer"
             }
             onClick={() => {

@@ -106,7 +106,7 @@ const DeliverersPage = () => {
         <TableContainer className="mt-5 font-kanit">
           <Table className="w-full font-kanit" size="small">
             <TableHead>
-              <TableRow className="bg-white">
+              <TableRow className="bg-background">
                 <TableCell className="font-kanit"></TableCell>
                 <TableCell className=" font-kanit">NOM</TableCell>
                 <TableCell className=" font-kanit">PRENOM</TableCell>

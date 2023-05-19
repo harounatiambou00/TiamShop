@@ -58,7 +58,7 @@ const DelivbrerTableRow = ({ deliverer, refreshDeliverers, index }: Props) => {
 
   return (
     <TableRow
-      className={index % 2 !== 0 ? "font-kanit bg-white" : "font-kanit"}
+      className={index % 2 !== 0 ? "font-kanit bg-background" : "font-kanit"}
       key={deliverer.userId}
     >
       <TableCell className="font-kanit font-light">

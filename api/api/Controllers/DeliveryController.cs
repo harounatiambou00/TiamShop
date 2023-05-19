@@ -22,6 +22,12 @@ namespace api.Controllers
             return await _deliveryService.GetAllDeliveries();
         }
 
+        [HttpGet("get-affected-deliveries/{delivererId}")]
+        public async Task<ActionResult<ServiceResponse<List<Delivery>>>> GetDeliveriesAffectedToDeliverer(int delivererId)
+        {
+            return await _deliveryService.GetDeliveriesAffectedToDeliverer(delivererId);
+        }
+
         [HttpGet("get-delivery-by-reference/{reference}")]
         public async Task<ActionResult<ServiceResponse<Delivery?>>> GetDeliveryByReference(string reference)
         {
